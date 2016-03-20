@@ -23,6 +23,10 @@ class POSE_OT_limb_mirror_copy(bpy.types.Operator):
 		return context.active_object and context.active_object.type == "ARMATURE" and len(context.active_object.limbs) > 0
 				
 	def execute(self, context):
+
+		if len(addonpref().sides) == 0:
+			init_sides(context)	
+
 		armature = context.object
 		src_limb_index = armature.active_limb
 		dst_limb = armature.limbs.add()

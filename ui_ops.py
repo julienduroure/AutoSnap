@@ -1,5 +1,8 @@
 import bpy
 
+from .globals import *
+from .utils import *
+
 class POSE_OT_reinit_bone_move(bpy.types.Operator):
 	"""Move Limb up or down in the list"""
 	bl_idname = "pose.reinit_bone_move"
@@ -114,7 +117,7 @@ class POSE_OT_limb_add(bpy.types.Operator):
 	def execute(self, context):
 		armature = context.object
 		
-		if len(armature.limbs) == 0 and len(context.scene.sides) == 0:
+		if len(armature.limbs) == 0 and len(addonpref().sides) == 0:
 			init_sides(context)
 
 		limb = armature.limbs.add()
@@ -153,11 +156,10 @@ class POSE_OT_side_move(bpy.types.Operator):
 
 	@classmethod
 	def poll(self, context):
-		return context.active_object and context.active_object.type == "ARMATURE" and len(context.scene.sides) > 0 #ADDON to change when moved to addon pref
+		return context.active_object and context.active_object.type == "ARMATURE" and len(addonpref().sides) > 0
 		
 	def execute(self, context):
-		scene = context.scene
-		index   = scene.active_side
+		index   = addonpref().active_side
 		
 		if self.direction == "UP":
 			new_index = index - 1
@@ -166,9 +168,9 @@ class POSE_OT_side_move(bpy.types.Operator):
 		else:
 			new_index = index
 			
-		if new_index < len(scene.sides) and new_index >= 0:
-			scene.sides.move(index, new_index)
-			scene.active_side = new_index
+		if new_index < len(addonpref().sides) and new_index >= 0:
+			addonpref().sides.move(index, new_index)
+			addonpref().active_side = new_index
 		
 		return {'FINISHED'}
 		
@@ -183,11 +185,9 @@ class POSE_OT_side_add(bpy.types.Operator):
 		return context.active_object and context.active_object.type == "ARMATURE"
 				
 	def execute(self, context):
-		scene = context.scene
-
-		side = scene.sides.add()
-		side.name = "Side.%d" % len(scene.sides)
-		scene.active_side = len(scene.sides) - 1
+		side = addonpref().sides.add()
+		side.name = "Side.%d" % len(addonpref().sides)
+		addonpref().active_side = len(addonpref().sides) - 1
 		
 		return {'FINISHED'}
 		
@@ -201,13 +201,11 @@ class POSE_OT_side_remove(bpy.types.Operator):
 	def poll(self, context):
 		return context.active_object and context.active_object.type == "ARMATURE"
 				
-	def execute(self, context):
-		scene = context.scene   
-		
-		scene.sides.remove(scene.active_side)
-		len_ = len(scene.sides)
-		if (scene.active_side > (len_ - 1) and len_ > 0):
-			scene.active_side = len(scene.sides) - 1
+	def execute(self, context):	
+		addonpref().sides.remove(addonpref().active_side)
+		len_ = len(addonpref().sides)
+		if (addonpref().active_side > (len_ - 1) and len_ > 0):
+			addonpref().active_side = len(addonpref().sides) - 1
 			
 		return {'FINISHED'}   
 		

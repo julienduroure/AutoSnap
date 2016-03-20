@@ -35,32 +35,6 @@ class POSE_MT_limb_specials(bpy.types.Menu):
 		layout = self.layout
 	
 		layout.operator("pose.limb_mirror_copy", icon='ARROW_LEFTRIGHT')
-		
-class POSE_PT_Sides(bpy.types.Panel): #ADD : to remove, moved to addon pref
-	bl_label = "Sides"
-	bl_space_type = 'VIEW_3D'
-	bl_region_type = 'TOOLS'
-	bl_category = "AutoSnap"	
-
-	@classmethod
-	def poll(self, context):
-		return context.active_object and context.active_object.type == "ARMATURE" and len(context.active_object.limbs) > 0 #ADDON
-		
-	def draw(self, context):
-		layout = self.layout
-		
-		row = layout.row()
-		row.template_list("POSE_UL_SideList", "", context.scene, "sides", context.scene, "active_side") #ADDON change when move to addon pref
-		
-		col = row.column()
-		row = col.column(align=True)
-		row.operator("pose.side_add", icon="ZOOMIN", text="")
-		row.operator("pose.side_remove", icon="ZOOMOUT", text="")
-			
-		row = col.column(align=True)
-		row.separator()
-		row.operator("pose.side_move", icon='TRIA_UP', text="").direction = 'UP'
-		row.operator("pose.side_move", icon='TRIA_DOWN', text="").direction = 'DOWN'
 	
 class POSE_PT_Limb_livesnap(bpy.types.Panel):
 	bl_label = "Live Snapping"
@@ -432,7 +406,6 @@ def register():
 	
 	bpy.utils.register_class(POSE_MT_limb_specials)
 	
-	bpy.utils.register_class(POSE_PT_Sides) #ADDON when moved to addon pref
 	bpy.utils.register_class(POSE_PT_Limbs)
 	bpy.utils.register_class(POSE_PT_LimbDetail)
 	bpy.utils.register_class(POSE_PT_Limb_livesnap)
@@ -445,7 +418,6 @@ def unregister():
 	
 	bpy.utils.unregister_class(POSE_MT_limb_specials)
 	
-	bpy.utils.unregister_class(POSE_PT_Sides) #ADDON when moved to addon pref
 	bpy.utils.unregister_class(POSE_PT_Limbs) 
 	bpy.utils.unregister_class(POSE_PT_LimbDetail)
 	bpy.utils.unregister_class(POSE_PT_Limb_livesnap)

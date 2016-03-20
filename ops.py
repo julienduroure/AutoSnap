@@ -676,7 +676,7 @@ class POSE_OT_generate_snapping(bpy.types.Operator):
 		ui_generated_text_ = ui_generated_text_.replace("###CATEGORY###", context.active_object.generation.tab_tool)
 		ui_generated_text_ = ui_generated_text_.replace("###rig_id###", rig_id )
 		
-		if context.active_object.generation.layout_type == "DEFAULT": #ADDON change scene to addon pref
+		if context.active_object.generation.layout_type == "DEFAULT":
 			total_layout = ""
 			for limb in context.active_object.limbs:
 				ui_layout_default_ = ui_layout_default

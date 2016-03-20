@@ -41,8 +41,6 @@ def register():
 	bpy.types.Object.limbs = bpy.props.CollectionProperty(type=LimbItem)
 	bpy.types.Object.active_limb = bpy.props.IntProperty()
 	
-	bpy.types.Scene.sides = bpy.props.CollectionProperty(type=SideItem) #ADDON : move to addon pref
-	bpy.types.Scene.active_side = bpy.props.IntProperty()               #ADDON : move to addon pref
 	
 def unregister():
 	addon_prefs.unregister()
@@ -53,11 +51,7 @@ def unregister():
 
 	del bpy.types.Object.generation
 	del bpy.types.Object.limbs
-	del bpy.types.Object.active_limb
-	
-	del bpy.types.Scene.sides       #ADDON move to addon pref
-	del bpy.types.Scene.active_side #ADDON move to addon pref
-	
+	del bpy.types.Object.active_limb	
 
 if __name__ == "__main__":
 	register()

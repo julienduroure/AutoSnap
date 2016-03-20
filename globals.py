@@ -79,14 +79,17 @@ class LimbItem(bpy.types.PropertyGroup):
 	reinit_bones = bpy.props.CollectionProperty(type=BoneItem)
 	active_reinit_bone = bpy.props.IntProperty()
 
+#shortcut to prefs
+def addonpref():
+	user_preferences = bpy.context.user_preferences
+	return user_preferences.addons[__package__].preferences
+
 def register():
-	bpy.utils.register_class(SideItem)
 	bpy.utils.register_class(BoneItem)
 	bpy.utils.register_class(LimbItem)
 	bpy.utils.register_class(AutoSnap_Generation)
 
 def unregister():
-	bpy.utils.unregister_class(SideItem)
 	bpy.utils.unregister_class(LimbItem)
 	bpy.utils.unregister_class(BoneItem)
 	bpy.utils.unregister_class(AutoSnap_Generation)

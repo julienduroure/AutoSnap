@@ -1,5 +1,7 @@
 import bpy
 
+from .globals import *
+
 def get_symm_name(bone):
 	#first check if last digit are .xxx with [dot] and then xxx is integer
 	end_name = ""
@@ -12,7 +14,7 @@ def get_symm_name(bone):
 		
 	#construct dict for each length of potential side
 	side_len = {}
-	for side in bpy.context.scene.sides: #ADDON when moved to addon pref
+	for side in addonpref().sides:
 		if len(side.name_R) in side_len.keys():
 			side_len[len(side.name_R)].append((side.name_R, side.name_L))
 		else:
@@ -31,7 +33,7 @@ def get_symm_name(bone):
 
 
 def init_sides(context):
-	sides = context.scene.sides
+	sides = addonpref().sides
 	side = sides.add()
 	side.name_R = ".R"
 	side.name_L = ".L"
@@ -41,6 +43,6 @@ def init_sides(context):
 	side = sides.add()
 	side.name_R = "right"
 	side.name_L = "left"
-	context.scene.active_side = 2
+	addonpref().active_side = 2
 
 

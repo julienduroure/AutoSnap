@@ -683,6 +683,7 @@ class POSE_OT_generate_snapping(bpy.types.Operator):
 				ui_layout_default_ = ui_layout_default_.replace("###rig_id###", rig_id )
 				ui_layout_default_ = ui_layout_default_.replace("###FK2IK_LABEL###",limb.fk2ik_label)
 				ui_layout_default_ = ui_layout_default_.replace("###IK2FK_LABEL###",limb.ik2fk_label)
+				ui_layout_default_ = ui_layout_default_.replace("###limb###",limb.name)
 				
 				ui_generated_fk2ik_param_ = ui_generated_fk2ik_param
 				ui_generated_fk2ik_param_ = ui_generated_fk2ik_param_.replace("###tab###","\t\t")

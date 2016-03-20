@@ -112,6 +112,8 @@ ui_layout_default ='''
 		row = layout.row()
 		box = row.box()
 		row_ = box.row()
+		row_.label("###limb###")
+		row_ = box.row()
 		op = row_.operator("pose.limb_fk2ik_###rig_id###", text="###FK2IK_LABEL###")
 ###GENERATED_FK2IK_PARAM###
 		row_ = box.row()

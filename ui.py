@@ -46,39 +46,9 @@ class POSE_PT_Limb_livesnap(bpy.types.Panel):
 	def poll(self, context):
 		return context.active_object and context.active_object.type == "ARMATURE" and len(context.active_object.limbs) > 0 and context.mode == 'POSE'
 		
-	def draw(self, context):
-		layout = self.layout
+	def populate_ops_param(self, context, op):
 		armature = context.object
-		
-		row = layout.row()
-		op = row.operator("pose.limb_fk2ik", text="fk2ik")
-		op.root = armature.limbs[armature.active_limb].root
-		
-		op.global_scale = armature.limbs[armature.active_limb].global_scale
-		op.ik_scale_type = armature.limbs[armature.active_limb].ik_scale_type
-		op.fk_scale_type = armature.limbs[armature.active_limb].fk_scale_type
-		op.ik_location_type = armature.limbs[armature.active_limb].ik_location_type
-		op.fk_location_type = armature.limbs[armature.active_limb].fk_location_type
-		op.with_limb_end_fk	= armature.limbs[armature.active_limb].with_limb_end_fk
-		op.with_limb_end_ik	= armature.limbs[armature.active_limb].with_limb_end_ik
-		
-		op.ik1 = armature.limbs[armature.active_limb].ik1
-		op.ik2 = armature.limbs[armature.active_limb].ik2
-		op.ik3 = armature.limbs[armature.active_limb].ik3
-		op.ik5 = armature.limbs[armature.active_limb].ik5
-		
-		op.fk1 = armature.limbs[armature.active_limb].fk1
-		op.fk2 = armature.limbs[armature.active_limb].fk2
-		op.fk3 = armature.limbs[armature.active_limb].fk3
-		op.fk4 = armature.limbs[armature.active_limb].fk4
-		
-		op.ik_scale = armature.limbs[armature.active_limb].ik_scale
-		op.fk_scale = armature.limbs[armature.active_limb].fk_scale
-		op.ik_location = armature.limbs[armature.active_limb].ik_location
-		op.fk_location = armature.limbs[armature.active_limb].fk_location
-		
-		row = layout.row()
-		op = row.operator("pose.limb_ik2fk", text="ik2fk")
+	
 		op.root = armature.limbs[armature.active_limb].root
 		
 		op.global_scale = armature.limbs[armature.active_limb].global_scale
@@ -112,6 +82,22 @@ class POSE_PT_Limb_livesnap(bpy.types.Panel):
 			item_dst.name = item_src.name
 		if len(armature.limbs[armature.active_limb].reinit_bones) == 0:
 			op.with_reinit_bones = False
+		
+	def draw(self, context):
+		layout = self.layout
+		armature = context.object
+		
+		row = layout.row()
+		op = row.operator("pose.limb_switch_ikfk", text="fk2ik")
+		op.switch_type = "FORCED"
+		op.switch_forced_value = "FK2IK"
+		self.populate_ops_param(context, op)
+		
+		row = layout.row()
+		op = row.operator("pose.limb_switch_ikfk", text="ik2fk")
+		op.switch_type = "FORCED"
+		op.switch_forced_value = "IK2FK"
+		self.populate_ops_param(context, op)
 			
 class POSE_PT_Snap_Generate(bpy.types.Panel):
 	bl_label = "Generate"

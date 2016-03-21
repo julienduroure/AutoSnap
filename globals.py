@@ -27,6 +27,17 @@ layout_type_items = [
 	("DEFAULT", "Default", "", 1),
 ]
 
+### Warning : any modification on this enum must be reported on generated source code
+switch_type_items = [
+	("FORCED", "Forced", "", 1),
+]
+
+### Warning : any modification on this enum must be reported on generated source code
+switch_forced_value = [
+	("IK2FK", "ik2fk", "", 1),
+	("FK2IK", "fk2ik", "", 2),
+]
+
 class AutoSnap_Generation(bpy.types.PropertyGroup):
 	view_location = bpy.props.EnumProperty(name="View location", items=view_location_items, default="TOOLS")
 	panel_name    = bpy.props.StringProperty(name="Panel name")

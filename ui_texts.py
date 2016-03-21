@@ -28,6 +28,17 @@ location_type_items = [
 	("PARENT", "Parenting", "", 2),
 ]
 
+### Warning : any modification on this enum must be reported on live source code
+switch_type_items = [
+	("FORCED", "Forced", "", 1),
+]
+
+### Warning : any modification on this enum must be reported on live source code
+switch_forced_value = [
+	("IK2FK", "ik2fk", "", 1),
+	("FK2IK", "fk2ik", "", 2),
+]
+
 ### Warning : any modification on this PorpertyGroup must be reported on live source code
 class BoneItem(bpy.types.PropertyGroup):
 	name = bpy.props.StringProperty(name="Bone name")
@@ -35,50 +46,21 @@ class BoneItem(bpy.types.PropertyGroup):
 def get_poll_snapping_op(context):
 	return context.active_object and context.active_object.type == "ARMATURE" and context.active_object.data.get("autosnap_rig_id") is not None and context.active_object.data.get("autosnap_rig_id") == autosnap_rig_id and context.mode == 'POSE'
 
-###CLASS_FK2IK###
+###CLASS_switch_FKIK###
 
-###CLASS_IK2FK###
 
 def register():
 	bpy.utils.register_class(BoneItem)
-	bpy.utils.register_class(###CLASS_FK2IK_name###)
-	bpy.utils.register_class(###CLASS_IK2FK_name###)
+	bpy.utils.register_class(###CLASS_switch_FKIK_name###)
 	
 def unregister():
 	bpy.utils.unregister_class(BoneItem)
-	bpy.utils.unregister_class(###CLASS_FK2IK_name###)
-	bpy.utils.unregister_class(###CLASS_IK2FK_name###)
+	bpy.utils.unregister_class(###CLASS_switch_FKIK_name###)
 
 register()
 '''		
 
-ui_generated_fk2ik_param = '''
-###tab###op.root = "###root###"
-###tab###op.global_scale = ###global_scale###
-###tab###op.ik_scale_type = '###ik_scale_type###'
-###tab###op.fk_scale_type = '###fk_scale_type###'
-###tab###op.ik_location_type = '###ik_location_type###'
-###tab###op.fk_location_type = '###fk_location_type###'
-###tab###op.with_limb_end_fk	= ###with_limb_end_fk###
-###tab###op.with_limb_end_ik	= ###with_limb_end_ik###
-
-###tab###op.ik1 = "###ik1###"
-###tab###op.ik2 = "###ik2###"
-###tab###op.ik3 = "###ik3###"
-###tab###op.ik5 = "###ik5###"
-		
-###tab###op.fk1 = "###fk1###"
-###tab###op.fk2 = "###fk2###"
-###tab###op.fk3 = "###fk3###"
-###tab###op.fk4 = "###fk4###"
-		
-###tab###op.ik_scale = "###ik_scale###"
-###tab###op.fk_scale = "###fk_scale###"
-###tab###op.ik_location = "###ik_location###"
-###tab###op.fk_location = "###fk_location###"
-'''
-
-ui_generated_ik2fk_param = '''
+ui_generated_switch_param = '''
 ###tab###op.root = "###root###"
 ###tab###op.ik_type = "###ik_type###"
 ###tab###op.global_scale = ###global_scale###
@@ -114,11 +96,15 @@ ui_layout_default ='''
 		row_ = box.row()
 		row_.label("###limb###")
 		row_ = box.row()
-		op = row_.operator("pose.limb_fk2ik_###rig_id###", text="###FK2IK_LABEL###")
-###GENERATED_FK2IK_PARAM###
+		op = row_.operator("pose.limb_switch_ikfk_###rig_id###", text="###FK2IK_LABEL###")
+		op.switch_type = "FORCED"
+		op.switch_forced_value = "FK2IK"
+###GENERATED_switch_PARAM###
 		row_ = box.row()
-		op = row_.operator("pose.limb_ik2fk_###rig_id###", text="###IK2FK_LABEL###")
-###GENERATED_IK2FK_PARAM###
+		op = row_.operator("pose.limb_switch_ikfk_###rig_id###", text="###IK2FK_LABEL###")
+		op.switch_type = "FORCED"
+		op.switch_forced_value = "IK2FK"
+###GENERATED_switch_PARAM###
 '''
 
 ui_generated_text = '''

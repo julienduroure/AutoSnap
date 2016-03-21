@@ -77,13 +77,14 @@ class POSE_OT_limb_mirror_copy(bpy.types.Operator):
 			
 		return {'FINISHED'}   
 		
-		
-class POSE_OT_limb_ik2fk(bpy.types.Operator):
-	"""IK2FK"""
-	bl_idname = "pose.limb_ik2fk"
-	bl_label = "IK2FK"
-	bl_options = {'REGISTER'}
+class POSE_OT_limb_switch_ikfk(bpy.types.Operator):
+	"""Switch between IK / FK"""
+	bl_idname = "pose.limb_switch_ikfk"
+	bl_label = "Switch IK/FK"
+	bl_options = {'REGISTER'}	
 	
+	switch_type  = bpy.props.EnumProperty(items=switch_type_items)
+	switch_forced_value = bpy.props.EnumProperty(items=switch_forced_value)
 	
 	global_scale = bpy.props.BoolProperty()
 	ik_scale_type = bpy.props.EnumProperty(items=scale_type_items)
@@ -112,12 +113,11 @@ class POSE_OT_limb_ik2fk(bpy.types.Operator):
 	fk_location = bpy.props.StringProperty()
 	reinit_bones = bpy.props.CollectionProperty(type=BoneItem)
 	
-	
 	@classmethod
 	def poll(self, context):
 		return get_poll_snapping_op(context)
-
-	def check(self, context):
+		
+	def common_check(self, context):
 		if self.ik1 == "" or self.ik2 == "" or self.ik3 == "":
 			self.report({'ERROR'}, "Main IK chain must be totally filled")
 			return False, {'CANCELLED'}		
@@ -126,9 +126,6 @@ class POSE_OT_limb_ik2fk(bpy.types.Operator):
 			return False, {'CANCELLED'}
 		if self.global_scale == True and self.root == "":
 			self.report({'ERROR'}, "Root must be filled")
-			return False, {'CANCELLED'}
-		if self.ik_type == "POLE" and self.ik4 == "":
-			self.report({'ERROR'}, "IK pole must be filled")
 			return False, {'CANCELLED'}
 		if self.with_limb_end_ik == True and self.ik5 == "":
 			self.report({'ERROR'}, "IK toe must be filled")
@@ -148,18 +145,7 @@ class POSE_OT_limb_ik2fk(bpy.types.Operator):
 		if self.fk_location_type != "NONE" and self.fk_location == "":
 			self.report({'ERROR'}, "FK location must be filled")
 			return False, {'CANCELLED'}
-			
-		#if snap is set to "POLE", check that bone ik2 has really an IK constraint with a pole
-		if self.ik_type == "POLE":
-			ik = context.active_object.pose.bones[self.ik2]
-			for constr in ik.constraints:
-				if constr.type == "IK":
-					if constr.pole_subtarget == "":
-						self.report({'ERROR'}, "IK constraint must have a pole target bone")
-						return False, {'CANCELLED'}
 		
-		if self.ik_type == "ROTATION": #No pole if IK type is set to rotation
-			self.ik4 = ""
 		if self.with_limb_end_ik == False: #No toe stuff
 			self.ik5 = ""
 		if self.with_limb_end_fk == False: #No toe stuff
@@ -174,9 +160,6 @@ class POSE_OT_limb_ik2fk(bpy.types.Operator):
 			self.ik_location = ""
 		if self.fk_location_type == "NONE": #No limb location
 			self.fk_location = ""
-		if self.with_reinit_bones == False:
-			while len(self.reinit_bones) != 0:
-				self.reinit_bones.remove(0)
 
 		if self.root != "" and self.root not in context.active_object.data.bones.keys():
 			self.report({'ERROR'}, "Bone " + self.root + " doesn't exist")
@@ -189,9 +172,6 @@ class POSE_OT_limb_ik2fk(bpy.types.Operator):
 			return False, {'CANCELLED'}
 		if self.ik3 != "" and self.ik3 not in context.active_object.data.bones.keys():
 			self.report({'ERROR'}, "Bone " + self.ik3 + " doesn't exist")
-			return False, {'CANCELLED'}
-		if self.ik4 != "" and self.ik4 not in context.active_object.data.bones.keys():
-			self.report({'ERROR'}, "Bone " + self.ik4 + " doesn't exist")
 			return False, {'CANCELLED'}
 		if self.ik5 != "" and self.ik5 not in context.active_object.data.bones.keys():
 			self.report({'ERROR'}, "Bone " + self.ik5 + " doesn't exist")
@@ -220,23 +200,74 @@ class POSE_OT_limb_ik2fk(bpy.types.Operator):
 		if self.fk_location != "" and self.fk_location not in context.active_object.data.bones.keys():
 			self.report({'ERROR'}, "Bone " + self.fk_location + " doesn't exist")
 			return False, {'CANCELLED'}
-		for bone in self.reinit_bones:
-			if bone.name not in context.active_object.data.bones.keys():
-				self.report({'ERROR'}, "Bone " + bone.name + " doesn't exist")
-				return False, {'CANCELLED'}
 
 		return True, True
 		
 		
+	def fk2ik_check(self, context):
+		return True, True
+		
+		
+	def ik2fk_check(self, context):
+		if self.ik_type == "POLE" and self.ik4 == "":
+			self.report({'ERROR'}, "IK pole must be filled")
+			return False, {'CANCELLED'}
+			
+		#if snap is set to "POLE", check that bone ik2 has really an IK constraint with a pole
+		if self.ik_type == "POLE":
+			ik = context.active_object.pose.bones[self.ik2]
+			for constr in ik.constraints:
+				if constr.type == "IK":
+					if constr.pole_subtarget == "":
+						self.report({'ERROR'}, "IK constraint must have a pole target bone")
+						return False, {'CANCELLED'}
+						
+		if self.ik_type == "ROTATION": #No pole if IK type is set to rotation
+			self.ik4 = ""
+			
+		if self.with_reinit_bones == False:
+			while len(self.reinit_bones) != 0:
+				self.reinit_bones.remove(0)
+				
+		if self.ik4 != "" and self.ik4 not in context.active_object.data.bones.keys():
+			self.report({'ERROR'}, "Bone " + self.ik4 + " doesn't exist")
+			return False, {'CANCELLED'}
+			
+		for bone in self.reinit_bones:
+			if bone.name not in context.active_object.data.bones.keys():
+				self.report({'ERROR'}, "Bone " + bone.name + " doesn't exist")
+				return False, {'CANCELLED'}
+						
+		return True, True
+		
 	def execute(self, context):
+	
+		way = ""
+		if self.switch_type == "FORCED" and self.switch_forced_value == "FK2IK":
+			way = "FK2IK"
+		elif self.switch_type == "FORCED" and self.switch_forced_value == "IK2FK":
+			way = "IK2FK"
 
-		status, error = self.check(context)
+		status, error = self.common_check(context)
 		if status == False:
 			return error
+			
+		if way == "IK2FK":
+			status, error = self.ik2fk_check(context)
+			if status == False:
+				return error
+		elif way == "FK2IK":
+			status, error = self.fk2ik_check(context)
+			if status == False:
+				return error			
 		
-		self.ik2fk(context.active_object, self.root, self.ik1, self.ik2, self.ik3, self.ik4, self.ik5, self.fk1, self.fk2, self.fk3, self.fk4, self.ik_scale, self.fk_scale, self.ik_location, self.fk_location, self.reinit_bones)
+		if way == "IK2FK":
+			self.ik2fk(context.active_object, self.root, self.ik1, self.ik2, self.ik3, self.ik4, self.ik5, self.fk1, self.fk2, self.fk3, self.fk4, self.ik_scale, self.fk_scale, self.ik_location, self.fk_location, self.reinit_bones)
+		elif way == "FK2IK":
+			self.fk2ik(context.active_object, self.root, self.ik1, self.ik2, self.ik3, self.ik5, self.ik_scale, self.ik_location,  self.fk1, self.fk2, self.fk3, self.fk4, self.fk_scale, self.fk_location)
 		
 		return {'FINISHED'}
+		
 		
 	def perpendicular(self, v):
 		if v != mathutils.Vector((1,1,1)):
@@ -393,136 +424,7 @@ class POSE_OT_limb_ik2fk(bpy.types.Operator):
 			ik5.rotation_mode = ik5_current_rotation_mode
 			bpy.ops.object.mode_set(mode='OBJECT')
 			bpy.ops.object.mode_set(mode='POSE')
-	
-		
-class POSE_OT_limb_fk2ik(bpy.types.Operator):
-	"""FK2IK"""
-	bl_idname = "pose.limb_fk2ik"
-	bl_label = "FK2IK"
-	bl_options = {'REGISTER'}
-	
-	global_scale = bpy.props.BoolProperty()
-	ik_scale_type = bpy.props.EnumProperty(items=scale_type_items)
-	fk_scale_type = bpy.props.EnumProperty(items=scale_type_items)
-	ik_location_type = bpy.props.EnumProperty(items=location_type_items)
-	fk_location_type = bpy.props.EnumProperty(items=location_type_items)
-	with_limb_end_fk	= bpy.props.BoolProperty()
-	with_limb_end_ik	= bpy.props.BoolProperty()
-	
-	root = bpy.props.StringProperty()
-	ik1 = bpy.props.StringProperty()
-	ik2 = bpy.props.StringProperty()
-	ik3 = bpy.props.StringProperty()
-	ik5 = bpy.props.StringProperty()
-	ik_scale = bpy.props.StringProperty()
-	ik_location = bpy.props.StringProperty()
-	fk1 = bpy.props.StringProperty()
-	fk2 = bpy.props.StringProperty()
-	fk3 = bpy.props.StringProperty()
-	fk4 = bpy.props.StringProperty()
-	fk_scale = bpy.props.StringProperty()
-	fk_location = bpy.props.StringProperty()
-	
-	
-	@classmethod
-	def poll(self, context):
-		return get_poll_snapping_op(context)
-
-	def check(self, context):
-		if self.ik1 == "" or self.ik2 == "" or self.ik3 == "":
-			self.report({'ERROR'}, "Main IK chain must be totally filled")
-			return False, {'CANCELLED'}		
-		if self.fk1 == "" or self.fk2 == "" or self.fk3 == "":
-			self.report({'ERROR'}, "Main FK chain must be totally filled")
-			return False, {'CANCELLED'}
-		if self.global_scale == True and self.root == "":
-			self.report({'ERROR'}, "Root must be filled")
-			return False, {'CANCELLED'}
-		if self.with_limb_end_ik == True and self.ik5 == "":
-			self.report({'ERROR'}, "IK toe must be filled")
-			return False, {'CANCELLED'}		
-		if self.with_limb_end_fk == True and self.fk4 == "":
-			self.report({'ERROR'}, "FK toe must be filled")
-			return False, {'CANCELLED'}	
-		if self.ik_scale_type != "NONE" and self.ik_scale == "":
-			self.report({'ERROR'}, "IK scale must be filled")
-			return False, {'CANCELLED'}
-		if self.fk_scale_type != "NONE" and self.fk_scale == "":
-			self.report({'ERROR'}, "FK scale must be filled")
-			return False, {'CANCELLED'}
-		if self.ik_location_type != "NONE" and self.ik_location == "":
-			self.report({'ERROR'}, "IK location must be filled")
-			return False, {'CANCELLED'}
-		if self.fk_location_type != "NONE" and self.fk_location == "":
-			self.report({'ERROR'}, "FK location must be filled")
-			return False, {'CANCELLED'}
-		
-		if self.with_limb_end_ik == False: #No toe stuff
-			self.ik5 = ""
-		if self.with_limb_end_fk == False: #No toe stuff
-			self.fk4 = ""
-		if self.global_scale == False: #No global scale
-			self.root = ""
-		if self.ik_scale_type == "NONE": #No limb scale
-			self.ik_scale = ""
-		if self.fk_scale_type == "NONE": #No limb scale
-			self.fk_scale = ""
-		if self.ik_location_type == "NONE": #No limb location
-			self.ik_location = ""
-		if self.fk_location_type == "NONE": #No limb location
-			self.fk_location = ""
-
-		if self.root != "" and self.root not in context.active_object.data.bones.keys():
-			self.report({'ERROR'}, "Bone " + self.root + " doesn't exist")
-			return False, {'CANCELLED'}
-		if self.ik1 != "" and self.ik1 not in context.active_object.data.bones.keys():
-			self.report({'ERROR'}, "Bone " + self.ik1 + " doesn't exist")
-			return False, {'CANCELLED'}
-		if self.ik2 != "" and self.ik2 not in context.active_object.data.bones.keys():
-			self.report({'ERROR'}, "Bone " + self.ik2 + " doesn't exist")
-			return False, {'CANCELLED'}
-		if self.ik3 != "" and self.ik3 not in context.active_object.data.bones.keys():
-			self.report({'ERROR'}, "Bone " + self.ik3 + " doesn't exist")
-			return False, {'CANCELLED'}
-		if self.ik5 != "" and self.ik5 not in context.active_object.data.bones.keys():
-			self.report({'ERROR'}, "Bone " + self.ik5 + " doesn't exist")
-			return False, {'CANCELLED'}
-		if self.ik_scale != "" and self.ik_scale not in context.active_object.data.bones.keys():
-			self.report({'ERROR'}, "Bone " + self.ik_scale + " doesn't exist")
-			return False, {'CANCELLED'}
-		if self.ik_location != "" and self.ik_location not in context.active_object.data.bones.keys():
-			self.report({'ERROR'}, "Bone " + self.ik_location + " doesn't exist")
-			return False, {'CANCELLED'}
-		if self.fk1 != "" and self.fk1 not in context.active_object.data.bones.keys():
-			self.report({'ERROR'}, "Bone " + self.fk1 + " doesn't exist")
-			return False, {'CANCELLED'}
-		if self.fk2 != "" and self.fk2 not in context.active_object.data.bones.keys():
-			self.report({'ERROR'}, "Bone " + self.fk2 + " doesn't exist")
-			return False, {'CANCELLED'}
-		if self.fk3 != "" and self.fk3 not in context.active_object.data.bones.keys():
-			self.report({'ERROR'}, "Bone " + self.fk3 + " doesn't exist")
-			return False, {'CANCELLED'}
-		if self.fk4 != "" and self.fk4 not in context.active_object.data.bones.keys():
-			self.report({'ERROR'}, "Bone " + self.fk4 + " doesn't exist")
-			return False, {'CANCELLED'}
-		if self.fk_scale != "" and self.fk_scale not in context.active_object.data.bones.keys():
-			self.report({'ERROR'}, "Bone " + self.fk_scale + " doesn't exist")
-			return False, {'CANCELLED'}
-		if self.fk_location != "" and self.fk_location not in context.active_object.data.bones.keys():
-			self.report({'ERROR'}, "Bone " + self.fk_location + " doesn't exist")
-			return False, {'CANCELLED'}
-
-		return True, True
-		
-	def execute(self, context):
-		status, error = self.check(context)
-		if status == False:
-			return error
-		
-		self.fk2ik(context.active_object, self.root, self.ik1, self.ik2, self.ik3, self.ik5, self.ik_scale, self.ik_location,  self.fk1, self.fk2, self.fk3, self.fk4, self.fk_scale, self.fk_location)
-		
-		return {'FINISHED'}
-		
+			
 	def fk2ik(self, obj, root_, ik1_, ik2_, ik3_, ik5_, ik_scale_, ik_location_, fk1_, fk2_, fk3_, fk4_, fk_scale_, fk_location_):
 		ik1 = obj.pose.bones[ik1_]
 		ik2 = obj.pose.bones[ik2_]
@@ -622,7 +524,6 @@ class POSE_OT_limb_fk2ik(bpy.types.Operator):
 			bpy.ops.object.mode_set(mode='OBJECT')
 			bpy.ops.object.mode_set(mode='POSE')
 		
-
 class POSE_OT_generate_snapping(bpy.types.Operator):
 	"""Generate snapping"""
 	bl_idname = "pose.generate_snapping"
@@ -648,24 +549,16 @@ class POSE_OT_generate_snapping(bpy.types.Operator):
 			bpy.context.active_object.data['autosnap_rig_id'] = uuid.uuid4().hex
 		rig_id = context.active_object.data.get('autosnap_rig_id')
 		
-		#retrieve FK2IK source code
-		source, lines = inspect.getsourcelines(getattr(bpy.types, bpy.ops.pose.limb_fk2ik.idname()))
-		source[0] = source[0].replace(bpy.ops.pose.limb_fk2ik.idname(), bpy.ops.pose.limb_fk2ik.idname() + "_" + rig_id)
-		source[2] = source[2].replace("pose.limb_fk2ik", "pose.limb_fk2ik_" + rig_id)
+		#retrieve FK/IK switch source code
+		source, lines = inspect.getsourcelines(getattr(bpy.types, bpy.ops.pose.limb_switch_ikfk.idname()))
+		source[0] = source[0].replace(bpy.ops.pose.limb_switch_ikfk.idname(), bpy.ops.pose.limb_switch_ikfk.idname() + "_" + rig_id)
+		source[2] = source[2].replace("pose.limb_switch_ikfk", "pose.limb_switch_ikfk_" + rig_id)
 		
 		generated_text_ops_ = generated_text_ops
 		generated_text_ops_ = generated_text_ops_.replace("###rig_id###", rig_id )
-		generated_text_ops_ = generated_text_ops_.replace("###CLASS_FK2IK###", "".join(source))
-		generated_text_ops_ = generated_text_ops_.replace("###CLASS_FK2IK_name###", bpy.ops.pose.limb_fk2ik.idname() + "_" + rig_id)
-		
-		#retrieve FK2IK source code
-		source, lines = inspect.getsourcelines(getattr(bpy.types, bpy.ops.pose.limb_ik2fk.idname()))
-		source[0] = source[0].replace(bpy.ops.pose.limb_ik2fk.idname(), bpy.ops.pose.limb_ik2fk.idname() + "_" + rig_id)
-		source[2] = source[2].replace("pose.limb_ik2fk", "pose.limb_ik2fk_" + rig_id)
-		
-		generated_text_ops_ = generated_text_ops_.replace("###CLASS_IK2FK###", "".join(source))
-		generated_text_ops_ = generated_text_ops_.replace("###CLASS_IK2FK_name###", bpy.ops.pose.limb_ik2fk.idname() + "_" + rig_id)
-		
+		generated_text_ops_ = generated_text_ops_.replace("###CLASS_switch_FKIK###", "".join(source))
+		generated_text_ops_ = generated_text_ops_.replace("###CLASS_switch_FKIK_name###", bpy.ops.pose.limb_switch_ikfk.idname() + "_" + rig_id)
+			
 		if context.active_object.data["autosnap_rig_id"] + "_autosnap_ops.py" in bpy.data.texts.keys():
 			bpy.data.texts.remove(bpy.data.texts[context.active_object.data["autosnap_rig_id"] + "_autosnap_ops.py"])
 		text = bpy.data.texts.new(name=context.active_object.data["autosnap_rig_id"] + "_autosnap_ops.py")
@@ -683,64 +576,37 @@ class POSE_OT_generate_snapping(bpy.types.Operator):
 		if context.active_object.generation.layout_type == "DEFAULT":
 			total_layout = ""
 			for limb in context.active_object.limbs:
-				ui_layout_default_ = ui_layout_default
-				ui_layout_default_ = ui_layout_default_.replace("###rig_id###", rig_id )
-				ui_layout_default_ = ui_layout_default_.replace("###FK2IK_LABEL###",limb.fk2ik_label)
-				ui_layout_default_ = ui_layout_default_.replace("###IK2FK_LABEL###",limb.ik2fk_label)
-				ui_layout_default_ = ui_layout_default_.replace("###limb###",limb.name)
+				ui_generated_switch_param_ = ui_generated_switch_param
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###tab###","\t\t")
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###root###", limb.root)
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###ik_type###", limb.ik_type)
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###global_scale###", str(limb.global_scale))
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###ik_scale_type###", limb.ik_scale_type)
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###fk_scale_type###", limb.fk_scale_type)
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###ik_location_type###", limb.ik_location_type)
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###fk_location_type###", limb.fk_location_type)
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###with_limb_end_fk###", str(limb.with_limb_end_fk))
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###with_limb_end_ik###", str(limb.with_limb_end_ik))
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###ik1###", limb.ik1)
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###ik2###", limb.ik2)
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###ik3###", limb.ik3)
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###ik4###", limb.ik4)
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###ik5###", limb.ik5)
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###fk1###", limb.fk1)
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###fk2###", limb.fk2)
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###fk3###", limb.fk3)
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###fk4###", limb.fk4)
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###ik_scale###", limb.ik_scale)
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###fk_scale###", limb.fk_scale)
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###ik_location###", limb.ik_location)
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###fk_location###", limb.fk_location)
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###limb_reinit_bones###", str([bone.name for bone in limb.reinit_bones]))
 				
-				ui_generated_fk2ik_param_ = ui_generated_fk2ik_param
-				ui_generated_fk2ik_param_ = ui_generated_fk2ik_param_.replace("###tab###","\t\t")
-				ui_generated_fk2ik_param_ = ui_generated_fk2ik_param_.replace("###root###", limb.root)
-				ui_generated_fk2ik_param_ = ui_generated_fk2ik_param_.replace("###global_scale###", str(limb.global_scale))
-				ui_generated_fk2ik_param_ = ui_generated_fk2ik_param_.replace("###ik_scale_type###", limb.ik_scale_type)
-				ui_generated_fk2ik_param_ = ui_generated_fk2ik_param_.replace("###fk_scale_type###", limb.fk_scale_type)
-				ui_generated_fk2ik_param_ = ui_generated_fk2ik_param_.replace("###ik_location_type###", limb.ik_location_type)
-				ui_generated_fk2ik_param_ = ui_generated_fk2ik_param_.replace("###fk_location_type###", limb.fk_location_type)
-				ui_generated_fk2ik_param_ = ui_generated_fk2ik_param_.replace("###with_limb_end_fk###", str(limb.with_limb_end_fk))
-				ui_generated_fk2ik_param_ = ui_generated_fk2ik_param_.replace("###with_limb_end_ik###", str(limb.with_limb_end_ik))
-				ui_generated_fk2ik_param_ = ui_generated_fk2ik_param_.replace("###ik1###", limb.ik1)
-				ui_generated_fk2ik_param_ = ui_generated_fk2ik_param_.replace("###ik2###", limb.ik2)
-				ui_generated_fk2ik_param_ = ui_generated_fk2ik_param_.replace("###ik3###", limb.ik3)
-				ui_generated_fk2ik_param_ = ui_generated_fk2ik_param_.replace("###ik5###", limb.ik5)
-				ui_generated_fk2ik_param_ = ui_generated_fk2ik_param_.replace("###fk1###", limb.fk1)
-				ui_generated_fk2ik_param_ = ui_generated_fk2ik_param_.replace("###fk2###", limb.fk2)
-				ui_generated_fk2ik_param_ = ui_generated_fk2ik_param_.replace("###fk3###", limb.fk3)
-				ui_generated_fk2ik_param_ = ui_generated_fk2ik_param_.replace("###fk4###", limb.fk4)
-				ui_generated_fk2ik_param_ = ui_generated_fk2ik_param_.replace("###ik_scale###", limb.ik_scale)
-				ui_generated_fk2ik_param_ = ui_generated_fk2ik_param_.replace("###fk_scale###", limb.fk_scale)
-				ui_generated_fk2ik_param_ = ui_generated_fk2ik_param_.replace("###ik_location###", limb.ik_location)
-				ui_generated_fk2ik_param_ = ui_generated_fk2ik_param_.replace("###fk_location###", limb.fk_location)
-				
-				ui_layout_default_ = ui_layout_default_.replace("###GENERATED_FK2IK_PARAM###",ui_generated_fk2ik_param_)
-				
-				ui_generated_ik2fk_param_ = ui_generated_ik2fk_param
-				ui_generated_ik2fk_param_ = ui_generated_ik2fk_param_.replace("###tab###","\t\t")
-				ui_generated_ik2fk_param_ = ui_generated_ik2fk_param_.replace("###root###", limb.root)
-				ui_generated_ik2fk_param_ = ui_generated_ik2fk_param_.replace("###ik_type###", limb.ik_type)
-				ui_generated_ik2fk_param_ = ui_generated_ik2fk_param_.replace("###global_scale###", str(limb.global_scale))
-				ui_generated_ik2fk_param_ = ui_generated_ik2fk_param_.replace("###ik_scale_type###", limb.ik_scale_type)
-				ui_generated_ik2fk_param_ = ui_generated_ik2fk_param_.replace("###fk_scale_type###", limb.fk_scale_type)
-				ui_generated_ik2fk_param_ = ui_generated_ik2fk_param_.replace("###ik_location_type###", limb.ik_location_type)
-				ui_generated_ik2fk_param_ = ui_generated_ik2fk_param_.replace("###fk_location_type###", limb.fk_location_type)
-				ui_generated_ik2fk_param_ = ui_generated_ik2fk_param_.replace("###with_limb_end_fk###", str(limb.with_limb_end_fk))
-				ui_generated_ik2fk_param_ = ui_generated_ik2fk_param_.replace("###with_limb_end_ik###", str(limb.with_limb_end_ik))
-				ui_generated_ik2fk_param_ = ui_generated_ik2fk_param_.replace("###ik1###", limb.ik1)
-				ui_generated_ik2fk_param_ = ui_generated_ik2fk_param_.replace("###ik2###", limb.ik2)
-				ui_generated_ik2fk_param_ = ui_generated_ik2fk_param_.replace("###ik3###", limb.ik3)
-				ui_generated_ik2fk_param_ = ui_generated_ik2fk_param_.replace("###ik4###", limb.ik4)
-				ui_generated_ik2fk_param_ = ui_generated_ik2fk_param_.replace("###ik5###", limb.ik5)
-				ui_generated_ik2fk_param_ = ui_generated_ik2fk_param_.replace("###fk1###", limb.fk1)
-				ui_generated_ik2fk_param_ = ui_generated_ik2fk_param_.replace("###fk2###", limb.fk2)
-				ui_generated_ik2fk_param_ = ui_generated_ik2fk_param_.replace("###fk3###", limb.fk3)
-				ui_generated_ik2fk_param_ = ui_generated_ik2fk_param_.replace("###fk4###", limb.fk4)
-				ui_generated_ik2fk_param_ = ui_generated_ik2fk_param_.replace("###ik_scale###", limb.ik_scale)
-				ui_generated_ik2fk_param_ = ui_generated_ik2fk_param_.replace("###fk_scale###", limb.fk_scale)
-				ui_generated_ik2fk_param_ = ui_generated_ik2fk_param_.replace("###ik_location###", limb.ik_location)
-				ui_generated_ik2fk_param_ = ui_generated_ik2fk_param_.replace("###fk_location###", limb.fk_location)
-				ui_generated_ik2fk_param_ = ui_generated_ik2fk_param_.replace("###limb_reinit_bones###", str([bone.name for bone in limb.reinit_bones]))
-				
-				ui_layout_default_ = ui_layout_default_.replace("###GENERATED_IK2FK_PARAM###",ui_generated_ik2fk_param_)
+				ui_layout_default_ = ui_layout_default.replace("###limb###", limb.name)
+				ui_layout_default_ = ui_layout_default_.replace("###FK2IK_LABEL###", limb.fk2ik_label)
+				ui_layout_default_ = ui_layout_default_.replace("###IK2FK_LABEL###", limb.ik2fk_label)
+				ui_layout_default_ = ui_layout_default_.replace("###rig_id###", rig_id)
+				ui_layout_default_ = ui_layout_default_.replace("###GENERATED_switch_PARAM###",ui_generated_switch_param_)
 				
 				total_layout = total_layout + ui_layout_default_
 				
@@ -757,16 +623,14 @@ class POSE_OT_generate_snapping(bpy.types.Operator):
 		
 
 def register():
-	bpy.utils.register_class(POSE_OT_limb_fk2ik) 
-	bpy.utils.register_class(POSE_OT_limb_ik2fk) 
+	bpy.utils.register_class(POSE_OT_limb_switch_ikfk)
 
 	bpy.utils.register_class(POSE_OT_limb_mirror_copy)
 	
 	bpy.utils.register_class(POSE_OT_generate_snapping)
 
 def unregister():
-	bpy.utils.unregister_class(POSE_OT_limb_fk2ik) 
-	bpy.utils.unregister_class(POSE_OT_limb_ik2fk) 
+	bpy.utils.unregister_class(POSE_OT_limb_switch_ikfk)
 
 	bpy.utils.unregister_class(POSE_OT_limb_mirror_copy)
 	

@@ -226,35 +226,9 @@ class POSE_OT_limb_select_bone(bpy.types.Operator):
 		if context.active_pose_bone:
 			bone_name = context.active_pose_bone.name
 		
-		if self.bone == "root":
-			armature.limbs[armature.active_limb].root = bone_name   
-		elif self.bone == "ik1":
-			armature.limbs[armature.active_limb].ik1 = bone_name
-		elif self.bone == "ik2":
-			armature.limbs[armature.active_limb].ik2 = bone_name
-		elif self.bone == "ik3":
-			armature.limbs[armature.active_limb].ik3 = bone_name
-		elif self.bone == "ik4":
-			armature.limbs[armature.active_limb].ik4 = bone_name
-		elif self.bone == "ik5":
-			armature.limbs[armature.active_limb].ik5 = bone_name
-		elif self.bone == "fk1":
-			armature.limbs[armature.active_limb].fk1 = bone_name
-		elif self.bone == "fk2":
-			armature.limbs[armature.active_limb].fk2 = bone_name
-		elif self.bone == "fk3":
-			armature.limbs[armature.active_limb].fk3 = bone_name
-		elif self.bone == "fk4":
-			armature.limbs[armature.active_limb].fk4 = bone_name
-		elif self.bone == "ik_scale":
-			armature.limbs[armature.active_limb].ik_scale = bone_name
-		elif self.bone == "ik_location":
-			armature.limbs[armature.active_limb].ik_location = bone_name		
-		elif self.bone == "fk_scale":
-			armature.limbs[armature.active_limb].fk_scale = bone_name
-		elif self.bone == "fk_location":
-			armature.limbs[armature.active_limb].fk_location = bone_name	
-		elif self.bone == "reinit_bone":
+		if self.bone != "reinit_bone":
+			armature.limbs[armature.active_limb][self.bone] = bone_name
+		else:
 			armature.limbs[armature.active_limb].reinit_bones[armature.limbs[armature.active_limb].active_reinit_bone].name = bone_name
 		
 	

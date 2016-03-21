@@ -57,12 +57,11 @@ class BoneItem(bpy.types.PropertyGroup):
 ### Warning : report new attribute to copy mirror ops
 class LimbItem(bpy.types.PropertyGroup):
 
-	#DEFAULT
+	#DEFAULT & DEFAULT_SWITCH
 	fk2ik_label = bpy.props.StringProperty(name="fk2ik label", default="fk2ik")
 	ik2fk_label = bpy.props.StringProperty(name="ik2fk label", default="ik2fk")
 	
 	#DEFAULT_SWITCH
-	fkik_label = bpy.props.StringProperty(name="ik2fk label", default="Switch FK/IK")
 	switch_bone = bpy.props.StringProperty(name="Switch Bone")
 	switch_property = bpy.props.StringProperty(name="Switch Property")
 	switch_invert = bpy.props.BoolProperty(name="Invert", default = False)

@@ -40,8 +40,8 @@ class POSE_OT_limb_mirror_copy(bpy.types.Operator):
 		dst_limb.fk2ik_label = armature.limbs[src_limb_index].fk2ik_label
 		dst_limb.ik2fk_label = armature.limbs[src_limb_index].ik2fk_label
 		
-		dst_limb.fkik_label = armature.limbs[src_limb_index].fkik_label
-		dst_limb.switch_bone = armature.limbs[src_limb_index].switch_bone
+		dst_limb.switch_bone = get_symm_name(armature.limbs[src_limb_index].switch_bone)
+		dst_limb.switch_property = armature.limbs[src_limb_index].switch_property
 		dst_limb.switch_invert = armature.limbs[src_limb_index].switch_invert
 		
 		dst_limb.ik_type = armature.limbs[src_limb_index].ik_type
@@ -289,13 +289,13 @@ class POSE_OT_limb_switch_ikfk(bpy.types.Operator):
 		elif self.switch_type == "FORCED" and self.switch_forced_value == "IK2FK":
 			way = "IK2FK"
 		elif self.switch_type == "DEDUCTED" and int(context.active_object.pose.bones[self.switch_bone].get(self.switch_property)) == 1.0 and self.switch_invert == False:
-			way = "FK2IK"
+			way = "IK2FK"
 		elif self.switch_type == "DEDUCTED" and int(context.active_object.pose.bones[self.switch_bone].get(self.switch_property)) == 1.0 and self.switch_invert == True:
-			way = "IK2FK"
+			way = "FK2IK"
 		elif self.switch_type == "DEDUCTED" and int(context.active_object.pose.bones[self.switch_bone].get(self.switch_property)) == 0.0 and self.switch_invert == False:
-			way = "IK2FK"
+			way = "FK2IK"
 		elif self.switch_type == "DEDUCTED" and int(context.active_object.pose.bones[self.switch_bone].get(self.switch_property)) == 0.0 and self.switch_invert == True:
-			way = "FK2IK"	
+			way = "IK2FK"	
 			
 		status, error = self.common_check(context)
 		if status == False:

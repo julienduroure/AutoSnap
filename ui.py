@@ -107,12 +107,24 @@ class POSE_PT_Limb_livesnap(bpy.types.Panel):
 			self.populate_ops_param(context, op)
 			
 		elif armature.generation.layout_type == "DEFAULT_SWITCH":
+			label = ""
+			try:
+				if int(armature.pose.bones[armature.limbs[armature.active_limb].switch_bone].get(armature.limbs[armature.active_limb].switch_property)) == 1.0 and armature.limbs[armature.active_limb].switch_invert == False:
+					label = armature.limbs[armature.active_limb].ik2fk_label
+				elif int(armature.pose.bones[armature.limbs[armature.active_limb].switch_bone].get(armature.limbs[armature.active_limb].switch_property)) == 1.0 and armature.limbs[armature.active_limb].switch_invert == True:
+					label = armature.limbs[armature.active_limb].fk2ik_label
+				if int(armature.pose.bones[armature.limbs[armature.active_limb].switch_bone].get(armature.limbs[armature.active_limb].switch_property)) == 0.0 and armature.limbs[armature.active_limb].switch_invert == False:
+					label = armature.limbs[armature.active_limb].fk2ik_label
+				elif int(armature.pose.bones[armature.limbs[armature.active_limb].switch_bone].get(armature.limbs[armature.active_limb].switch_property)) == 0.0 and armature.limbs[armature.active_limb].switch_invert == True:
+					label = armature.limbs[armature.active_limb].ik2fk_label
+			except:
+				label = ""
 			row = layout.row()
 			box = row.box()
 			row_ = box.row()
 			row_.label(armature.limbs[armature.active_limb].name)
 			row_ = box.row()
-			op = row_.operator("pose.limb_switch_ikfk", text=armature.limbs[armature.active_limb].fkik_label)
+			op = row_.operator("pose.limb_switch_ikfk", text=label)
 			op.switch_type = "DEDUCTED"
 			op.layout_type = "DEFAULT_SWITCH"
 			op.switch_bone = armature.limbs[armature.active_limb].switch_bone
@@ -120,16 +132,7 @@ class POSE_PT_Limb_livesnap(bpy.types.Panel):
 			op.switch_invert   = armature.limbs[armature.active_limb].switch_invert
 			self.populate_ops_param(context, op)
 			row_ = box.row()
-			try:
-				if int(armature.pose.bones[armature.limbs[armature.active_limb].switch_bone].get(armature.limbs[armature.active_limb].switch_property)) == 1.0 and armature.limbs[armature.active_limb].switch_invert == False:
-					row_.label("current : IK")
-				elif int(armature.pose.bones[armature.limbs[armature.active_limb].switch_bone].get(armature.limbs[armature.active_limb].switch_property)) == 1.0 and armature.limbs[armature.active_limb].switch_invert == True:
-					row_.label("current : FK")
-				if int(armature.pose.bones[armature.limbs[armature.active_limb].switch_bone].get(armature.limbs[armature.active_limb].switch_property)) == 0.0 and armature.limbs[armature.active_limb].switch_invert == False:
-					row_.label("current : FK")
-				elif int(armature.pose.bones[armature.limbs[armature.active_limb].switch_bone].get(armature.limbs[armature.active_limb].switch_property)) == 0.0 and armature.limbs[armature.active_limb].switch_invert == True:
-					row_.label("current : IK")
-			except:
+			if label == "":
 				row_.label("Wrong layout data", icon="ERROR")
 			
 class POSE_PT_Snap_Generate(bpy.types.Panel):
@@ -465,7 +468,9 @@ class POSE_PT_LimbDetailLayout(bpy.types.Panel):
 			row.prop(limb, "ik2fk_label", "Label ik2fk")
 		elif armature.generation.layout_type == "DEFAULT_SWITCH":
 			row = layout.row()
-			row.prop(limb, "fkik_label", "Label switch")
+			row.prop(limb, "fk2ik_label", "Label fk2ik")
+			row = layout.row()
+			row.prop(limb, "ik2fk_label", "Label ik2fk")
 			row = layout.row()
 			col = row.column()
 			row_ = col.column(align=True)

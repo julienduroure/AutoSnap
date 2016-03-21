@@ -120,10 +120,25 @@ class POSE_PT_Snap_Generate(bpy.types.Panel):
 			row = layout.row()
 			row.prop(armature.generation, "tab_tool")
 		row = layout.row()
-		row.prop(armature.generation, "layout_type")
-		row = layout.row()
 		row.operator("pose.generate_snapping", text="Generate")
 
+class POSE_PT_layout(bpy.types.Panel):
+	bl_label = "Layout"
+	bl_space_type = 'VIEW_3D'
+	bl_region_type = 'TOOLS'
+	bl_category = "AutoSnap"	
+	
+	@classmethod
+	def poll(self, context):
+		return context.active_object and context.active_object.type == "ARMATURE" and context.mode == 'POSE'
+		
+	def draw(self, context):
+		layout = self.layout
+		armature = context.object		
+		
+		row = layout.row()
+		row.prop(armature.generation, "layout_type")
+		
 class POSE_PT_Limbs(bpy.types.Panel):
 	bl_label = "Limbs"
 	bl_space_type = 'VIEW_3D'
@@ -392,6 +407,7 @@ def register():
 	
 	bpy.utils.register_class(POSE_MT_limb_specials)
 	
+	bpy.utils.register_class(POSE_PT_layout)
 	bpy.utils.register_class(POSE_PT_Limbs)
 	bpy.utils.register_class(POSE_PT_LimbDetail)
 	bpy.utils.register_class(POSE_PT_Limb_livesnap)
@@ -404,6 +420,7 @@ def unregister():
 	
 	bpy.utils.unregister_class(POSE_MT_limb_specials)
 	
+	bpy.utils.unregister_class(POSE_PT_layout)
 	bpy.utils.unregister_class(POSE_PT_Limbs) 
 	bpy.utils.unregister_class(POSE_PT_LimbDetail)
 	bpy.utils.unregister_class(POSE_PT_Limb_livesnap)

@@ -25,11 +25,13 @@ view_location_items = [
 
 layout_type_items = [
 	("DEFAULT", "Default", "", 1),
+	("DEFAULT_SWITCH", "Default - switch", "", 2),
 ]
 
 ### Warning : any modification on this enum must be reported on generated source code
 switch_type_items = [
 	("FORCED", "Forced", "", 1),
+	("DEDUCTED", "DEDUCTED", "", 2),
 ]
 
 ### Warning : any modification on this enum must be reported on generated source code
@@ -52,13 +54,21 @@ class SideItem(bpy.types.PropertyGroup):
 class BoneItem(bpy.types.PropertyGroup):
 	name = bpy.props.StringProperty(name="Bone name")
 
+### Warning : report new attribute to copy mirror ops
 class LimbItem(bpy.types.PropertyGroup):
 
+	#DEFAULT
 	fk2ik_label = bpy.props.StringProperty(name="fk2ik label", default="fk2ik")
 	ik2fk_label = bpy.props.StringProperty(name="ik2fk label", default="ik2fk")
 	
+	#DEFAULT_SWITCH
+	fkik_label = bpy.props.StringProperty(name="ik2fk label", default="Switch FK/IK")
+	switch_bone = bpy.props.StringProperty(name="Switch Bone")
+	switch_property = bpy.props.StringProperty(name="Switch Property")
+	switch_invert = bpy.props.BoolProperty(name="Invert", default = False)
+	
 	display_bone_setting = bpy.props.BoolProperty(name="Display Bones Settings", default=False)
-	display_layout_setting = bpy.props.BoolProperty(name="Display Generate Settings", default=False)
+	display_layout_setting = bpy.props.BoolProperty(name="Display Layout Settings", default=False)
 
 	ik_type = bpy.props.EnumProperty(name="IK type", items=IK_type_items, default="POLE")
 	ik_scale_type   = bpy.props.EnumProperty(name="IK scale type", items=scale_type_items, default="NONE")

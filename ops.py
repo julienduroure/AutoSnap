@@ -36,9 +36,13 @@ class POSE_OT_limb_mirror_copy(bpy.types.Operator):
 		
 		dst_limb.display_bone_setting = armature.limbs[src_limb_index].display_bone_setting
 		dst_limb.display_layout_setting = armature.limbs[src_limb_index].display_layout_setting
-		
+			
 		dst_limb.fk2ik_label = armature.limbs[src_limb_index].fk2ik_label
 		dst_limb.ik2fk_label = armature.limbs[src_limb_index].ik2fk_label
+		
+		dst_limb.fkik_label = armature.limbs[src_limb_index].fkik_label
+		dst_limb.switch_bone = armature.limbs[src_limb_index].switch_bone
+		dst_limb.switch_invert = armature.limbs[src_limb_index].switch_invert
 		
 		dst_limb.ik_type = armature.limbs[src_limb_index].ik_type
 		dst_limb.ik_scale_type = armature.limbs[src_limb_index].ik_scale_type
@@ -83,8 +87,14 @@ class POSE_OT_limb_switch_ikfk(bpy.types.Operator):
 	bl_label = "Switch IK/FK"
 	bl_options = {'REGISTER'}	
 	
+	layout_type = bpy.props.StringProperty()
+	
 	switch_type  = bpy.props.EnumProperty(items=switch_type_items)
 	switch_forced_value = bpy.props.EnumProperty(items=switch_forced_value)
+	
+	switch_bone = bpy.props.StringProperty()
+	switch_property = bpy.props.StringProperty()
+	switch_invert   = bpy.props.BoolProperty()
 	
 	global_scale = bpy.props.BoolProperty()
 	ik_scale_type = bpy.props.EnumProperty(items=scale_type_items)
@@ -116,6 +126,33 @@ class POSE_OT_limb_switch_ikfk(bpy.types.Operator):
 	@classmethod
 	def poll(self, context):
 		return get_poll_snapping_op(context)
+		
+	def layout_check_default(self, context):
+		return True, True
+		
+	def layout_check_default_switch(self, context):
+		if self.switch_bone == "":
+			self.report({'ERROR'}, "Switch Bone must be filled")
+			return False, {'CANCELLED'}		
+		if self.switch_property == "":
+			self.report({'ERROR'}, "Switch Bone property must be filled")
+			return False, {'CANCELLED'}
+		try:
+			int(context.active_object.pose.bones[self.switch_bone].get(self.switch_property))
+		except:
+			self.report({'ERROR'}, "Wrong Bone property")
+			return False, {'CANCELLED'}			
+
+		return True, True
+		
+	def layout_check(self, context, layout_type):
+		if layout_type == "DEFAULT":
+			return self.layout_check_default(context)
+		elif layout_type == "DEFAULT_SWITCH":
+			return self.layout_check_default_switch(context)
+		
+		self.report({'ERROR'}, "Unknow Layout type")
+		return False, {'CANCELLED'}	
 		
 	def common_check(self, context):
 		if self.ik1 == "" or self.ik2 == "" or self.ik3 == "":
@@ -242,12 +279,24 @@ class POSE_OT_limb_switch_ikfk(bpy.types.Operator):
 		
 	def execute(self, context):
 	
+		status, error = self.layout_check(context, self.layout_type)
+		if status == False:
+			return error	
+	
 		way = ""
 		if self.switch_type == "FORCED" and self.switch_forced_value == "FK2IK":
 			way = "FK2IK"
 		elif self.switch_type == "FORCED" and self.switch_forced_value == "IK2FK":
 			way = "IK2FK"
-
+		elif self.switch_type == "DEDUCTED" and int(context.active_object.pose.bones[self.switch_bone].get(self.switch_property)) == 1.0 and self.switch_invert == False:
+			way = "FK2IK"
+		elif self.switch_type == "DEDUCTED" and int(context.active_object.pose.bones[self.switch_bone].get(self.switch_property)) == 1.0 and self.switch_invert == True:
+			way = "IK2FK"
+		elif self.switch_type == "DEDUCTED" and int(context.active_object.pose.bones[self.switch_bone].get(self.switch_property)) == 0.0 and self.switch_invert == False:
+			way = "IK2FK"
+		elif self.switch_type == "DEDUCTED" and int(context.active_object.pose.bones[self.switch_bone].get(self.switch_property)) == 0.0 and self.switch_invert == True:
+			way = "FK2IK"	
+			
 		status, error = self.common_check(context)
 		if status == False:
 			return error

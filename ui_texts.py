@@ -31,6 +31,7 @@ location_type_items = [
 ### Warning : any modification on this enum must be reported on live source code
 switch_type_items = [
 	("FORCED", "Forced", "", 1),
+	("DEDUCTED", "DEDUCTED", "", 2),
 ]
 
 ### Warning : any modification on this enum must be reported on live source code
@@ -98,11 +99,13 @@ ui_layout_default ='''
 		row_ = box.row()
 		op = row_.operator("pose.limb_switch_ikfk_###rig_id###", text="###FK2IK_LABEL###")
 		op.switch_type = "FORCED"
+		op.layout_type = "DEFAULT"
 		op.switch_forced_value = "FK2IK"
 ###GENERATED_switch_PARAM###
 		row_ = box.row()
 		op = row_.operator("pose.limb_switch_ikfk_###rig_id###", text="###IK2FK_LABEL###")
 		op.switch_type = "FORCED"
+		op.layout_type = "DEFAULT"
 		op.switch_forced_value = "IK2FK"
 ###GENERATED_switch_PARAM###
 '''

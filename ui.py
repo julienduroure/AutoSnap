@@ -87,17 +87,22 @@ class POSE_PT_Limb_livesnap(bpy.types.Panel):
 		layout = self.layout
 		armature = context.object
 		
-		row = layout.row()
-		op = row.operator("pose.limb_switch_ikfk", text="fk2ik")
-		op.switch_type = "FORCED"
-		op.switch_forced_value = "FK2IK"
-		self.populate_ops_param(context, op)
-		
-		row = layout.row()
-		op = row.operator("pose.limb_switch_ikfk", text="ik2fk")
-		op.switch_type = "FORCED"
-		op.switch_forced_value = "IK2FK"
-		self.populate_ops_param(context, op)
+		if armature.generation.layout_type == "DEFAULT":
+			row = layout.row()
+			box = row.box()
+			row_ = box.row()
+			row_.label(armature.limbs[armature.active_limb].name)
+			row_ = box.row()
+			op = row_.operator("pose.limb_switch_ikfk", text=armature.limbs[armature.active_limb].fk2ik_label)
+			op.switch_type = "FORCED"
+			op.switch_forced_value = "FK2IK"
+			self.populate_ops_param(context, op)
+			
+			row_ = box.row()
+			op = row_.operator("pose.limb_switch_ikfk", text=armature.limbs[armature.active_limb].ik2fk_label)
+			op.switch_type = "FORCED"
+			op.switch_forced_value = "IK2FK"
+			self.populate_ops_param(context, op)
 			
 class POSE_PT_Snap_Generate(bpy.types.Panel):
 	bl_label = "Generate"

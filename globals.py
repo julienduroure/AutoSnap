@@ -58,7 +58,7 @@ class LimbItem(bpy.types.PropertyGroup):
 	ik2fk_label = bpy.props.StringProperty(name="ik2fk label", default="ik2fk")
 	
 	display_bone_setting = bpy.props.BoolProperty(name="Display Bones Settings", default=False)
-	display_generate_setting = bpy.props.BoolProperty(name="Display Generate Settings", default=False)
+	display_layout_setting = bpy.props.BoolProperty(name="Display Generate Settings", default=False)
 
 	ik_type = bpy.props.EnumProperty(name="IK type", items=IK_type_items, default="POLE")
 	ik_scale_type   = bpy.props.EnumProperty(name="IK scale type", items=scale_type_items, default="NONE")

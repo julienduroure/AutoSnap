@@ -173,7 +173,224 @@ class POSE_PT_Limbs(bpy.types.Panel):
 			row.operator("pose.limb_move", icon='TRIA_UP', text="").direction = 'UP'
 			row.operator("pose.limb_move", icon='TRIA_DOWN', text="").direction = 'DOWN'
 		
+class POSE_PT_LimbDetailBones(bpy.types.Panel):
+	bl_label = "Limb Detail -  Bones"
+	bl_space_type = 'VIEW_3D'
+	bl_region_type = 'TOOLS'
+	bl_category = "AutoSnap"	
+	
+	@classmethod
+	def poll(self, context):
+		armature = context.active_object
+		return armature and armature.type == "ARMATURE" and len(armature.limbs) > 0 and context.mode == 'POSE' and armature.limbs[armature.active_limb].display_bone_setting == True
+		
+	def draw(self, context):
+		layout = self.layout
+		armature = context.object
+		limb = armature.limbs[armature.active_limb]
+		
+		row_ = layout.row()
+		box = row_.box()
+		row__ = box.row()
+		row__.prop(limb, "global_scale")
+		if limb.global_scale == True:
+			row__ = box.row()
+			col = row__.column()
+			row = col.column(align=True)
+			row.prop_search(limb, "root", armature.data, "bones", text="Root")
+			col = row__.column()
+			row = col.column(align=True)
+			row.operator("pose.limb_select_bone", icon="BONE_DATA", text="").bone = "root"
 
+		row_ = layout.row()
+		box_ = row_.box()
+		row___ = box_.row()
+
+		box = row___.box()
+		row__ = box.row()
+		row__.label("Main IK chain")
+		row__= box.row()
+		col = row__.column()
+		row = col.column(align=True)
+		row.prop_search(limb, "ik1", armature.data, "bones", text="IK1")
+		col = row__.column()
+		row = col.column(align=True)
+		row.operator("pose.limb_select_bone", icon="BONE_DATA", text="").bone = "ik1"
+		
+		row__ = box.row()
+		col = row__.column()
+		row = col.column(align=True)
+		row.prop_search(limb, "ik2", armature.data, "bones", text="IK2")
+		col = row__.column()
+		row = col.column(align=True)
+		row.operator("pose.limb_select_bone", icon="BONE_DATA", text="").bone = "ik2"
+		
+		row__ = box.row()
+		col = row__.column()
+		row = col.column(align=True)
+		row.prop_search(limb, "ik3", armature.data, "bones", text="IK Target")
+		col = row__.column()
+		row = col.column(align=True)
+		row.operator("pose.limb_select_bone", icon="BONE_DATA", text="").bone = "ik3"
+
+		row___ = box_.row()
+		box = row___.box()
+		row__ = box.row()
+		row__.prop(limb, "ik_type")
+		if limb.ik_type == "POLE":
+			row__ = box.row()
+			row_ = row__.row()
+			col = row_.column()
+			row = col.column(align=True)
+			row.prop_search(limb, "ik4", armature.data, "bones", text="IK Pole")
+			col = row_.column()
+			row = col.column(align=True)
+			row.operator("pose.limb_select_bone", icon="BONE_DATA", text="").bone = "ik4"	   
+		
+		row___ = box_.row()
+		box = row___.box()
+		row__ = box.row()
+		row__.prop(limb, "with_limb_end_ik", text="Use IK limb end")
+		if limb.with_limb_end_ik == True:
+			row__ = box.row()
+			row_ = row__.row()
+			col = row_.column()
+			row = col.column(align=True)
+			row.prop_search(limb, "ik5", armature.data, "bones", text="IK toe")
+			col = row_.column()
+			row = col.column(align=True)
+			row.operator("pose.limb_select_bone", icon="BONE_DATA", text="").bone = "ik5"   
+
+		row___ = box_.row()
+		box = row___.box()
+		row__ = box.row()
+		row__.prop(limb, "ik_scale_type")
+		if limb.ik_scale_type == "PARENT":
+			row__ = box.row()
+			row_ = row__.row()
+			col = row_.column()
+			row = col.column(align=True)
+			row.prop_search(limb, "ik_scale", armature.data, "bones", text="IK Scale")
+			col = row_.column()
+			row = col.column(align=True)
+			row.operator("pose.limb_select_bone", icon="BONE_DATA", text="").bone = "ik_scale"
+
+		row___ = box_.row()
+		box = row___.box()
+		row__ = box.row()
+		row__.prop(limb, "ik_location_type")
+		if limb.ik_location_type == "PARENT":
+			row__ = box.row()
+			row_ = row__.row()
+			col = row_.column()
+			row = col.column(align=True)
+			row.prop_search(limb, "ik_location", armature.data, "bones", text="IK Location")
+			col = row_.column()
+			row = col.column(align=True)
+			row.operator("pose.limb_select_bone", icon="BONE_DATA", text="").bone = "ik_location"
+
+		row___ = box_.row()
+		box = row___.box()
+		row__ = box.row()
+		row__.prop(limb, "with_reinit_bones", text="Roll/Rock bones to reinit")
+		if limb.with_reinit_bones == True:
+			row__= box.row()
+			row__.template_list("POSE_UL_ReInitBoneList", "", armature.limbs[armature.active_limb], "reinit_bones", armature.limbs[armature.active_limb], "active_reinit_bone")
+			
+			col = row__.column()
+			row = col.column(align=True)
+			row.operator("pose.reinit_bone_add", icon="ZOOMIN", text="")
+			row.operator("pose.reinit_bone_remove", icon="ZOOMOUT", text="")
+				
+			row = col.column(align=True)
+			row.separator()
+			row.operator("pose.reinit_bone_move", icon='TRIA_UP', text="").direction = 'UP'
+			row.operator("pose.reinit_bone_move", icon='TRIA_DOWN', text="").direction = 'DOWN'
+			
+			if len(armature.limbs[armature.active_limb].reinit_bones) > 0:
+				row_ = box.row()
+				col = row_.column()
+				row = col.column(align=True)
+				row.prop_search(armature.limbs[armature.active_limb].reinit_bones[armature.limbs[armature.active_limb].active_reinit_bone], "name", armature.data, "bones", text="Bone")
+				col = row_.column()
+				row = col.column(align=True)
+				row.operator("pose.limb_select_bone", icon="BONE_DATA", text="").bone = "reinit_bone"
+
+			
+		row_ = layout.row()
+		box_ = row_.box()
+		row___ = box_.row()
+
+		box = row___.box()
+		row__ = box.row()
+		row__.label("Main FK chain")
+		row__= box.row()
+		col = row__.column()
+		row = col.column(align=True)
+		row.prop_search(limb, "fk1", armature.data, "bones", text="FK1")
+		col = row__.column()
+		row = col.column(align=True)
+		row.operator("pose.limb_select_bone", icon="BONE_DATA", text="").bone = "fk1"
+		
+		row__= box.row()
+		col = row__.column()
+		row = col.column(align=True)
+		row.prop_search(limb, "fk2", armature.data, "bones", text="FK2")
+		col = row__.column()
+		row = col.column(align=True)
+		row.operator("pose.limb_select_bone", icon="BONE_DATA", text="").bone = "fk2"
+		
+		row__= box.row()
+		col = row__.column()
+		row = col.column(align=True)
+		row.prop_search(limb, "fk3", armature.data, "bones", text="FK3")
+		col = row__.column()
+		row = col.column(align=True)
+		row.operator("pose.limb_select_bone", icon="BONE_DATA", text="").bone = "fk3"
+
+		
+		row___ = box_.row()
+		box = row___.box()
+		row__ = box.row()
+		row__.prop(limb, "with_limb_end_fk", text="Use FK limb end")
+		if limb.with_limb_end_fk == True:
+			row__ = box.row()
+			row_ = row__.row()
+			col = row_.column()
+			row = col.column(align=True)
+			row.prop_search(limb, "fk4", armature.data, "bones", text="FK toe")
+			col = row_.column()
+			row = col.column(align=True)
+			row.operator("pose.limb_select_bone", icon="BONE_DATA", text="").bone = "fk4"   
+			
+			
+		row___ = box_.row()
+		box = row___.box()
+		row__ = box.row()
+		row__.prop(limb, "fk_scale_type")
+		if limb.fk_scale_type == "PARENT":
+			row__ = box.row()
+			row_ = row__.row()
+			col = row_.column()
+			row = col.column(align=True)
+			row.prop_search(limb, "fk_scale", armature.data, "bones", text="FK Scale")
+			col = row_.column()
+			row = col.column(align=True)
+			row.operator("pose.limb_select_bone", icon="BONE_DATA", text="").bone = "fk_scale"
+
+		row___ = box_.row()
+		box = row___.box()
+		row__ = box.row()
+		row__.prop(limb, "fk_location_type")
+		if limb.fk_location_type == "PARENT":
+			row__ = box.row()
+			row_ = row__.row()
+			col = row_.column()
+			row = col.column(align=True)
+			row.prop_search(limb, "fk_location", armature.data, "bones", text="FK Location")
+			col = row_.column()
+			row = col.column(align=True)
+			row.operator("pose.limb_select_bone", icon="BONE_DATA", text="").bone = "fk_location"		
 		
 class POSE_PT_LimbDetail(bpy.types.Panel):
 	bl_label = "Limb Detail"
@@ -190,221 +407,35 @@ class POSE_PT_LimbDetail(bpy.types.Panel):
 		armature = context.object
 		limb = armature.limbs[armature.active_limb]
 	
-		row_ = layout.row()
-		row_.prop(limb, "name", text="name")
+		row = layout.row()
+		row.prop(limb, "name", text="name")
 
-		row_ = layout.row()
-		row_.prop(limb, "display_bone_setting")
-		row_.prop(limb, "display_generate_setting")
-		if limb.display_bone_setting == True:
-			row_ = layout.row()
-			box = row_.box()
-			row__ = box.row()
-			row__.prop(limb, "global_scale")
-			if limb.global_scale == True:
-				row__ = box.row()
-				col = row__.column()
-				row = col.column(align=True)
-				row.prop_search(limb, "root", armature.data, "bones", text="Root")
-				col = row__.column()
-				row = col.column(align=True)
-				row.operator("pose.limb_select_bone", icon="BONE_DATA", text="").bone = "root"
-
-			row_ = layout.row()
-			box_ = row_.box()
-			row___ = box_.row()
-
-			box = row___.box()
-			row__ = box.row()
-			row__.label("Main IK chain")
-			row__= box.row()
-			col = row__.column()
-			row = col.column(align=True)
-			row.prop_search(limb, "ik1", armature.data, "bones", text="IK1")
-			col = row__.column()
-			row = col.column(align=True)
-			row.operator("pose.limb_select_bone", icon="BONE_DATA", text="").bone = "ik1"
+		row = layout.row()
+		row.prop(limb, "display_bone_setting")
+		row = layout.row()
+		row.prop(limb, "display_layout_setting")
 			
-			row__ = box.row()
-			col = row__.column()
-			row = col.column(align=True)
-			row.prop_search(limb, "ik2", armature.data, "bones", text="IK2")
-			col = row__.column()
-			row = col.column(align=True)
-			row.operator("pose.limb_select_bone", icon="BONE_DATA", text="").bone = "ik2"
-			
-			row__ = box.row()
-			col = row__.column()
-			row = col.column(align=True)
-			row.prop_search(limb, "ik3", armature.data, "bones", text="IK Target")
-			col = row__.column()
-			row = col.column(align=True)
-			row.operator("pose.limb_select_bone", icon="BONE_DATA", text="").bone = "ik3"
+class POSE_PT_LimbDetailLayout(bpy.types.Panel):
+	bl_label = "Limb Detail - Layout"
+	bl_space_type = 'VIEW_3D'
+	bl_region_type = 'TOOLS'
+	bl_category = "AutoSnap"
 
-			row___ = box_.row()
-			box = row___.box()
-			row__ = box.row()
-			row__.prop(limb, "ik_type")
-			if limb.ik_type == "POLE":
-				row__ = box.row()
-				row_ = row__.row()
-				col = row_.column()
-				row = col.column(align=True)
-				row.prop_search(limb, "ik4", armature.data, "bones", text="IK Pole")
-				col = row_.column()
-				row = col.column(align=True)
-				row.operator("pose.limb_select_bone", icon="BONE_DATA", text="").bone = "ik4"	   
-			
-			row___ = box_.row()
-			box = row___.box()
-			row__ = box.row()
-			row__.prop(limb, "with_limb_end_ik", text="Use IK limb end")
-			if limb.with_limb_end_ik == True:
-				row__ = box.row()
-				row_ = row__.row()
-				col = row_.column()
-				row = col.column(align=True)
-				row.prop_search(limb, "ik5", armature.data, "bones", text="IK toe")
-				col = row_.column()
-				row = col.column(align=True)
-				row.operator("pose.limb_select_bone", icon="BONE_DATA", text="").bone = "ik5"   
-
-			row___ = box_.row()
-			box = row___.box()
-			row__ = box.row()
-			row__.prop(limb, "ik_scale_type")
-			if limb.ik_scale_type == "PARENT":
-				row__ = box.row()
-				row_ = row__.row()
-				col = row_.column()
-				row = col.column(align=True)
-				row.prop_search(limb, "ik_scale", armature.data, "bones", text="IK Scale")
-				col = row_.column()
-				row = col.column(align=True)
-				row.operator("pose.limb_select_bone", icon="BONE_DATA", text="").bone = "ik_scale"
-
-			row___ = box_.row()
-			box = row___.box()
-			row__ = box.row()
-			row__.prop(limb, "ik_location_type")
-			if limb.ik_location_type == "PARENT":
-				row__ = box.row()
-				row_ = row__.row()
-				col = row_.column()
-				row = col.column(align=True)
-				row.prop_search(limb, "ik_location", armature.data, "bones", text="IK Location")
-				col = row_.column()
-				row = col.column(align=True)
-				row.operator("pose.limb_select_bone", icon="BONE_DATA", text="").bone = "ik_location"
-
-			row___ = box_.row()
-			box = row___.box()
-			row__ = box.row()
-			row__.prop(limb, "with_reinit_bones", text="Roll/Rock bones to reinit")
-			if limb.with_reinit_bones == True:
-				row__= box.row()
-				row__.template_list("POSE_UL_ReInitBoneList", "", armature.limbs[armature.active_limb], "reinit_bones", armature.limbs[armature.active_limb], "active_reinit_bone")
-				
-				col = row__.column()
-				row = col.column(align=True)
-				row.operator("pose.reinit_bone_add", icon="ZOOMIN", text="")
-				row.operator("pose.reinit_bone_remove", icon="ZOOMOUT", text="")
-					
-				row = col.column(align=True)
-				row.separator()
-				row.operator("pose.reinit_bone_move", icon='TRIA_UP', text="").direction = 'UP'
-				row.operator("pose.reinit_bone_move", icon='TRIA_DOWN', text="").direction = 'DOWN'
-				
-				if len(armature.limbs[armature.active_limb].reinit_bones) > 0:
-					row_ = box.row()
-					col = row_.column()
-					row = col.column(align=True)
-					row.prop_search(armature.limbs[armature.active_limb].reinit_bones[armature.limbs[armature.active_limb].active_reinit_bone], "name", armature.data, "bones", text="Bone")
-					col = row_.column()
-					row = col.column(align=True)
-					row.operator("pose.limb_select_bone", icon="BONE_DATA", text="").bone = "reinit_bone"
-
-				
-			row_ = layout.row()
-			box_ = row_.box()
-			row___ = box_.row()
-
-			box = row___.box()
-			row__ = box.row()
-			row__.label("Main FK chain")
-			row__= box.row()
-			col = row__.column()
-			row = col.column(align=True)
-			row.prop_search(limb, "fk1", armature.data, "bones", text="FK1")
-			col = row__.column()
-			row = col.column(align=True)
-			row.operator("pose.limb_select_bone", icon="BONE_DATA", text="").bone = "fk1"
-			
-			row__= box.row()
-			col = row__.column()
-			row = col.column(align=True)
-			row.prop_search(limb, "fk2", armature.data, "bones", text="FK2")
-			col = row__.column()
-			row = col.column(align=True)
-			row.operator("pose.limb_select_bone", icon="BONE_DATA", text="").bone = "fk2"
-			
-			row__= box.row()
-			col = row__.column()
-			row = col.column(align=True)
-			row.prop_search(limb, "fk3", armature.data, "bones", text="FK3")
-			col = row__.column()
-			row = col.column(align=True)
-			row.operator("pose.limb_select_bone", icon="BONE_DATA", text="").bone = "fk3"
-
-			
-			row___ = box_.row()
-			box = row___.box()
-			row__ = box.row()
-			row__.prop(limb, "with_limb_end_fk", text="Use FK limb end")
-			if limb.with_limb_end_fk == True:
-				row__ = box.row()
-				row_ = row__.row()
-				col = row_.column()
-				row = col.column(align=True)
-				row.prop_search(limb, "fk4", armature.data, "bones", text="FK toe")
-				col = row_.column()
-				row = col.column(align=True)
-				row.operator("pose.limb_select_bone", icon="BONE_DATA", text="").bone = "fk4"   
-				
-				
-			row___ = box_.row()
-			box = row___.box()
-			row__ = box.row()
-			row__.prop(limb, "fk_scale_type")
-			if limb.fk_scale_type == "PARENT":
-				row__ = box.row()
-				row_ = row__.row()
-				col = row_.column()
-				row = col.column(align=True)
-				row.prop_search(limb, "fk_scale", armature.data, "bones", text="FK Scale")
-				col = row_.column()
-				row = col.column(align=True)
-				row.operator("pose.limb_select_bone", icon="BONE_DATA", text="").bone = "fk_scale"
-
-			row___ = box_.row()
-			box = row___.box()
-			row__ = box.row()
-			row__.prop(limb, "fk_location_type")
-			if limb.fk_location_type == "PARENT":
-				row__ = box.row()
-				row_ = row__.row()
-				col = row_.column()
-				row = col.column(align=True)
-				row.prop_search(limb, "fk_location", armature.data, "bones", text="FK Location")
-				col = row_.column()
-				row = col.column(align=True)
-				row.operator("pose.limb_select_bone", icon="BONE_DATA", text="").bone = "fk_location"
-		if limb.display_generate_setting == True:
-			row_ = layout.row()
-			row_.prop(limb, "fk2ik_label", "Label fk2ik")
-			row_ = layout.row()
-			row_.prop(limb, "ik2fk_label", "Label ik2fk")
-
+	@classmethod
+	def poll(self, context):
+		armature = context.active_object
+		return armature and armature.type == "ARMATURE" and len(armature.limbs) > 0 and context.mode == 'POSE' and armature.limbs[armature.active_limb].display_layout_setting == True
+		
+	def draw(self, context):
+		layout = self.layout
+		armature = context.active_object
+		limb = armature.limbs[armature.active_limb]
+		if armature.generation.layout_type == "DEFAULT":
+			row = layout.row()
+			row.prop(limb, "fk2ik_label", "Label fk2ik")
+			row = layout.row()
+			row.prop(limb, "ik2fk_label", "Label ik2fk")
+	
 def register():
 	bpy.utils.register_class(POSE_UL_SideList)
 	bpy.utils.register_class(POSE_UL_LimbList)
@@ -415,6 +446,8 @@ def register():
 	bpy.utils.register_class(POSE_PT_layout)
 	bpy.utils.register_class(POSE_PT_Limbs)
 	bpy.utils.register_class(POSE_PT_LimbDetail)
+	bpy.utils.register_class(POSE_PT_LimbDetailBones)
+	bpy.utils.register_class(POSE_PT_LimbDetailLayout)
 	bpy.utils.register_class(POSE_PT_Limb_livesnap)
 	bpy.utils.register_class(POSE_PT_Snap_Generate)
 
@@ -428,5 +461,7 @@ def unregister():
 	bpy.utils.unregister_class(POSE_PT_layout)
 	bpy.utils.unregister_class(POSE_PT_Limbs) 
 	bpy.utils.unregister_class(POSE_PT_LimbDetail)
+	bpy.utils.unregister_class(POSE_PT_LimbDetailBones)
+	bpy.utils.unregister_class(POSE_PT_LimbDetailLayout)
 	bpy.utils.unregister_class(POSE_PT_Limb_livesnap)
 	bpy.utils.unregister_class(POSE_PT_Snap_Generate)

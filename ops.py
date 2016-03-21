@@ -660,6 +660,45 @@ class POSE_OT_generate_snapping(bpy.types.Operator):
 				total_layout = total_layout + ui_layout_default_
 				
 			ui_generated_text_ = ui_generated_text_.replace("###LAYOUT###", total_layout)
+
+		elif context.active_object.generation.layout_type == "DEFAULT_SWITCH":
+			total_layout = ""
+			for limb in context.active_object.limbs:
+				ui_generated_switch_param_ = ui_generated_switch_param
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###tab###","\t\t")
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###root###", limb.root)
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###ik_type###", limb.ik_type)
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###global_scale###", str(limb.global_scale))
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###ik_scale_type###", limb.ik_scale_type)
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###fk_scale_type###", limb.fk_scale_type)
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###ik_location_type###", limb.ik_location_type)
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###fk_location_type###", limb.fk_location_type)
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###with_limb_end_fk###", str(limb.with_limb_end_fk))
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###with_limb_end_ik###", str(limb.with_limb_end_ik))
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###ik1###", limb.ik1)
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###ik2###", limb.ik2)
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###ik3###", limb.ik3)
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###ik4###", limb.ik4)
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###ik5###", limb.ik5)
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###fk1###", limb.fk1)
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###fk2###", limb.fk2)
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###fk3###", limb.fk3)
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###fk4###", limb.fk4)
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###ik_scale###", limb.ik_scale)
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###fk_scale###", limb.fk_scale)
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###ik_location###", limb.ik_location)
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###fk_location###", limb.fk_location)
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###limb_reinit_bones###", str([bone.name for bone in limb.reinit_bones]))
+				
+				ui_layout_default_switch_ = ui_layout_default_switch.replace("###limb###", limb.name)
+				ui_layout_default_switch_ = ui_layout_default_switch_.replace("###FK2IK_LABEL###", limb.fk2ik_label)
+				ui_layout_default_switch_ = ui_layout_default_switch_.replace("###IK2FK_LABEL###", limb.ik2fk_label)
+				ui_layout_default_switch_ = ui_layout_default_switch_.replace("###rig_id###", rig_id)
+				ui_layout_default_switch_ = ui_layout_default_switch_.replace("###GENERATED_switch_PARAM###",ui_generated_switch_param_)
+
+				total_layout = total_layout + ui_layout_default_switch_
+
+			ui_generated_text_ = ui_generated_text_.replace("###LAYOUT###", total_layout)
 		
 		if context.active_object.data["autosnap_rig_id"] + "_autosnap_ui.py" in bpy.data.texts.keys():
 			bpy.data.texts.remove(bpy.data.texts[context.active_object.data["autosnap_rig_id"] + "_autosnap_ui.py"])

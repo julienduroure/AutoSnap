@@ -135,6 +135,7 @@ class POSE_PT_Limb_livesnap(bpy.types.Panel):
 			op.switch_property = armature.limbs[armature.active_limb].switch_property
 			op.switch_invert   = armature.limbs[armature.active_limb].switch_invert
 			op.autoswitch =  armature.limbs[armature.active_limb].interaction.autoswitch
+			op.autoswitch_keyframe = armature.limbs[armature.active_limb].interaction.autoswitch_keyframe
 			if armature.limbs[armature.active_limb].interaction.autoswitch == True:
 				op.autoswitch_data_bone = armature.limbs[armature.active_limb].interaction.autoswitch_data.bone
 				op.autoswitch_data_property = armature.limbs[armature.active_limb].interaction.autoswitch_data.property
@@ -147,6 +148,8 @@ class POSE_PT_Limb_livesnap(bpy.types.Panel):
 					int(armature.pose.bones[armature.limbs[armature.active_limb].interaction.autoswitch_data.bone].get(armature.limbs[armature.active_limb].interaction.autoswitch_data.property))
 					row_ = box.row()
 					row_.prop(armature.limbs[armature.active_limb].interaction, "autoswitch", text="AutoSwitch")
+					if armature.limbs[armature.active_limb].interaction.autoswitch_keyframe == True:
+						row_.prop(armature.limbs[armature.active_limb].interaction, "autoswitch_keyframe", text="Keyframe")
 					row_.enabled = False
 				except:
 					row_ = box.row()
@@ -571,6 +574,8 @@ class POSE_PT_LimbDetailInteraction(bpy.types.Panel):
 			op.level_3 = "bone"
 			row_ = box.row()
 			row_.prop(limb.interaction.autoswitch_data, "property", text="Property")
+			row_ = box.row()
+			row_.prop(limb.interaction, "autoswitch_keyframe", text="Keyframe")
 	
 def register():
 	bpy.utils.register_class(POSE_UL_SideList)

@@ -104,6 +104,7 @@ class POSE_OT_limb_switch_ikfk(bpy.types.Operator):
 	autoswitch = bpy.props.BoolProperty()
 	autoswitch_data_bone = bpy.props.StringProperty()
 	autoswitch_data_property = bpy.props.StringProperty()
+	autoswitch_keyframe = bpy.props.BoolProperty()
 	
 	global_scale = bpy.props.BoolProperty()
 	ik_scale_type = bpy.props.EnumProperty(items=scale_type_items)
@@ -348,7 +349,26 @@ class POSE_OT_limb_switch_ikfk(bpy.types.Operator):
 					context.active_object.pose.bones[self.autoswitch_data_bone][self.autoswitch_data_property] = 1.0
 				else:
 					context.active_object.pose.bones[self.autoswitch_data_bone][self.autoswitch_data_property] = 0.0
-		
+				#AutoSwitch Keyframe
+				if self.autoswitch_keyframe == True:
+					context.active_object.pose.bones[self.autoswitch_data_bone].keyframe_insert("[\"" + self.autoswitch_data_property + "\"]")
+					#change interpolation
+					curves = context.active_object.animation_data.action.fcurves
+					for c in curves:
+						if c.data_path == 'pose.bones["' + self.autoswitch_data_bone + '"][\"' + self.autoswitch_data_property + '\"]':
+							curve = c
+							break
+					current_frame = bpy.context.scene.frame_current
+					cpt = 0
+					for point in curve.keyframe_points:
+						if point.co[0] == current_frame:
+							if cpt != 0:
+								curve.keyframe_points[cpt-1].interpolation = 'CONSTANT'
+								break
+							else:
+								break
+						cpt = cpt + 1
+								
 		return {'FINISHED'}
 		
 		

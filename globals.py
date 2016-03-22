@@ -55,7 +55,7 @@ class AutoSnap_autoswitch_data(bpy.types.PropertyGroup):
 class AutoSnap_Interaction(bpy.types.PropertyGroup):
 	autoswitch           = bpy.props.BoolProperty(name="Switch FK/IK property", default=False)
 	autoswitch_data      = bpy.props.PointerProperty(type=AutoSnap_autoswitch_data)
-	#autoswitch_keyframed = bpy.props.BoolProperty(name="Switch FK/IK property, and keyframe it", default=False)
+	autoswitch_keyframe  = bpy.props.BoolProperty(name="Switch FK/IK property, and keyframe it", default=False)
 	#autodisplay          = bpy.props.BoolProperty(name="Auto display", default=False)
 	#autodisplay_type     = bpy.props.EnumProperty(name="Auto display type", items=AutoSnap_AutoDisplayItems, default="LAYER")
 	#autokeyframe         = bpy.props.BoolProperty(name="Auto keyframe chain", default=False)

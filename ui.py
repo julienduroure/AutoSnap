@@ -445,6 +445,8 @@ class POSE_PT_LimbDetail(bpy.types.Panel):
 		row.prop(limb.display, "bone")
 		row = layout.row()
 		row.prop(limb.display, "layout")
+		row = layout.row()
+		row.prop(limb.display, "interaction")
 			
 class POSE_PT_LimbDetailLayout(bpy.types.Panel):
 	bl_label = "Limb Detail - Layout"
@@ -481,6 +483,22 @@ class POSE_PT_LimbDetailLayout(bpy.types.Panel):
 			row = layout.row()
 			row.prop(limb, "switch_property", text="Switch Property")
 			row.prop(limb, "switch_invert", text="Invert")
+			
+class POSE_PT_LimbDetailInteraction(bpy.types.Panel):
+	bl_label = "Limb Detail - Interaction"
+	bl_space_type = 'VIEW_3D'
+	bl_region_type = 'TOOLS'
+	bl_category = "AutoSnap"
+
+	@classmethod
+	def poll(self, context):
+		armature = context.active_object
+		return armature and armature.type == "ARMATURE" and len(armature.limbs) > 0 and context.mode == 'POSE' and armature.limbs[armature.active_limb].display.interaction == True
+		
+	def draw(self, context):
+		layout = self.layout
+		armature = context.active_object
+		limb = armature.limbs[armature.active_limb]
 	
 def register():
 	bpy.utils.register_class(POSE_UL_SideList)
@@ -494,6 +512,7 @@ def register():
 	bpy.utils.register_class(POSE_PT_LimbDetail)
 	bpy.utils.register_class(POSE_PT_LimbDetailBones)
 	bpy.utils.register_class(POSE_PT_LimbDetailLayout)
+	bpy.utils.register_class(POSE_PT_LimbDetailInteraction)
 	bpy.utils.register_class(POSE_PT_Limb_livesnap)
 	bpy.utils.register_class(POSE_PT_Snap_Generate)
 
@@ -509,5 +528,6 @@ def unregister():
 	bpy.utils.unregister_class(POSE_PT_LimbDetail)
 	bpy.utils.unregister_class(POSE_PT_LimbDetailBones)
 	bpy.utils.unregister_class(POSE_PT_LimbDetailLayout)
+	bpy.utils.unregister_class(POSE_PT_LimbDetailInteraction)
 	bpy.utils.unregister_class(POSE_PT_Limb_livesnap)
 	bpy.utils.unregister_class(POSE_PT_Snap_Generate)

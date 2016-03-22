@@ -40,9 +40,11 @@ switch_forced_value = [
 	("FK2IK", "fk2ik", "", 2),
 ]
 
+### Warning : report new attribute to copy mirror ops
 class AutoSnap_DisplayPanel(bpy.types.PropertyGroup):
 	bone   = bpy.props.BoolProperty(name="Display Bones Settings", default=False)
 	layout = bpy.props.BoolProperty(name="Display Layout Settings", default=False)
+	interaction = bpy.props.BoolProperty(name="Display Interaction Settings", default=False)
 
 class AutoSnap_Generation(bpy.types.PropertyGroup):
 	view_location = bpy.props.EnumProperty(name="View location", items=view_location_items, default="TOOLS")

@@ -35,6 +35,7 @@ class POSE_OT_limb_mirror_copy(bpy.types.Operator):
 		
 		dst_limb.display.bone   = armature.limbs[src_limb_index].display.bone
 		dst_limb.display.layout = armature.limbs[src_limb_index].display.layout
+		dst_limb.display.interaction = armature.limbs[src_limb_index].display.interaction
 			
 		dst_limb.fk2ik_label = armature.limbs[src_limb_index].fk2ik_label
 		dst_limb.ik2fk_label = armature.limbs[src_limb_index].ik2fk_label

@@ -40,6 +40,10 @@ switch_forced_value = [
 	("FK2IK", "fk2ik", "", 2),
 ]
 
+class AutoSnap_DisplayPanel(bpy.types.PropertyGroup):
+	bone   = bpy.props.BoolProperty(name="Display Bones Settings", default=False)
+	layout = bpy.props.BoolProperty(name="Display Layout Settings", default=False)
+
 class AutoSnap_Generation(bpy.types.PropertyGroup):
 	view_location = bpy.props.EnumProperty(name="View location", items=view_location_items, default="TOOLS")
 	panel_name    = bpy.props.StringProperty(name="Panel name")
@@ -66,8 +70,7 @@ class LimbItem(bpy.types.PropertyGroup):
 	switch_property = bpy.props.StringProperty(name="Switch Property")
 	switch_invert = bpy.props.BoolProperty(name="Invert", default = False)
 	
-	display_bone_setting = bpy.props.BoolProperty(name="Display Bones Settings", default=False)
-	display_layout_setting = bpy.props.BoolProperty(name="Display Layout Settings", default=False)
+	display = bpy.props.PointerProperty(type=AutoSnap_DisplayPanel)
 
 	ik_type = bpy.props.EnumProperty(name="IK type", items=IK_type_items, default="POLE")
 	ik_scale_type   = bpy.props.EnumProperty(name="IK scale type", items=scale_type_items, default="NONE")
@@ -106,10 +109,12 @@ def addonpref():
 
 def register():
 	bpy.utils.register_class(BoneItem)
+	bpy.utils.register_class(AutoSnap_DisplayPanel)
 	bpy.utils.register_class(LimbItem)
 	bpy.utils.register_class(AutoSnap_Generation)
 
 def unregister():
 	bpy.utils.unregister_class(LimbItem)
+	bpy.utils.unregister_class(AutoSnap_DisplayPanel)
 	bpy.utils.unregister_class(BoneItem)
 	bpy.utils.unregister_class(AutoSnap_Generation)

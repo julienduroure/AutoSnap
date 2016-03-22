@@ -213,7 +213,7 @@ class POSE_PT_LimbDetailBones(bpy.types.Panel):
 	@classmethod
 	def poll(self, context):
 		armature = context.active_object
-		return armature and armature.type == "ARMATURE" and len(armature.limbs) > 0 and context.mode == 'POSE' and armature.limbs[armature.active_limb].display_bone_setting == True
+		return armature and armature.type == "ARMATURE" and len(armature.limbs) > 0 and context.mode == 'POSE' and armature.limbs[armature.active_limb].display.bone == True
 		
 	def draw(self, context):
 		layout = self.layout
@@ -442,9 +442,9 @@ class POSE_PT_LimbDetail(bpy.types.Panel):
 		row.prop(limb, "name", text="name")
 
 		row = layout.row()
-		row.prop(limb, "display_bone_setting")
+		row.prop(limb.display, "bone")
 		row = layout.row()
-		row.prop(limb, "display_layout_setting")
+		row.prop(limb.display, "layout")
 			
 class POSE_PT_LimbDetailLayout(bpy.types.Panel):
 	bl_label = "Limb Detail - Layout"
@@ -455,7 +455,7 @@ class POSE_PT_LimbDetailLayout(bpy.types.Panel):
 	@classmethod
 	def poll(self, context):
 		armature = context.active_object
-		return armature and armature.type == "ARMATURE" and len(armature.limbs) > 0 and context.mode == 'POSE' and armature.limbs[armature.active_limb].display_layout_setting == True
+		return armature and armature.type == "ARMATURE" and len(armature.limbs) > 0 and context.mode == 'POSE' and armature.limbs[armature.active_limb].display.layout == True
 		
 	def draw(self, context):
 		layout = self.layout

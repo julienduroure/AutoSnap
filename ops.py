@@ -36,6 +36,11 @@ class POSE_OT_limb_mirror_copy(bpy.types.Operator):
 		dst_limb.display.bone   = armature.limbs[src_limb_index].display.bone
 		dst_limb.display.layout = armature.limbs[src_limb_index].display.layout
 		dst_limb.display.interaction = armature.limbs[src_limb_index].display.interaction
+		
+		dst_limb.interaction.autoswitch = armature.limbs[src_limb_index].interaction.autoswitch
+		dst_limb.interaction.autoswitch_data.bone = armature.limbs[src_limb_index].interaction.autoswitch_data.bone
+		dst_limb.interaction.autoswitch_data.property = armature.limbs[src_limb_index].interaction.autoswitch_data.property
+		
 			
 		dst_limb.fk2ik_label = armature.limbs[src_limb_index].fk2ik_label
 		dst_limb.ik2fk_label = armature.limbs[src_limb_index].ik2fk_label
@@ -95,6 +100,10 @@ class POSE_OT_limb_switch_ikfk(bpy.types.Operator):
 	switch_bone = bpy.props.StringProperty()
 	switch_property = bpy.props.StringProperty()
 	switch_invert   = bpy.props.BoolProperty()
+	
+	autoswitch = bpy.props.BoolProperty()
+	autoswitch_data_bone = bpy.props.StringProperty()
+	autoswitch_data_property = bpy.props.StringProperty()
 	
 	global_scale = bpy.props.BoolProperty()
 	ik_scale_type = bpy.props.EnumProperty(items=scale_type_items)
@@ -277,11 +286,28 @@ class POSE_OT_limb_switch_ikfk(bpy.types.Operator):
 						
 		return True, True
 		
+	def interaction_check(self, context):
+		if self.autoswitch == True:
+			try:
+				int(context.active_object.pose.bones[self.autoswitch_data_bone].get(self.autoswitch_data_property))
+				return True, True
+			except:
+				self.report({'ERROR'}, "Wrong Bone property")
+				return False, {'CANCELLED'}			
+
+		return True, True
+		
 	def execute(self, context):
 	
 		status, error = self.layout_check(context, self.layout_type)
 		if status == False:
-			return error	
+			return error
+			
+		#No interaction for DEFAULT layout
+		if self.layout_type != "DEFAULT":
+			status, error = self.interaction_check(context)
+			if status == False:
+				return error
 	
 		way = ""
 		if self.switch_type == "FORCED" and self.switch_forced_value == "FK2IK":
@@ -314,6 +340,14 @@ class POSE_OT_limb_switch_ikfk(bpy.types.Operator):
 			self.ik2fk(context.active_object, self.root, self.ik1, self.ik2, self.ik3, self.ik4, self.ik5, self.fk1, self.fk2, self.fk3, self.fk4, self.ik_scale, self.fk_scale, self.ik_location, self.fk_location, self.reinit_bones)
 		elif way == "FK2IK":
 			self.fk2ik(context.active_object, self.root, self.ik1, self.ik2, self.ik3, self.ik5, self.ik_scale, self.ik_location,  self.fk1, self.fk2, self.fk3, self.fk4, self.fk_scale, self.fk_location)
+		
+		#AutoSwitch
+		if self.layout_type != "DEFAULT": #No interaction for DEFAULT layout
+			if self.switch_type == "DEDUCTED" and self.autoswitch == True:
+				if int(context.active_object.pose.bones[self.autoswitch_data_bone].get(self.autoswitch_data_property)) == 0:
+					context.active_object.pose.bones[self.autoswitch_data_bone][self.autoswitch_data_property] = 1.0
+				else:
+					context.active_object.pose.bones[self.autoswitch_data_bone][self.autoswitch_data_property] = 0.0
 		
 		return {'FINISHED'}
 		

@@ -97,6 +97,10 @@ class POSE_PT_Limb_livesnap(bpy.types.Panel):
 			op.switch_type = "FORCED"
 			op.layout_type = "DEFAULT"
 			op.switch_forced_value = "FK2IK"
+			op.autoswitch =  armature.limbs[armature.active_limb].interaction.autoswitch
+			if armature.limbs[armature.active_limb].interaction.autoswitch == True:
+				op.autoswitch_data_bone = armature.limbs[armature.active_limb].interaction.autoswitch_data.bone
+				op.autoswitch_data_property = armature.limbs[armature.active_limb].interaction.autoswitch_data.property
 			self.populate_ops_param(context, op)
 			
 			row_ = box.row()
@@ -130,10 +134,23 @@ class POSE_PT_Limb_livesnap(bpy.types.Panel):
 			op.switch_bone = armature.limbs[armature.active_limb].switch_bone
 			op.switch_property = armature.limbs[armature.active_limb].switch_property
 			op.switch_invert   = armature.limbs[armature.active_limb].switch_invert
+			op.autoswitch =  armature.limbs[armature.active_limb].interaction.autoswitch
+			if armature.limbs[armature.active_limb].interaction.autoswitch == True:
+				op.autoswitch_data_bone = armature.limbs[armature.active_limb].interaction.autoswitch_data.bone
+				op.autoswitch_data_property = armature.limbs[armature.active_limb].interaction.autoswitch_data.property
 			self.populate_ops_param(context, op)
 			row_ = box.row()
 			if label == "":
 				row_.label("Wrong layout data", icon="ERROR")
+			if armature.limbs[armature.active_limb].interaction.autoswitch == True:
+				try:
+					int(armature.pose.bones[armature.limbs[armature.active_limb].interaction.autoswitch_data.bone].get(armature.limbs[armature.active_limb].interaction.autoswitch_data.property))
+					row_ = box.row()
+					row_.prop(armature.limbs[armature.active_limb].interaction, "autoswitch", text="AutoSwitch")
+					row_.enabled = False
+				except:
+					row_ = box.row()
+					row_.label("Wrong Autoswitch Data", icon="ERROR")
 			
 class POSE_PT_Snap_Generate(bpy.types.Panel):
 	bl_label = "Generate"
@@ -231,7 +248,9 @@ class POSE_PT_LimbDetailBones(bpy.types.Panel):
 			row.prop_search(limb, "root", armature.data, "bones", text="Root")
 			col = row__.column()
 			row = col.column(align=True)
-			row.operator("pose.limb_select_bone", icon="BONE_DATA", text="").bone = "root"
+			op = row.operator("pose.limb_select_bone", icon="BONE_DATA", text="")
+			op.bone = "root"
+			op.level = 0
 
 		row_ = layout.row()
 		box_ = row_.box()
@@ -246,7 +265,9 @@ class POSE_PT_LimbDetailBones(bpy.types.Panel):
 		row.prop_search(limb, "ik1", armature.data, "bones", text="IK1")
 		col = row__.column()
 		row = col.column(align=True)
-		row.operator("pose.limb_select_bone", icon="BONE_DATA", text="").bone = "ik1"
+		op = row.operator("pose.limb_select_bone", icon="BONE_DATA", text="")
+		op.bone = "ik1"
+		op.level = 0
 		
 		row__ = box.row()
 		col = row__.column()
@@ -254,7 +275,9 @@ class POSE_PT_LimbDetailBones(bpy.types.Panel):
 		row.prop_search(limb, "ik2", armature.data, "bones", text="IK2")
 		col = row__.column()
 		row = col.column(align=True)
-		row.operator("pose.limb_select_bone", icon="BONE_DATA", text="").bone = "ik2"
+		op = row.operator("pose.limb_select_bone", icon="BONE_DATA", text="")
+		op.bone = "ik2"
+		op.level = 0
 		
 		row__ = box.row()
 		col = row__.column()
@@ -262,7 +285,9 @@ class POSE_PT_LimbDetailBones(bpy.types.Panel):
 		row.prop_search(limb, "ik3", armature.data, "bones", text="IK Target")
 		col = row__.column()
 		row = col.column(align=True)
-		row.operator("pose.limb_select_bone", icon="BONE_DATA", text="").bone = "ik3"
+		op = row.operator("pose.limb_select_bone", icon="BONE_DATA", text="")
+		op.bone = "ik3"
+		op.level = 0
 
 		row___ = box_.row()
 		box = row___.box()
@@ -276,7 +301,9 @@ class POSE_PT_LimbDetailBones(bpy.types.Panel):
 			row.prop_search(limb, "ik4", armature.data, "bones", text="IK Pole")
 			col = row_.column()
 			row = col.column(align=True)
-			row.operator("pose.limb_select_bone", icon="BONE_DATA", text="").bone = "ik4"	   
+			op = row.operator("pose.limb_select_bone", icon="BONE_DATA", text="")
+			op.bone = "ik4"	
+			op.level = 0
 		
 		row___ = box_.row()
 		box = row___.box()
@@ -290,7 +317,9 @@ class POSE_PT_LimbDetailBones(bpy.types.Panel):
 			row.prop_search(limb, "ik5", armature.data, "bones", text="IK toe")
 			col = row_.column()
 			row = col.column(align=True)
-			row.operator("pose.limb_select_bone", icon="BONE_DATA", text="").bone = "ik5"   
+			op = row.operator("pose.limb_select_bone", icon="BONE_DATA", text="") 
+			op.bone = "ik5" 
+			op.level = 0
 
 		row___ = box_.row()
 		box = row___.box()
@@ -304,7 +333,9 @@ class POSE_PT_LimbDetailBones(bpy.types.Panel):
 			row.prop_search(limb, "ik_scale", armature.data, "bones", text="IK Scale")
 			col = row_.column()
 			row = col.column(align=True)
-			row.operator("pose.limb_select_bone", icon="BONE_DATA", text="").bone = "ik_scale"
+			op = row.operator("pose.limb_select_bone", icon="BONE_DATA", text="")
+			op.bone = "ik_scale"
+			op.level = 0
 
 		row___ = box_.row()
 		box = row___.box()
@@ -318,7 +349,10 @@ class POSE_PT_LimbDetailBones(bpy.types.Panel):
 			row.prop_search(limb, "ik_location", armature.data, "bones", text="IK Location")
 			col = row_.column()
 			row = col.column(align=True)
-			row.operator("pose.limb_select_bone", icon="BONE_DATA", text="").bone = "ik_location"
+			op = row.operator("pose.limb_select_bone", icon="BONE_DATA", text="")
+			op.bone = "ik_location"
+			op.level = 0
+			
 
 		row___ = box_.row()
 		box = row___.box()
@@ -345,7 +379,9 @@ class POSE_PT_LimbDetailBones(bpy.types.Panel):
 				row.prop_search(armature.limbs[armature.active_limb].reinit_bones[armature.limbs[armature.active_limb].active_reinit_bone], "name", armature.data, "bones", text="Bone")
 				col = row_.column()
 				row = col.column(align=True)
-				row.operator("pose.limb_select_bone", icon="BONE_DATA", text="").bone = "reinit_bone"
+				op = row.operator("pose.limb_select_bone", icon="BONE_DATA", text="")
+				op.bone = "reinit_bone"
+				op.level = 0
 
 			
 		row_ = layout.row()
@@ -361,7 +397,9 @@ class POSE_PT_LimbDetailBones(bpy.types.Panel):
 		row.prop_search(limb, "fk1", armature.data, "bones", text="FK1")
 		col = row__.column()
 		row = col.column(align=True)
-		row.operator("pose.limb_select_bone", icon="BONE_DATA", text="").bone = "fk1"
+		op = row.operator("pose.limb_select_bone", icon="BONE_DATA", text="")
+		op.bone = "fk1"
+		op.level = 0
 		
 		row__= box.row()
 		col = row__.column()
@@ -369,7 +407,9 @@ class POSE_PT_LimbDetailBones(bpy.types.Panel):
 		row.prop_search(limb, "fk2", armature.data, "bones", text="FK2")
 		col = row__.column()
 		row = col.column(align=True)
-		row.operator("pose.limb_select_bone", icon="BONE_DATA", text="").bone = "fk2"
+		op = row.operator("pose.limb_select_bone", icon="BONE_DATA", text="")
+		op.bone = "fk2"
+		op.level = 0
 		
 		row__= box.row()
 		col = row__.column()
@@ -377,7 +417,9 @@ class POSE_PT_LimbDetailBones(bpy.types.Panel):
 		row.prop_search(limb, "fk3", armature.data, "bones", text="FK3")
 		col = row__.column()
 		row = col.column(align=True)
-		row.operator("pose.limb_select_bone", icon="BONE_DATA", text="").bone = "fk3"
+		op = row.operator("pose.limb_select_bone", icon="BONE_DATA", text="")
+		op.bone = "fk3"
+		op.level = 0
 
 		
 		row___ = box_.row()
@@ -392,8 +434,9 @@ class POSE_PT_LimbDetailBones(bpy.types.Panel):
 			row.prop_search(limb, "fk4", armature.data, "bones", text="FK toe")
 			col = row_.column()
 			row = col.column(align=True)
-			row.operator("pose.limb_select_bone", icon="BONE_DATA", text="").bone = "fk4"   
-			
+			op = row.operator("pose.limb_select_bone", icon="BONE_DATA", text="") 
+			op.bone = "fk4"  
+			op.level = 0
 			
 		row___ = box_.row()
 		box = row___.box()
@@ -407,7 +450,9 @@ class POSE_PT_LimbDetailBones(bpy.types.Panel):
 			row.prop_search(limb, "fk_scale", armature.data, "bones", text="FK Scale")
 			col = row_.column()
 			row = col.column(align=True)
-			row.operator("pose.limb_select_bone", icon="BONE_DATA", text="").bone = "fk_scale"
+			op = row.operator("pose.limb_select_bone", icon="BONE_DATA", text="")
+			op.bone = "fk_scale"
+			op.level = 0
 
 		row___ = box_.row()
 		box = row___.box()
@@ -421,7 +466,9 @@ class POSE_PT_LimbDetailBones(bpy.types.Panel):
 			row.prop_search(limb, "fk_location", armature.data, "bones", text="FK Location")
 			col = row_.column()
 			row = col.column(align=True)
-			row.operator("pose.limb_select_bone", icon="BONE_DATA", text="").bone = "fk_location"		
+			op = row.operator("pose.limb_select_bone", icon="BONE_DATA", text="")	
+			op.bone = "fk_location"
+			op.level = 0
 		
 class POSE_PT_LimbDetail(bpy.types.Panel):
 	bl_label = "Limb Detail"
@@ -445,8 +492,12 @@ class POSE_PT_LimbDetail(bpy.types.Panel):
 		row.prop(limb.display, "bone")
 		row = layout.row()
 		row.prop(limb.display, "layout")
-		row = layout.row()
-		row.prop(limb.display, "interaction")
+		if armature.generation.layout_type != "DEFAULT": #No interaction for DEFAULT layout
+			row = layout.row()
+			row.prop(limb.display, "interaction")
+		else:
+			row = layout.row()
+			row.label("No Interaction for this Layout")
 			
 class POSE_PT_LimbDetailLayout(bpy.types.Panel):
 	bl_label = "Limb Detail - Layout"
@@ -479,7 +530,9 @@ class POSE_PT_LimbDetailLayout(bpy.types.Panel):
 			row_.prop_search(limb, "switch_bone", armature.data, "bones", text="Switch Bone")
 			col = row.column()
 			row_ = col.row()
-			row_.operator("pose.limb_select_bone", icon="BONE_DATA", text="").bone = "switch_bone"	
+			op = row_.operator("pose.limb_select_bone", icon="BONE_DATA", text="")	
+			op.bone = "switch_bone"
+			op.level = 0
 			row = layout.row()
 			row.prop(limb, "switch_property", text="Switch Property")
 			row.prop(limb, "switch_invert", text="Invert")
@@ -499,6 +552,25 @@ class POSE_PT_LimbDetailInteraction(bpy.types.Panel):
 		layout = self.layout
 		armature = context.active_object
 		limb = armature.limbs[armature.active_limb]
+		
+		row = layout.row()
+		row.prop(limb.interaction, "autoswitch", text="Auto Switch")
+		if limb.interaction.autoswitch == True:
+			row = layout.row()
+			box = row.box()
+			row_ = box.row()
+			col = row_.column()
+			row__ = col.row()
+			row__.prop_search(limb.interaction.autoswitch_data, "bone", armature.data, "bones", text="Bone")
+			col = row_.column()
+			row__ = col.row()
+			op = row__.operator("pose.limb_select_bone", icon="BONE_DATA", text="")
+			op.level = 3
+			op.level_1 = "interaction"
+			op.level_2 = "autoswitch_data"
+			op.level_3 = "bone"
+			row_ = box.row()
+			row_.prop(limb.interaction.autoswitch_data, "property", text="Property")
 	
 def register():
 	bpy.utils.register_class(POSE_UL_SideList)

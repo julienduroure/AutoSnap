@@ -216,6 +216,10 @@ class POSE_OT_limb_select_bone(bpy.types.Operator):
 	bl_options = {'REGISTER'}
 	
 	bone = bpy.props.StringProperty()
+	level = bpy.props.IntProperty()
+	level_1 = bpy.props.StringProperty()
+	level_2 = bpy.props.StringProperty()
+	level_3 = bpy.props.StringProperty()
 	
 	@classmethod
 	def poll(self, context):
@@ -225,11 +229,14 @@ class POSE_OT_limb_select_bone(bpy.types.Operator):
 		armature = context.object
 		if context.active_pose_bone:
 			bone_name = context.active_pose_bone.name
-		
-		if self.bone != "reinit_bone":
-			armature.limbs[armature.active_limb][self.bone] = bone_name
-		else:
-			armature.limbs[armature.active_limb].reinit_bones[armature.limbs[armature.active_limb].active_reinit_bone].name = bone_name
+			
+		if self.level == 0:
+			if self.bone != "reinit_bone":
+				armature.limbs[armature.active_limb][self.bone] = bone_name
+			else:
+				armature.limbs[armature.active_limb].reinit_bones[armature.limbs[armature.active_limb].active_reinit_bone].name = bone_name
+		elif self.level == 3:
+			armature.limbs[armature.active_limb][self.level_1][self.level_2][self.level_3] = bone_name
 		
 	
 		return {'FINISHED'}   

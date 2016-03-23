@@ -643,9 +643,9 @@ class POSE_OT_generate_snapping(bpy.types.Operator):
 		tab_tool      = bpy.props.StringProperty(name="Tab")
 		
 		if context.active_object.generation.panel_name == "":
-			context.active_object.generation.panel_name = "Snapping"
+			context.active_object.generation.panel_name = "Snapping" #TODO move to constant & user pref ?
 		if context.active_object.generation.tab_tool == "":
-			context.active_object.generation.tab_tool = "Snapping"
+			context.active_object.generation.tab_tool = "Snapping" #TODO move to constant & user pref ?
 		
 		#Add rig_id custom prop if not exists, and assign a random value
 		if context.active_object.data.get('autosnap_rig_id') is None:
@@ -709,7 +709,7 @@ class POSE_OT_generate_snapping(bpy.types.Operator):
 				ui_layout_default_ = ui_layout_default_.replace("###FK2IK_LABEL###", limb.fk2ik_label)
 				ui_layout_default_ = ui_layout_default_.replace("###IK2FK_LABEL###", limb.ik2fk_label)
 				ui_layout_default_ = ui_layout_default_.replace("###rig_id###", rig_id)
-				ui_layout_default_ = ui_layout_default_.replace("###GENERATED_switch_PARAM###",ui_generated_switch_param_)
+				ui_layout_default_ = ui_layout_default_.replace("###GENERATED_bone_PARAM###",ui_generated_switch_param_)
 				
 				total_layout = total_layout + ui_layout_default_
 				
@@ -748,7 +748,7 @@ class POSE_OT_generate_snapping(bpy.types.Operator):
 				ui_layout_default_switch_ = ui_layout_default_switch_.replace("###FK2IK_LABEL###", limb.fk2ik_label)
 				ui_layout_default_switch_ = ui_layout_default_switch_.replace("###IK2FK_LABEL###", limb.ik2fk_label)
 				ui_layout_default_switch_ = ui_layout_default_switch_.replace("###rig_id###", rig_id)
-				ui_layout_default_switch_ = ui_layout_default_switch_.replace("###GENERATED_switch_PARAM###",ui_generated_switch_param_)
+				ui_layout_default_switch_ = ui_layout_default_switch_.replace("###GENERATED_bone_PARAM###",ui_generated_switch_param_)
 
 				total_layout = total_layout + ui_layout_default_switch_
 

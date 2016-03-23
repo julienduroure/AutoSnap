@@ -101,13 +101,13 @@ ui_layout_default ='''
 		op.switch_type = "FORCED"
 		op.layout_type = "DEFAULT"
 		op.switch_forced_value = "FK2IK"
-###GENERATED_switch_PARAM###
+###GENERATED_bone_PARAM###
 		row_ = box.row()
 		op = row_.operator("pose.limb_switch_ikfk_###rig_id###", text="###IK2FK_LABEL###")
 		op.switch_type = "FORCED"
 		op.layout_type = "DEFAULT"
 		op.switch_forced_value = "IK2FK"
-###GENERATED_switch_PARAM###
+###GENERATED_bone_PARAM###
 '''
 
 ui_layout_default_switch ='''
@@ -134,7 +134,8 @@ ui_layout_default_switch ='''
 		op.switch_bone = armature.limbs[armature.active_limb].switch_bone
 		op.switch_property = armature.limbs[armature.active_limb].switch_property
 		op.switch_invert   = armature.limbs[armature.active_limb].switch_invert
-###GENERATED_switch_PARAM###
+###GENERATED_interaction_PARAM###
+###GENERATED_bone_PARAM###
 '''
 
 ui_generated_text = '''

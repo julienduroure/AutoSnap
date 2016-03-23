@@ -109,17 +109,40 @@ ui_layout_default ='''
 		op.switch_forced_value = "IK2FK"
 ###GENERATED_bone_PARAM###
 '''
+ui_interaction_param='''
+###tab###op.autoswitch = bpy.context.active_object.pose.bones["###INTERACTION_BONE###"].autosnap_autoswitch
+###tab###op.autoswitch_data_bone = "###INTERACTION_BONE###"
+###tab###op.autoswitch_data_property = "###INTERACTION_PROPERTY###"
+###tab###op.autoswitch_keyframe = bpy.context.active_object.pose.bones["###INTERACTION_BONE###"].autosnap_autoswitch_keyframe
+'''
+
+ui_interaction_param_ko='''
+###tab###op.autoswitch = False
+###tab###op.autoswitch_keyframe = False
+'''
+
+ui_layout_default_switch_autoswitch_keyframe = '''
+			row_.prop(bpy.context.active_object.pose.bones["###SWITCH_BONE###"], "autosnap_autoswitch_keyframe", text="Keyframe")
+'''
+
+ui_layout_default_switch_autoswitch = '''
+		row_ = box.row()
+		row_.prop(bpy.context.active_object.pose.bones["###SWITCH_BONE###"], "autosnap_autoswitch", text="AutoSwitch")
+		if bpy.context.active_object.pose.bones["###SWITCH_BONE###"].autosnap_autoswitch == True:
+			###GENERATED_interaction_AUTOSWITCH_KEYFRAME###
+			pass
+'''
 
 ui_layout_default_switch ='''
 		label = ""
 		try:
-			if int(armature.pose.bones[armature.limbs[armature.active_limb].switch_bone].get(armature.limbs[armature.active_limb].switch_property)) == 1.0 and armature.limbs[armature.active_limb].switch_invert == False:
+			if int(armature.pose.bones["###SWITCH_BONE###"].get("###SWITCH_PROPERTY###")) == 1.0 and ###SWITCH_INVERT### == False:
 				label = "###IK2FK_LABEL###"
-			elif int(armature.pose.bones[armature.limbs[armature.active_limb].switch_bone].get(armature.limbs[armature.active_limb].switch_property)) == 1.0 and armature.limbs[armature.active_limb].switch_invert == True:
+			elif int(armature.pose.bones["###SWITCH_BONE###"].get("###SWITCH_PROPERTY###")) == 1.0 and ###SWITCH_INVERT### == True:
 				label = "###FK2IK_LABEL###"
-			if int(armature.pose.bones[armature.limbs[armature.active_limb].switch_bone].get(armature.limbs[armature.active_limb].switch_property)) == 0.0 and armature.limbs[armature.active_limb].switch_invert == False:
+			if int(armature.pose.bones["###SWITCH_BONE###"].get("###SWITCH_PROPERTY###")) == 0.0 and ###SWITCH_INVERT### == False:
 				label = "###FK2IK_LABEL###"
-			elif int(armature.pose.bones[armature.limbs[armature.active_limb].switch_bone].get(armature.limbs[armature.active_limb].switch_property)) == 0.0 and armature.limbs[armature.active_limb].switch_invert == True:
+			elif int(armature.pose.bones["###SWITCH_BONE###"].get("###SWITCH_PROPERTY###")) == 0.0 and ###SWITCH_INVERT### == True:
 				label = "###IK2FK_LABEL###"
 		except:
 			label = ""
@@ -131,11 +154,12 @@ ui_layout_default_switch ='''
 		op = row_.operator("pose.limb_switch_ikfk_###rig_id###", text=label)
 		op.switch_type = "DEDUCTED"
 		op.layout_type = "DEFAULT_SWITCH"
-		op.switch_bone = armature.limbs[armature.active_limb].switch_bone
-		op.switch_property = armature.limbs[armature.active_limb].switch_property
-		op.switch_invert   = armature.limbs[armature.active_limb].switch_invert
+		op.switch_bone = "###SWITCH_BONE###"
+		op.switch_property = "###SWITCH_PROPERTY###"
+		op.switch_invert   = ###SWITCH_INVERT###
 ###GENERATED_interaction_PARAM###
 ###GENERATED_bone_PARAM###
+###GENERATED_interaction_UI###
 '''
 
 ui_generated_text = '''

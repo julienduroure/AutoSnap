@@ -749,7 +749,41 @@ class POSE_OT_generate_snapping(bpy.types.Operator):
 				ui_layout_default_switch_ = ui_layout_default_switch_.replace("###IK2FK_LABEL###", limb.ik2fk_label)
 				ui_layout_default_switch_ = ui_layout_default_switch_.replace("###rig_id###", rig_id)
 				ui_layout_default_switch_ = ui_layout_default_switch_.replace("###GENERATED_bone_PARAM###",ui_generated_switch_param_)
+				ui_layout_default_switch_ = ui_layout_default_switch_.replace("###SWITCH_BONE###",limb.switch_bone)
+				ui_layout_default_switch_ = ui_layout_default_switch_.replace("###SWITCH_PROPERTY###",limb.switch_property)
+				ui_layout_default_switch_ = ui_layout_default_switch_.replace("###SWITCH_INVERT###",str(limb.switch_invert))
+				
+				if limb.interaction.autoswitch == True:
+					#create properties and set to False by default
+					bpy.types.PoseBone.autosnap_autoswitch = bpy.props.BoolProperty(name="AutoSwitch")
+					bpy.types.PoseBone.autosnap_autoswitch_keyframe = bpy.props.BoolProperty(name="AutoSwitch Keyframe")
+					if limb.interaction.autoswitch_data.bone != "":
+						bpy.context.active_object.pose.bones[limb.interaction.autoswitch_data.bone].autosnap_autoswitch = False
+						bpy.context.active_object.pose.bones[limb.interaction.autoswitch_data.bone].autosnap_autoswitch_keyframe = False
+						
+				if limb.interaction.autoswitch_data.bone != "":
+					ui_interaction_param_ = ui_interaction_param.replace("###INTERACTION_BONE###", limb.interaction.autoswitch_data.bone)
+					ui_interaction_param_ = ui_interaction_param_.replace("###INTERACTION_PROPERTY###", limb.interaction.autoswitch_data.property)
+					ui_interaction_param_ = ui_interaction_param_.replace("###tab###", "\t\t")
+				else:
+					ui_interaction_param_ = ui_interaction_param_ko
+					ui_interaction_param_ = ui_interaction_param_.replace("###tab###", "\t\t")
+					
+				
+				ui_layout_default_switch_ = ui_layout_default_switch_.replace("###GENERATED_interaction_PARAM###",ui_interaction_param_)
+				
+				if limb.interaction.autoswitch == False:
+					ui_layout_default_switch_ = ui_layout_default_switch_.replace("###GENERATED_interaction_UI###","")
+				else:
+					ui_layout_default_switch_autoswitch_ = ui_layout_default_switch_autoswitch.replace("###SWITCH_BONE###",limb.interaction.autoswitch_data.bone)
+					if limb.interaction.autoswitch_keyframe == True:
+						ui_layout_default_switch_autoswitch_keyframe_ = ui_layout_default_switch_autoswitch_keyframe.replace("###SWITCH_BONE###", limb.interaction.autoswitch_data.bone)
+						ui_layout_default_switch_autoswitch_ = ui_layout_default_switch_autoswitch_.replace("###GENERATED_interaction_AUTOSWITCH_KEYFRAME###",ui_layout_default_switch_autoswitch_keyframe_)
+					else:
+						ui_layout_default_switch_autoswitch_ = ui_layout_default_switch_autoswitch_.replace("###GENERATED_interaction_AUTOSWITCH_KEYFRAME###","")
 
+					ui_layout_default_switch_ = ui_layout_default_switch_.replace("###GENERATED_interaction_UI###",ui_layout_default_switch_autoswitch_)
+						
 				total_layout = total_layout + ui_layout_default_switch_
 
 			ui_generated_text_ = ui_generated_text_.replace("###LAYOUT###", total_layout)

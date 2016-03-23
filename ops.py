@@ -41,7 +41,11 @@ class POSE_OT_limb_mirror_copy(bpy.types.Operator):
 		dst_limb.interaction.autoswitch_data.bone = armature.limbs[src_limb_index].interaction.autoswitch_data.bone
 		dst_limb.interaction.autoswitch_data.property = armature.limbs[src_limb_index].interaction.autoswitch_data.property
 		
-			
+		dst_limb.interaction.autodisplay = armature.limbs[src_limb_index].interaction.autodisplay
+		dst_limb.interaction.autodisplay_data.type = armature.limbs[src_limb_index].interaction.autodisplay_data.type
+		dst_limb.interaction.autodisplay_data.layer_ik = armature.limbs[src_limb_index].interaction.autodisplay_data.layer_ik
+		dst_limb.interaction.autodisplay_data.layer_fk = armature.limbs[src_limb_index].interaction.autodisplay_data.layer_fk
+		
 		dst_limb.fk2ik_label = armature.limbs[src_limb_index].fk2ik_label
 		dst_limb.ik2fk_label = armature.limbs[src_limb_index].ik2fk_label
 		
@@ -105,6 +109,11 @@ class POSE_OT_limb_switch_ikfk(bpy.types.Operator):
 	autoswitch_data_bone = bpy.props.StringProperty()
 	autoswitch_data_property = bpy.props.StringProperty()
 	autoswitch_keyframe = bpy.props.BoolProperty()
+	
+	autodisplay = bpy.props.BoolProperty()
+	autodisplay_data_type = bpy.props.EnumProperty(items=autodisplay_items)
+	autodisplay_data_layer_ik = bpy.props.BoolVectorProperty(name="Layer IK", subtype='LAYER', size = 32)
+	autodisplay_data_layer_fk = bpy.props.BoolVectorProperty(name="Layer FK", subtype='LAYER', size = 32)
 	
 	global_scale = bpy.props.BoolProperty()
 	ik_scale_type = bpy.props.EnumProperty(items=scale_type_items)

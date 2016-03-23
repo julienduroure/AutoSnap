@@ -139,6 +139,11 @@ class POSE_PT_Limb_livesnap(bpy.types.Panel):
 			if armature.limbs[armature.active_limb].interaction.autoswitch == True:
 				op.autoswitch_data_bone = armature.limbs[armature.active_limb].interaction.autoswitch_data.bone
 				op.autoswitch_data_property = armature.limbs[armature.active_limb].interaction.autoswitch_data.property
+			op.autodisplay =  armature.limbs[armature.active_limb].interaction.autodisplay
+			if armature.limbs[armature.active_limb].interaction.autodisplay == True:
+				op.autodisplay_data_type = armature.limbs[armature.active_limb].interaction.autodisplay_data.type
+				op.autodisplay_data_layer_ik = armature.limbs[armature.active_limb].interaction.autodisplay_data.layer_ik
+				op.autodisplay_data_layer_fk = armature.limbs[armature.active_limb].interaction.autodisplay_data.layer_fk
 			self.populate_ops_param(context, op)
 			row_ = box.row()
 			if label == "":
@@ -154,6 +159,10 @@ class POSE_PT_Limb_livesnap(bpy.types.Panel):
 				except:
 					row_ = box.row()
 					row_.label("Wrong Autoswitch Data", icon="ERROR")
+			if armature.limbs[armature.active_limb].interaction.autodisplay == True:
+				row_ = box.row()
+				row_.prop(armature.limbs[armature.active_limb].interaction, "autodisplay", text="AutoDisplay")
+				row_.enabled = False
 			
 class POSE_PT_Snap_Generate(bpy.types.Panel):
 	bl_label = "Generate"
@@ -576,7 +585,22 @@ class POSE_PT_LimbDetailInteraction(bpy.types.Panel):
 			row_.prop(limb.interaction.autoswitch_data, "property", text="Property")
 			row_ = box.row()
 			row_.prop(limb.interaction, "autoswitch_keyframe", text="Keyframe")
-	
+			
+		row = layout.row()
+		row.prop(limb.interaction, "autodisplay", text="Auto Display")
+		if limb.interaction.autodisplay == True:
+			row = layout.row()
+			box = row.box()
+			row_ = box.row()
+			row_.prop(limb.interaction.autodisplay_data, "type", text="Type")
+			row_ = box.row()
+			if limb.interaction.autodisplay_data.type == "LAYER":
+				row_.prop(limb.interaction.autodisplay_data, "layer_ik", text="Layer IK")
+				row_ = box.row()
+				row_.prop(limb.interaction.autodisplay_data, "layer_fk", text="Layer FK")
+			elif limb.interaction.autodisplay_data.type == "HIDE":
+				pass #TODO
+			
 def register():
 	bpy.utils.register_class(POSE_UL_SideList)
 	bpy.utils.register_class(POSE_UL_LimbList)

@@ -40,6 +40,11 @@ switch_forced_value = [
 	("FK2IK", "fk2ik", "", 2),
 ]
 
+autodisplay_items = [
+	("LAYER", "Layer", "", 1),
+	("HIDE", "Hide", "", 2),
+]
+
 ### Warning : report new attribute to copy mirror ops
 class AutoSnap_DisplayPanel(bpy.types.PropertyGroup):
 	bone   = bpy.props.BoolProperty(name="Display Bones Settings", default=False)
@@ -52,12 +57,18 @@ class AutoSnap_autoswitch_data(bpy.types.PropertyGroup):
 	property = bpy.props.StringProperty(name="Switch Property")
 	
 ### Warning : report new attribute to copy mirror ops
+class AutoSnap_autodisplay_data(bpy.types.PropertyGroup):
+	type = bpy.props.EnumProperty(name="AutoDisplay type", items=autodisplay_items, default="LAYER")
+	layer_ik = bpy.props.BoolVectorProperty(name="Layer IK", subtype='LAYER', size = 32)
+	layer_fk = bpy.props.BoolVectorProperty(name="Layer FK", subtype='LAYER', size = 32)
+	
+### Warning : report new attribute to copy mirror ops
 class AutoSnap_Interaction(bpy.types.PropertyGroup):
 	autoswitch           = bpy.props.BoolProperty(name="Switch FK/IK property", default=False)
 	autoswitch_data      = bpy.props.PointerProperty(type=AutoSnap_autoswitch_data)
 	autoswitch_keyframe  = bpy.props.BoolProperty(name="Switch FK/IK property, and keyframe it", default=False)
-	#autodisplay          = bpy.props.BoolProperty(name="Auto display", default=False)
-	#autodisplay_type     = bpy.props.EnumProperty(name="Auto display type", items=AutoSnap_AutoDisplayItems, default="LAYER")
+	autodisplay          = bpy.props.BoolProperty(name="Auto display", default=False)
+	autodisplay_data     = bpy.props.PointerProperty(type=AutoSnap_autodisplay_data)
 	#autokeyframe         = bpy.props.BoolProperty(name="Auto keyframe chain", default=False)
 
 class AutoSnap_Generation(bpy.types.PropertyGroup):
@@ -129,6 +140,7 @@ def register():
 	bpy.utils.register_class(BoneItem)
 	bpy.utils.register_class(AutoSnap_DisplayPanel)
 	bpy.utils.register_class(AutoSnap_autoswitch_data)
+	bpy.utils.register_class(AutoSnap_autodisplay_data)
 	bpy.utils.register_class(AutoSnap_Interaction)
 	bpy.utils.register_class(LimbItem)
 	bpy.utils.register_class(AutoSnap_Generation)
@@ -137,6 +149,7 @@ def unregister():
 	bpy.utils.unregister_class(LimbItem)
 	bpy.utils.unregister_class(AutoSnap_DisplayPanel)
 	bpy.utils.unregister_class(AutoSnap_autoswitch_data)
+	bpy.utils.unregister_class(AutoSnap_autodisplay_data)
 	bpy.utils.unregister_class(AutoSnap_Interaction)
 	bpy.utils.unregister_class(BoneItem)
 	bpy.utils.unregister_class(AutoSnap_Generation)

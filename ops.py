@@ -351,8 +351,9 @@ class POSE_OT_limb_switch_ikfk(bpy.types.Operator):
 		elif way == "FK2IK":
 			self.fk2ik(context.active_object, self.root, self.ik1, self.ik2, self.ik3, self.ik5, self.ik_scale, self.ik_location,  self.fk1, self.fk2, self.fk3, self.fk4, self.fk_scale, self.fk_location)
 		
-		#AutoSwitch
+
 		if self.layout_type != "DEFAULT": #No interaction for DEFAULT layout
+			#AutoSwitch
 			if self.switch_type == "DEDUCTED" and self.autoswitch == True:
 				if int(context.active_object.pose.bones[self.autoswitch_data_bone].get(self.autoswitch_data_property)) == 0:
 					context.active_object.pose.bones[self.autoswitch_data_bone][self.autoswitch_data_property] = 1.0
@@ -377,7 +378,36 @@ class POSE_OT_limb_switch_ikfk(bpy.types.Operator):
 							else:
 								break
 						cpt = cpt + 1
-								
+		
+			#AutoDisplay
+			if self.autodisplay == True:
+				if self.autodisplay_data_type == "LAYER":
+					if way == "FK2IK":
+						#Display FK layers, and the hide IK layers
+						cpt = 0
+						for layer in self.autodisplay_data_layer_fk:
+							if layer == True:
+								context.active_object.data.layers[cpt] = True
+							cpt = cpt + 1
+						cpt = 0
+						for layer in self.autodisplay_data_layer_ik:
+							if layer == True:
+								context.active_object.data.layers[cpt] = False
+							cpt = cpt + 1
+					elif way == "IK2FK":
+						#Display IK layers, and the hide FK layers
+						cpt = 0
+						for layer in self.autodisplay_data_layer_ik:
+							if layer == True:
+								context.active_object.data.layers[cpt] = True
+							cpt = cpt + 1
+						cpt = 0
+						for layer in self.autodisplay_data_layer_fk:
+							if layer == True:
+								context.active_object.data.layers[cpt] = False
+							cpt = cpt + 1
+				elif self.autodisplay_data_type == "HIDE":
+					pass #TODO
 		return {'FINISHED'}
 		
 		

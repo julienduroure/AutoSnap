@@ -42,6 +42,7 @@ class POSE_OT_limb_mirror_copy(bpy.types.Operator):
 		dst_limb.interaction.autoswitch_data.property = armature.limbs[src_limb_index].interaction.autoswitch_data.property
 		
 		dst_limb.interaction.autodisplay = armature.limbs[src_limb_index].interaction.autodisplay
+		dst_limb.interaction.autodisplay_data.bone = armature.limbs[src_limb_index].interaction.autodisplay_data.bone
 		dst_limb.interaction.autodisplay_data.type = armature.limbs[src_limb_index].interaction.autodisplay_data.type
 		dst_limb.interaction.autodisplay_data.layer_ik = armature.limbs[src_limb_index].interaction.autodisplay_data.layer_ik
 		dst_limb.interaction.autodisplay_data.layer_fk = armature.limbs[src_limb_index].interaction.autodisplay_data.layer_fk
@@ -111,6 +112,7 @@ class POSE_OT_limb_switch_ikfk(bpy.types.Operator):
 	autoswitch_keyframe = bpy.props.BoolProperty()
 	
 	autodisplay = bpy.props.BoolProperty()
+	autodisplay_data_bone = bpy.props.StringProperty()
 	autodisplay_data_type = bpy.props.EnumProperty(items=autodisplay_items)
 	autodisplay_data_layer_ik = bpy.props.BoolVectorProperty(name="Layer IK", subtype='LAYER', size = 32)
 	autodisplay_data_layer_fk = bpy.props.BoolVectorProperty(name="Layer FK", subtype='LAYER', size = 32)
@@ -800,19 +802,39 @@ class POSE_OT_generate_snapping(bpy.types.Operator):
 						bpy.context.active_object.pose.bones[limb.interaction.autoswitch_data.bone].autosnap_autoswitch = False
 						bpy.context.active_object.pose.bones[limb.interaction.autoswitch_data.bone].autosnap_autoswitch_keyframe = False
 						
+				if limb.interaction.autodisplay == True:
+					#create properties and set to False by default
+					bpy.types.PoseBone.autosnap_autodisplay = bpy.props.BoolProperty(name="AutoDisplay")
+					if limb.interaction.autodisplay_data.bone != "":
+						bpy.context.active_object.pose.bones[limb.interaction.autodisplay_data.bone].autosnap_autodisplay = False
+						
+				#AutoSwitch : Param
 				if limb.interaction.autoswitch_data.bone != "":
-					ui_interaction_param_ = ui_interaction_param.replace("###INTERACTION_BONE###", limb.interaction.autoswitch_data.bone)
-					ui_interaction_param_ = ui_interaction_param_.replace("###INTERACTION_PROPERTY###", limb.interaction.autoswitch_data.property)
-					ui_interaction_param_ = ui_interaction_param_.replace("###tab###", "\t\t")
+					ui_autoswitch_param_ = ui_autoswitch_param.replace("###AUTOSWITCH_BONE###", limb.interaction.autoswitch_data.bone)
+					ui_autoswitch_param_ = ui_autoswitch_param_.replace("###AUTOSWITCH_PROPERTY###", limb.interaction.autoswitch_data.property)
+					ui_autoswitch_param_ = ui_autoswitch_param_.replace("###tab###", "\t\t")
 				else:
-					ui_interaction_param_ = ui_interaction_param_ko
-					ui_interaction_param_ = ui_interaction_param_.replace("###tab###", "\t\t")
+					ui_autoswitch_param_ = ui_autoswitch_param_ko
+					ui_autoswitch_param_ = ui_autoswitch_param_.replace("###tab###", "\t\t")
 					
+				#AutoDisplay : Param
+				if limb.interaction.autodisplay_data.bone != "":
+					ui_autodisplay_param_ = ui_autodisplay_param.replace("###AUTODISPLAY_BONE###", limb.interaction.autodisplay_data.bone)
+					ui_autodisplay_param_ = ui_autodisplay_param_.replace("###AUTODISPLAY_TYPE###", limb.interaction.autodisplay_data.type)
+					ui_autodisplay_param_ = ui_autodisplay_param_.replace("###AUTODISPLAY_LAYER_IK###", str([layer for layer in limb.interaction.autodisplay_data.layer_ik]))
+					ui_autodisplay_param_ = ui_autodisplay_param_.replace("###AUTODISPLAY_LAYER_FK###", str([layer for layer in limb.interaction.autodisplay_data.layer_fk]))
+					ui_autodisplay_param_ = ui_autodisplay_param_.replace("###tab###", "\t\t")
+				else:
+					ui_autodisplay_param_ = ui_autodisplay_param_ko
+					ui_autodisplay_param_ = ui_autodisplay_param_.replace("###tab###", "\t\t")
 				
-				ui_layout_default_switch_ = ui_layout_default_switch_.replace("###GENERATED_interaction_PARAM###",ui_interaction_param_)
 				
+				ui_layout_default_switch_ = ui_layout_default_switch_.replace("###GENERATED_autoswitch_PARAM###",ui_autoswitch_param_)
+				ui_layout_default_switch_ = ui_layout_default_switch_.replace("###GENERATED_autodisplay_PARAM###",ui_autodisplay_param_)
+				
+				#autoswitch : UI
 				if limb.interaction.autoswitch == False:
-					ui_layout_default_switch_ = ui_layout_default_switch_.replace("###GENERATED_interaction_UI###","")
+					ui_layout_default_switch_ = ui_layout_default_switch_.replace("###GENERATED_autoswitch_UI###","")
 				else:
 					ui_layout_default_switch_autoswitch_ = ui_layout_default_switch_autoswitch.replace("###SWITCH_BONE###",limb.interaction.autoswitch_data.bone)
 					if limb.interaction.autoswitch_keyframe == True:
@@ -821,7 +843,15 @@ class POSE_OT_generate_snapping(bpy.types.Operator):
 					else:
 						ui_layout_default_switch_autoswitch_ = ui_layout_default_switch_autoswitch_.replace("###GENERATED_interaction_AUTOSWITCH_KEYFRAME###","")
 
-					ui_layout_default_switch_ = ui_layout_default_switch_.replace("###GENERATED_interaction_UI###",ui_layout_default_switch_autoswitch_)
+					ui_layout_default_switch_ = ui_layout_default_switch_.replace("###GENERATED_autoswitch_UI###",ui_layout_default_switch_autoswitch_)
+					
+				#autodisplay : UI
+				if limb.interaction.autodisplay == False:
+					ui_layout_default_switch_ = ui_layout_default_switch_.replace("###GENERATED_autodisplay_UI###","")
+				else:
+					ui_layout_default_switch_autodisplay_ = ui_layout_default_switch_autodisplay.replace("###AUTODISPLAY_BONE###",limb.interaction.autodisplay_data.bone)
+						
+					ui_layout_default_switch_ = ui_layout_default_switch_.replace("###GENERATED_autodisplay_UI###",ui_layout_default_switch_autodisplay_)		
 						
 				total_layout = total_layout + ui_layout_default_switch_
 

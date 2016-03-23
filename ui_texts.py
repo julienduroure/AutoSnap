@@ -40,6 +40,12 @@ switch_forced_value = [
 	("FK2IK", "fk2ik", "", 2),
 ]
 
+### Warning : any modification on this enum must be reported on generated source code
+autodisplay_items = [
+	("LAYER", "Layer", "", 1),
+#	("HIDE", "Hide", "", 2),
+]
+
 ### Warning : any modification on this PorpertyGroup must be reported on live source code
 class BoneItem(bpy.types.PropertyGroup):
 	name = bpy.props.StringProperty(name="Bone name")
@@ -109,16 +115,28 @@ ui_layout_default ='''
 		op.switch_forced_value = "IK2FK"
 ###GENERATED_bone_PARAM###
 '''
-ui_interaction_param='''
-###tab###op.autoswitch = bpy.context.active_object.pose.bones["###INTERACTION_BONE###"].autosnap_autoswitch
-###tab###op.autoswitch_data_bone = "###INTERACTION_BONE###"
-###tab###op.autoswitch_data_property = "###INTERACTION_PROPERTY###"
-###tab###op.autoswitch_keyframe = bpy.context.active_object.pose.bones["###INTERACTION_BONE###"].autosnap_autoswitch_keyframe
+ui_autoswitch_param='''
+###tab###op.autoswitch = bpy.context.active_object.pose.bones["###AUTOSWITCH_BONE###"].autosnap_autoswitch
+###tab###op.autoswitch_data_bone = "###AUTOSWITCH_BONE###"
+###tab###op.autoswitch_data_property = "###AUTOSWITCH_PROPERTY###"
+###tab###op.autoswitch_keyframe = bpy.context.active_object.pose.bones["###AUTOSWITCH_BONE###"].autosnap_autoswitch_keyframe
 '''
 
-ui_interaction_param_ko='''
+ui_autodisplay_param='''
+###tab###op.autodisplay = bpy.context.active_object.pose.bones["###AUTODISPLAY_BONE###"].autosnap_autodisplay
+###tab###op.autodisplay_data_bone = "###AUTODISPLAY_BONE###"
+###tab###op.autodisplay_data_type = "###AUTODISPLAY_TYPE###"
+###tab###op.autodisplay_data_layer_ik = ###AUTODISPLAY_LAYER_IK###
+###tab###op.autodisplay_data_layer_fk = ###AUTODISPLAY_LAYER_FK###
+'''
+
+ui_autoswitch_param_ko='''
 ###tab###op.autoswitch = False
 ###tab###op.autoswitch_keyframe = False
+'''
+
+ui_autodisplay_param_ko='''
+###tab###op.autodisplay = False
 '''
 
 ui_layout_default_switch_autoswitch_keyframe = '''
@@ -131,6 +149,11 @@ ui_layout_default_switch_autoswitch = '''
 		if bpy.context.active_object.pose.bones["###SWITCH_BONE###"].autosnap_autoswitch == True:
 			###GENERATED_interaction_AUTOSWITCH_KEYFRAME###
 			pass
+'''
+
+ui_layout_default_switch_autodisplay = '''
+		row_ = box.row()
+		row_.prop(bpy.context.active_object.pose.bones["###AUTODISPLAY_BONE###"], "autosnap_autodisplay", text="AutoDisplay")
 '''
 
 ui_layout_default_switch ='''
@@ -157,9 +180,11 @@ ui_layout_default_switch ='''
 		op.switch_bone = "###SWITCH_BONE###"
 		op.switch_property = "###SWITCH_PROPERTY###"
 		op.switch_invert   = ###SWITCH_INVERT###
-###GENERATED_interaction_PARAM###
+###GENERATED_autoswitch_PARAM###
+###GENERATED_autodisplay_PARAM###
 ###GENERATED_bone_PARAM###
-###GENERATED_interaction_UI###
+###GENERATED_autoswitch_UI###
+###GENERATED_autodisplay_UI###
 '''
 
 ui_generated_text = '''

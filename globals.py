@@ -40,9 +40,10 @@ switch_forced_value = [
 	("FK2IK", "fk2ik", "", 2),
 ]
 
+### Warning : any modification on this enum must be reported on generated source code
 autodisplay_items = [
 	("LAYER", "Layer", "", 1),
-	("HIDE", "Hide", "", 2),
+#	("HIDE", "Hide", "", 2),
 ]
 
 ### Warning : report new attribute to copy mirror ops
@@ -58,6 +59,7 @@ class AutoSnap_autoswitch_data(bpy.types.PropertyGroup):
 	
 ### Warning : report new attribute to copy mirror ops
 class AutoSnap_autodisplay_data(bpy.types.PropertyGroup):
+	bone = bpy.props.StringProperty(name="Display Bone")
 	type = bpy.props.EnumProperty(name="AutoDisplay type", items=autodisplay_items, default="LAYER")
 	layer_ik = bpy.props.BoolVectorProperty(name="Layer IK", subtype='LAYER', size = 32)
 	layer_fk = bpy.props.BoolVectorProperty(name="Layer FK", subtype='LAYER', size = 32)

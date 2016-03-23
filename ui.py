@@ -160,9 +160,13 @@ class POSE_PT_Limb_livesnap(bpy.types.Panel):
 					row_ = box.row()
 					row_.label("Wrong Autoswitch Data", icon="ERROR")
 			if armature.limbs[armature.active_limb].interaction.autodisplay == True:
-				row_ = box.row()
-				row_.prop(armature.limbs[armature.active_limb].interaction, "autodisplay", text="AutoDisplay")
-				row_.enabled = False
+				if armature.limbs[armature.active_limb].interaction.autodisplay_data.bone not in context.active_object.data.bones.keys():
+					row_ = box.row()
+					row_.label("Wrong AutoDisplay data", icon="ERROR")
+				else:
+					row_ = box.row()
+					row_.prop(armature.limbs[armature.active_limb].interaction, "autodisplay", text="AutoDisplay")
+					row_.enabled = False
 			
 class POSE_PT_Snap_Generate(bpy.types.Panel):
 	bl_label = "Generate"
@@ -591,6 +595,17 @@ class POSE_PT_LimbDetailInteraction(bpy.types.Panel):
 		if limb.interaction.autodisplay == True:
 			row = layout.row()
 			box = row.box()
+			row_ = box.row()
+			col = row_.column()
+			row__ = col.row()
+			row__.prop_search(limb.interaction.autodisplay_data, "bone", armature.data, "bones", text="Bone")
+			col = row_.column()
+			row__ = col.row()
+			op = row__.operator("pose.limb_select_bone", icon="BONE_DATA", text="")
+			op.level = 3
+			op.level_1 = "interaction"
+			op.level_2 = "autodisplay_data"
+			op.level_3 = "bone"
 			row_ = box.row()
 			row_.prop(limb.interaction.autodisplay_data, "type", text="Type")
 			row_ = box.row()

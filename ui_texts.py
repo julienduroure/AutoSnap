@@ -40,10 +40,16 @@ switch_forced_value = [
 	("FK2IK", "fk2ik", "", 2),
 ]
 
-### Warning : any modification on this enum must be reported on generated source code
+### Warning : any modification on this enum must be reported on live source code
 autodisplay_items = [
 	("LAYER", "Layer", "", 1),
 #	("HIDE", "Hide", "", 2),
+]
+
+### Warning : any modification on this enum must be reported on live source code
+switch_invert_items = [
+	("IKIS0", "IK is 0", "", 1),
+	("FKIS0", "FK is 0", "", 2),
 ]
 
 ### Warning : any modification on this PorpertyGroup must be reported on live source code
@@ -159,13 +165,13 @@ ui_layout_default_switch_autodisplay = '''
 ui_layout_default_switch ='''
 		label = ""
 		try:
-			if int(armature.pose.bones["###SWITCH_BONE###"].get("###SWITCH_PROPERTY###")) == 1.0 and ###SWITCH_INVERT### == False:
+			if int(armature.pose.bones["###SWITCH_BONE###"].get("###SWITCH_PROPERTY###")) == 1.0 and ###SWITCH_INVERT### == "IKIS0":
 				label = "###IK2FK_LABEL###"
-			elif int(armature.pose.bones["###SWITCH_BONE###"].get("###SWITCH_PROPERTY###")) == 1.0 and ###SWITCH_INVERT### == True:
+			elif int(armature.pose.bones["###SWITCH_BONE###"].get("###SWITCH_PROPERTY###")) == 1.0 and ###SWITCH_INVERT### == "FKIS0":
 				label = "###FK2IK_LABEL###"
-			if int(armature.pose.bones["###SWITCH_BONE###"].get("###SWITCH_PROPERTY###")) == 0.0 and ###SWITCH_INVERT### == False:
+			if int(armature.pose.bones["###SWITCH_BONE###"].get("###SWITCH_PROPERTY###")) == 0.0 and ###SWITCH_INVERT### == "IKIS0":
 				label = "###FK2IK_LABEL###"
-			elif int(armature.pose.bones["###SWITCH_BONE###"].get("###SWITCH_PROPERTY###")) == 0.0 and ###SWITCH_INVERT### == True:
+			elif int(armature.pose.bones["###SWITCH_BONE###"].get("###SWITCH_PROPERTY###")) == 0.0 and ###SWITCH_INVERT### == "FKIS0":
 				label = "###IK2FK_LABEL###"
 		except:
 			label = ""
@@ -179,7 +185,7 @@ ui_layout_default_switch ='''
 		op.layout_type = "DEFAULT_SWITCH"
 		op.switch_bone = "###SWITCH_BONE###"
 		op.switch_property = "###SWITCH_PROPERTY###"
-		op.switch_invert   = ###SWITCH_INVERT###
+		op.switch_invert   = "###SWITCH_INVERT###"
 ###GENERATED_autoswitch_PARAM###
 ###GENERATED_autodisplay_PARAM###
 ###GENERATED_bone_PARAM###

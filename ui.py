@@ -113,13 +113,13 @@ class POSE_PT_Limb_livesnap(bpy.types.Panel):
 		elif armature.generation.layout_type == "DEFAULT_SWITCH":
 			label = ""
 			try:
-				if int(armature.pose.bones[armature.limbs[armature.active_limb].switch_bone].get(armature.limbs[armature.active_limb].switch_property)) == 1.0 and armature.limbs[armature.active_limb].switch_invert == False:
+				if int(armature.pose.bones[armature.limbs[armature.active_limb].switch_bone].get(armature.limbs[armature.active_limb].switch_property)) == 1.0 and armature.limbs[armature.active_limb].switch_invert == "IKIS0":
 					label = armature.limbs[armature.active_limb].ik2fk_label
-				elif int(armature.pose.bones[armature.limbs[armature.active_limb].switch_bone].get(armature.limbs[armature.active_limb].switch_property)) == 1.0 and armature.limbs[armature.active_limb].switch_invert == True:
+				elif int(armature.pose.bones[armature.limbs[armature.active_limb].switch_bone].get(armature.limbs[armature.active_limb].switch_property)) == 1.0 and armature.limbs[armature.active_limb].switch_invert == "FKIS0":
 					label = armature.limbs[armature.active_limb].fk2ik_label
-				if int(armature.pose.bones[armature.limbs[armature.active_limb].switch_bone].get(armature.limbs[armature.active_limb].switch_property)) == 0.0 and armature.limbs[armature.active_limb].switch_invert == False:
+				if int(armature.pose.bones[armature.limbs[armature.active_limb].switch_bone].get(armature.limbs[armature.active_limb].switch_property)) == 0.0 and armature.limbs[armature.active_limb].switch_invert == "IKIS0":
 					label = armature.limbs[armature.active_limb].fk2ik_label
-				elif int(armature.pose.bones[armature.limbs[armature.active_limb].switch_bone].get(armature.limbs[armature.active_limb].switch_property)) == 0.0 and armature.limbs[armature.active_limb].switch_invert == True:
+				elif int(armature.pose.bones[armature.limbs[armature.active_limb].switch_bone].get(armature.limbs[armature.active_limb].switch_property)) == 0.0 and armature.limbs[armature.active_limb].switch_invert == "FKIS0":
 					label = armature.limbs[armature.active_limb].ik2fk_label
 			except:
 				label = ""
@@ -551,7 +551,7 @@ class POSE_PT_LimbDetailLayout(bpy.types.Panel):
 			op.level = 0
 			row = layout.row()
 			row.prop(limb, "switch_property", text="Switch Property")
-			row.prop(limb, "switch_invert", text="Invert")
+			row.prop(limb, "switch_invert", text="way")
 			
 class POSE_PT_LimbDetailInteraction(bpy.types.Panel):
 	bl_label = "Limb Detail - Interaction"

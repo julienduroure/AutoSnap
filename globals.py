@@ -35,6 +35,12 @@ switch_type_items = [
 ]
 
 ### Warning : any modification on this enum must be reported on generated source code
+switch_invert_items = [
+	("IKIS0", "IK is 0", "", 1),
+	("FKIS0", "FK is 0", "", 2),
+]
+
+### Warning : any modification on this enum must be reported on generated source code
 switch_forced_value = [
 	("IK2FK", "ik2fk", "", 1),
 	("FK2IK", "fk2ik", "", 2),
@@ -97,7 +103,7 @@ class LimbItem(bpy.types.PropertyGroup):
 	#DEFAULT_SWITCH
 	switch_bone = bpy.props.StringProperty(name="Switch Bone")
 	switch_property = bpy.props.StringProperty(name="Switch Property")
-	switch_invert = bpy.props.BoolProperty(name="Invert", default = False)
+	switch_invert = bpy.props.EnumProperty(items=switch_invert_items,name="Way", default = "IKIS0")
 	
 	display = bpy.props.PointerProperty(type=AutoSnap_DisplayPanel)
 	

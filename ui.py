@@ -28,6 +28,16 @@ class POSE_UL_ReInitBoneList(bpy.types.UIList):
 		elif self.layout_type in {'GRID'}:
 			layout.alignment = 'CENTER'
 			
+class POSE_UL_AddBoneList(bpy.types.UIList):
+	def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
+		
+		if self.layout_type in {'DEFAULT', 'COMPACT'}:
+			layout.prop(item, "name_FK", text="", emboss=False)
+			layout.prop(item, "name_IK", text="", emboss=False)
+			
+		elif self.layout_type in {'GRID'}:
+			layout.alignment = 'CENTER'
+			
 class POSE_MT_limb_specials(bpy.types.Menu):
 	bl_label = "Limb Specials"
 
@@ -60,6 +70,7 @@ class POSE_PT_Limb_livesnap(bpy.types.Panel):
 		op.with_limb_end_fk	= armature.limbs[armature.active_limb].with_limb_end_fk
 		op.with_limb_end_ik	= armature.limbs[armature.active_limb].with_limb_end_ik
 		op.with_reinit_bones   = armature.limbs[armature.active_limb].with_reinit_bones
+		op.with_add_bones      = armature.limbs[armature.active_limb].with_add_bones
 		
 		op.ik1 = armature.limbs[armature.active_limb].ik1
 		op.ik2 = armature.limbs[armature.active_limb].ik2
@@ -82,6 +93,13 @@ class POSE_PT_Limb_livesnap(bpy.types.Panel):
 			item_dst.name = item_src.name
 		if len(armature.limbs[armature.active_limb].reinit_bones) == 0:
 			op.with_reinit_bones = False
+			
+		for item_src in armature.limbs[armature.active_limb].add_bones:
+			item_dst = op.add_bones.add()
+			item_dst.name_FK = item_src.name_FK
+			item_dst.name_IK = item_src.name_IK
+		if len(armature.limbs[armature.active_limb].add_bones) == 0:
+			op.with_add_bones = False
 		
 	def draw(self, context):
 		layout = self.layout
@@ -505,6 +523,47 @@ class POSE_PT_LimbDetailBones(bpy.types.Panel):
 			op = row.operator("pose.limb_select_bone", icon="BONE_DATA", text="")	
 			op.bone = "fk_location"
 			op.level = 0
+			
+		row_ = layout.row()
+		row_.prop(limb, "with_add_bones", text="Additional Bones")
+		row_ = layout.row()
+		if limb.with_add_bones == True:
+
+			box  = row_.box()
+			row__= box.row()
+			row__.template_list("POSE_UL_AddBoneList", "", armature.limbs[armature.active_limb], "add_bones", armature.limbs[armature.active_limb], "active_add_bone")
+			
+			col = row__.column()
+			row = col.column(align=True)
+			row.operator("pose.add_bone_add", icon="ZOOMIN", text="")
+			row.operator("pose.add_bone_remove", icon="ZOOMOUT", text="")
+				
+			row = col.column(align=True)
+			row.separator()
+			row.operator("pose.add_bone_move", icon='TRIA_UP', text="").direction = 'UP'
+			row.operator("pose.add_bone_move", icon='TRIA_DOWN', text="").direction = 'DOWN'
+			
+			if len(armature.limbs[armature.active_limb].add_bones) > 0:
+				row_ = box.row()
+				col = row_.column()
+				row = col.column(align=True)
+				row.prop_search(armature.limbs[armature.active_limb].add_bones[armature.limbs[armature.active_limb].active_add_bone], "name_FK", armature.data, "bones", text="Bone FK")
+				col = row_.column()
+				row = col.column(align=True)
+				op = row.operator("pose.limb_select_bone", icon="BONE_DATA", text="")
+				op.bone = "add_bone"
+				op.level = 0
+				op.bone_side = 'FK'
+				row_ = box.row()
+				col = row_.column()
+				row = col.column(align=True)
+				row.prop_search(armature.limbs[armature.active_limb].add_bones[armature.limbs[armature.active_limb].active_add_bone], "name_IK", armature.data, "bones", text="Bone IK")
+				col = row_.column()
+				row = col.column(align=True)
+				op = row.operator("pose.limb_select_bone", icon="BONE_DATA", text="")
+				op.bone = "add_bone"
+				op.level = 0
+				op.bone_side = 'IK'
 		
 class POSE_PT_LimbDetail(bpy.types.Panel):
 	bl_label = "Limb Detail"
@@ -663,6 +722,7 @@ def register():
 	bpy.utils.register_class(POSE_UL_SideList)
 	bpy.utils.register_class(POSE_UL_LimbList)
 	bpy.utils.register_class(POSE_UL_ReInitBoneList)
+	bpy.utils.register_class(POSE_UL_AddBoneList)
 	
 	bpy.utils.register_class(POSE_MT_limb_specials)
 	
@@ -679,6 +739,7 @@ def unregister():
 	bpy.utils.unregister_class(POSE_UL_SideList)
 	bpy.utils.unregister_class(POSE_UL_LimbList)
 	bpy.utils.unregister_class(POSE_UL_ReInitBoneList)
+	bpy.utils.unregister_class(POSE_UL_AddBoneList)
 	
 	bpy.utils.unregister_class(POSE_MT_limb_specials)
 	

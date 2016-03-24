@@ -93,6 +93,11 @@ class SideItem(bpy.types.PropertyGroup):
 ### Warning : any modification on this PorpertyGroup must be reported on generated source code
 class BoneItem(bpy.types.PropertyGroup):
 	name = bpy.props.StringProperty(name="Bone name")
+	
+### Warning : any modification on this PorpertyGroup must be reported on generated source code
+class BonePairItem(bpy.types.PropertyGroup):
+	name_FK = bpy.props.StringProperty(name="Bone name FK")
+	name_IK = bpy.props.StringProperty(name="Bone name IK")
 
 ### Warning : report new attribute to copy mirror ops
 class LimbItem(bpy.types.PropertyGroup):
@@ -119,6 +124,7 @@ class LimbItem(bpy.types.PropertyGroup):
 	with_limb_end_fk	= bpy.props.BoolProperty(name="Limb End FK", default=False)
 	with_limb_end_ik	= bpy.props.BoolProperty(name="Limb End IK", default=False)
 	with_reinit_bones   = bpy.props.BoolProperty(name="Limb Reinit bones", default=False)
+	with_add_bones      = bpy.props.BoolProperty(name="Limb Additional bones", default=False)
 
 	name = bpy.props.StringProperty(name="Limb Name")
 	root = bpy.props.StringProperty(name="Root")
@@ -139,6 +145,9 @@ class LimbItem(bpy.types.PropertyGroup):
 	
 	reinit_bones = bpy.props.CollectionProperty(type=BoneItem)
 	active_reinit_bone = bpy.props.IntProperty()
+	
+	add_bones = bpy.props.CollectionProperty(type=BonePairItem)
+	active_add_bone = bpy.props.IntProperty()
 
 #shortcut to prefs
 def addonpref():
@@ -147,6 +156,7 @@ def addonpref():
 
 def register():
 	bpy.utils.register_class(BoneItem)
+	bpy.utils.register_class(BonePairItem)
 	bpy.utils.register_class(AutoSnap_DisplayPanel)
 	bpy.utils.register_class(AutoSnap_autoswitch_data)
 	bpy.utils.register_class(AutoSnap_autodisplay_data)
@@ -161,4 +171,5 @@ def unregister():
 	bpy.utils.unregister_class(AutoSnap_autodisplay_data)
 	bpy.utils.unregister_class(AutoSnap_Interaction)
 	bpy.utils.unregister_class(BoneItem)
+	bpy.utils.unregister_class(BonePairItem)
 	bpy.utils.unregister_class(AutoSnap_Generation)

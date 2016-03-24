@@ -65,6 +65,7 @@ class POSE_OT_limb_mirror_copy(bpy.types.Operator):
 		dst_limb.with_limb_end_fk = armature.limbs[src_limb_index].with_limb_end_fk
 		dst_limb.with_limb_end_ik = armature.limbs[src_limb_index].with_limb_end_ik
 		dst_limb.with_reinit_bones = armature.limbs[src_limb_index].with_reinit_bones
+		dst_limb.with_add_bones = armature.limbs[src_limb_index].with_add_bones
 		
 		dst_limb.root = get_symm_name(armature.limbs[src_limb_index].root)
 		
@@ -88,6 +89,12 @@ class POSE_OT_limb_mirror_copy(bpy.types.Operator):
 			dst_bone = dst_limb.reinit_bones.add()
 			dst_bone.name = get_symm_name(src_bone.name)
 		dst_limb.active_reinit_bone = armature.limbs[src_limb_index].active_reinit_bone
+		
+		for src_bone in armature.limbs[src_limb_index].add_bones:
+			dst_bone = dst_limb.add_bones.add()
+			dst_bone.name_FK = get_symm_name(src_bone.name_FK)
+			dst_bone.name_IK = get_symm_name(src_bone.name_IK)
+		dst_limb.active_add_bone = armature.limbs[src_limb_index].active_add_bone
 		
 		armature.active_limb = len(armature.limbs) - 1
 			
@@ -126,6 +133,7 @@ class POSE_OT_limb_switch_ikfk(bpy.types.Operator):
 	with_limb_end_fk	= bpy.props.BoolProperty()
 	with_limb_end_ik	= bpy.props.BoolProperty()
 	with_reinit_bones   = bpy.props.BoolProperty()
+	with_add_bones      = bpy.props.BoolProperty()
 	ik_type = bpy.props.EnumProperty(items=IK_type_items)
 	
 	
@@ -144,6 +152,7 @@ class POSE_OT_limb_switch_ikfk(bpy.types.Operator):
 	fk_scale = bpy.props.StringProperty()
 	fk_location = bpy.props.StringProperty()
 	reinit_bones = bpy.props.CollectionProperty(type=BoneItem)
+	add_bones    = bpy.props.CollectionProperty(type=BonePairItem)
 	
 	@classmethod
 	def poll(self, context):
@@ -259,6 +268,18 @@ class POSE_OT_limb_switch_ikfk(bpy.types.Operator):
 		if self.fk_location != "" and self.fk_location not in context.active_object.data.bones.keys():
 			self.report({'ERROR'}, "Bone " + self.fk_location + " doesn't exist")
 			return False, {'CANCELLED'}
+			
+		if self.with_add_bones == False:
+			while len(self.add_bones) != 0:
+				self.add_bones.remove(0)
+				
+		for bone in self.add_bones:
+			if bone.name_FK not in context.active_object.data.bones.keys():
+				self.report({'ERROR'}, "Bone " + bone.name_FK + " doesn't exist")
+				return False, {'CANCELLED'}
+			if bone.name_IK not in context.active_object.data.bones.keys():
+				self.report({'ERROR'}, "Bone " + bone.name_IK + " doesn't exist")
+				return False, {'CANCELLED'}			
 
 		return True, True
 		
@@ -350,9 +371,9 @@ class POSE_OT_limb_switch_ikfk(bpy.types.Operator):
 				return error			
 		
 		if way == "IK2FK":
-			self.ik2fk(context.active_object, self.root, self.ik1, self.ik2, self.ik3, self.ik4, self.ik5, self.fk1, self.fk2, self.fk3, self.fk4, self.ik_scale, self.fk_scale, self.ik_location, self.fk_location, self.reinit_bones)
+			self.ik2fk(context.active_object, self.root, self.ik1, self.ik2, self.ik3, self.ik4, self.ik5, self.fk1, self.fk2, self.fk3, self.fk4, self.ik_scale, self.fk_scale, self.ik_location, self.fk_location, self.reinit_bones, self.add_bones)
 		elif way == "FK2IK":
-			self.fk2ik(context.active_object, self.root, self.ik1, self.ik2, self.ik3, self.ik5, self.ik_scale, self.ik_location,  self.fk1, self.fk2, self.fk3, self.fk4, self.fk_scale, self.fk_location)
+			self.fk2ik(context.active_object, self.root, self.ik1, self.ik2, self.ik3, self.ik5, self.ik_scale, self.ik_location,  self.fk1, self.fk2, self.fk3, self.fk4, self.fk_scale, self.fk_location, self.add_bones)
 		
 
 		if self.layout_type != "DEFAULT": #No interaction for DEFAULT layout
@@ -436,7 +457,7 @@ class POSE_OT_limb_switch_ikfk(bpy.types.Operator):
 			angle = -angle + 2*math.pi
 		return angle
 			
-	def ik2fk(self, obj, root_, ik1_, ik2_, ik3_, ik4_, ik5_, fk1_, fk2_, fk3_, fk4_, ik_scale_, fk_scale_, ik_location_, fk_location_, reinit_bones):
+	def ik2fk(self, obj, root_, ik1_, ik2_, ik3_, ik4_, ik5_, fk1_, fk2_, fk3_, fk4_, ik_scale_, fk_scale_, ik_location_, fk_location_, reinit_bones, add_bones):
 		ik1 = obj.pose.bones[ik1_]
 		ik2 = obj.pose.bones[ik2_]
 		ik3 = obj.pose.bones[ik3_]
@@ -502,6 +523,11 @@ class POSE_OT_limb_switch_ikfk(bpy.types.Operator):
 		
 		for bone in reinit_bones:
 			obj.pose.bones[bone.name].matrix_basis = mathutils.Matrix()
+			
+		for b_FK, b_IK in [[bone.name_FK, bone.name_IK] for bone in add_bones]:
+			obj.pose.bones[b_IK].matrix = obj.pose.bones[b_FK].matrix
+		bpy.ops.object.mode_set(mode='OBJECT')
+		bpy.ops.object.mode_set(mode='POSE')
 		
 		ik3.matrix = obj.convert_space(ik3, obj.convert_space(fk3, fk3.matrix,'POSE','WORLD'), 'WORLD','POSE')
 		bpy.ops.object.mode_set(mode='OBJECT')
@@ -570,7 +596,7 @@ class POSE_OT_limb_switch_ikfk(bpy.types.Operator):
 			bpy.ops.object.mode_set(mode='OBJECT')
 			bpy.ops.object.mode_set(mode='POSE')
 			
-	def fk2ik(self, obj, root_, ik1_, ik2_, ik3_, ik5_, ik_scale_, ik_location_, fk1_, fk2_, fk3_, fk4_, fk_scale_, fk_location_):
+	def fk2ik(self, obj, root_, ik1_, ik2_, ik3_, ik5_, ik_scale_, ik_location_, fk1_, fk2_, fk3_, fk4_, fk_scale_, fk_location_, add_bones):
 		ik1 = obj.pose.bones[ik1_]
 		ik2 = obj.pose.bones[ik2_]
 		ik3 = obj.pose.bones[ik3_]
@@ -668,6 +694,11 @@ class POSE_OT_limb_switch_ikfk(bpy.types.Operator):
 			ik5.rotation_mode = ik5_current_rotation_mode
 			bpy.ops.object.mode_set(mode='OBJECT')
 			bpy.ops.object.mode_set(mode='POSE')
+			
+		for b_FK, b_IK in [[bone.name_FK, bone.name_IK] for bone in add_bones]:
+			obj.pose.bones[b_FK].matrix = obj.pose.bones[b_IK].matrix
+		bpy.ops.object.mode_set(mode='OBJECT')
+		bpy.ops.object.mode_set(mode='POSE')
 		
 class POSE_OT_generate_snapping(bpy.types.Operator):
 	"""Generate snapping"""
@@ -745,7 +776,10 @@ class POSE_OT_generate_snapping(bpy.types.Operator):
 				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###fk_scale###", limb.fk_scale)
 				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###ik_location###", limb.ik_location)
 				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###fk_location###", limb.fk_location)
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###WITH_REINIT_BONES###", str(limb.with_reinit_bones))
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###WITH_ADD_BONES###", str(limb.with_add_bones))
 				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###limb_reinit_bones###", str([bone.name for bone in limb.reinit_bones]))
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###limb_add_bones###", str([[bone.name_FK, bone.name_IK] for bone in limb.add_bones]))
 				
 				ui_layout_default_ = ui_layout_default.replace("###limb###", limb.name)
 				ui_layout_default_ = ui_layout_default_.replace("###FK2IK_LABEL###", limb.fk2ik_label)
@@ -784,7 +818,10 @@ class POSE_OT_generate_snapping(bpy.types.Operator):
 				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###fk_scale###", limb.fk_scale)
 				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###ik_location###", limb.ik_location)
 				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###fk_location###", limb.fk_location)
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###WITH_REINIT_BONES###", str(limb.with_reinit_bones))
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###WITH_ADD_BONES###", str(limb.with_add_bones))
 				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###limb_reinit_bones###", str([bone.name for bone in limb.reinit_bones]))
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###limb_add_bones###", str([[bone.name_FK, bone.name_IK] for bone in limb.add_bones]))
 				
 				ui_layout_default_switch_ = ui_layout_default_switch.replace("###limb###", limb.name)
 				ui_layout_default_switch_ = ui_layout_default_switch_.replace("###FK2IK_LABEL###", limb.fk2ik_label)

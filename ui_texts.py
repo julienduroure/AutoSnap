@@ -55,6 +55,11 @@ switch_invert_items = [
 ### Warning : any modification on this PorpertyGroup must be reported on live source code
 class BoneItem(bpy.types.PropertyGroup):
 	name = bpy.props.StringProperty(name="Bone name")
+	
+### Warning : any modification on this PorpertyGroup must be reported on live source code
+class BonePairItem(bpy.types.PropertyGroup):
+	name_FK = bpy.props.StringProperty(name="Bone name FK")
+	name_IK = bpy.props.StringProperty(name="Bone name IK")
 
 def get_poll_snapping_op(context):
 	return context.active_object and context.active_object.type == "ARMATURE" and context.active_object.data.get("autosnap_rig_id") is not None and context.active_object.data.get("autosnap_rig_id") == autosnap_rig_id and context.mode == 'POSE'
@@ -64,10 +69,12 @@ def get_poll_snapping_op(context):
 
 def register():
 	bpy.utils.register_class(BoneItem)
+	bpy.utils.register_class(BonePairItem)
 	bpy.utils.register_class(###CLASS_switch_FKIK_name###)
 	
 def unregister():
 	bpy.utils.unregister_class(BoneItem)
+	bpy.utils.unregister_class(BonePairItem)
 	bpy.utils.unregister_class(###CLASS_switch_FKIK_name###)
 
 register()
@@ -100,7 +107,11 @@ ui_generated_switch_param = '''
 ###tab###op.ik_location = "###ik_location###"
 ###tab###op.fk_location = "###fk_location###"
 
+###tab###op.with_reinit_bones = ###WITH_REINIT_BONES###
+###tab###op.with_add_bones = ###WITH_ADD_BONES###
+
 ###tab###populate_reinit_bones(op, ###limb_reinit_bones###)
+###tab###populate_add_bones(op, ###limb_add_bones###)
 '''
 
 ui_layout_default ='''
@@ -204,6 +215,12 @@ def populate_reinit_bones(op, list_):
 	for bone in list_:
 		item_dst = op.reinit_bones.add()
 		item_dst.name = bone
+		
+def populate_add_bones(op, list_):
+	for bone in list_:
+		item_dst = op.add_bones.add()
+		item_dst.name_FK = bone[0]
+		item_dst.name_IK = bone[1]
 
 class POSE_PT_BeSpanned_Snap_###rig_id###(bpy.types.Panel):
 	bl_label = "###LABEL###"

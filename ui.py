@@ -641,9 +641,21 @@ class POSE_PT_LimbDetailInteraction(bpy.types.Panel):
 			row_.prop(limb.interaction.autodisplay_data, "type", text="Type")
 			row_ = box.row()
 			if limb.interaction.autodisplay_data.type == "LAYER":
-				row_.prop(limb.interaction.autodisplay_data, "layer_ik", text="Layer IK")
+				col = row_.column()
+				row__ = col.row()
+				row__.prop(limb.interaction.autodisplay_data, "layer_ik", text="Layer IK")
+				col = row_.column()
+				row__ = col.row()
+				op = row__.operator("pose.limb_select_layer", icon="BONE_DATA", text="")
+				op.layer = "layer_ik"
 				row_ = box.row()
-				row_.prop(limb.interaction.autodisplay_data, "layer_fk", text="Layer FK")
+				col = row_.column()
+				row__ = col.row()
+				row__.prop(limb.interaction.autodisplay_data, "layer_fk", text="Layer FK")
+				col = row_.column()
+				row__ = col.row()
+				op = row__.operator("pose.limb_select_layer", icon="BONE_DATA", text="")
+				op.layer = "layer_fk"
 			elif limb.interaction.autodisplay_data.type == "HIDE":
 				pass #TODO
 			

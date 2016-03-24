@@ -240,6 +240,30 @@ class POSE_OT_limb_select_bone(bpy.types.Operator):
 		
 	
 		return {'FINISHED'}   
+		
+class POSE_OT_limb_select_layer(bpy.types.Operator):
+	"""Set active layers to layer data"""
+	bl_idname = "pose.limb_select_layer"
+	bl_label = "Select Limb layer"
+	bl_options = {'REGISTER'}
+	
+	layer   =   bpy.props.StringProperty()
+	
+	@classmethod
+	def poll(self, context):
+		return context.active_object and context.active_object.type == "ARMATURE" and len(context.active_object.limbs) > 0
+				
+	def execute(self, context):
+		armature = context.object
+		if context.active_pose_bone:
+			bone_name = context.active_pose_bone.name
+			
+		if self.layer == "layer_ik":
+			armature.limbs[armature.active_limb].interaction.autodisplay_data.layer_ik = armature.data.bones[bone_name].layers
+		elif self.layer == "layer_fk":
+			armature.limbs[armature.active_limb].interaction.autodisplay_data.layer_fk = armature.data.bones[bone_name].layers
+	
+		return {'FINISHED'}   
 
 def register():
 	bpy.utils.register_class(POSE_OT_limb_move)
@@ -255,6 +279,7 @@ def register():
 	bpy.utils.register_class(POSE_OT_reinit_bone_remove)
 	
 	bpy.utils.register_class(POSE_OT_limb_select_bone)
+	bpy.utils.register_class(POSE_OT_limb_select_layer)
 
 def unregister():
 	bpy.utils.unregister_class(POSE_OT_limb_move)
@@ -270,4 +295,5 @@ def unregister():
 	bpy.utils.unregister_class(POSE_OT_reinit_bone_remove)
 	
 	bpy.utils.unregister_class(POSE_OT_limb_select_bone)
+	bpy.utils.unregister_class(POSE_OT_limb_select_layer)
 

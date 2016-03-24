@@ -156,6 +156,16 @@ class POSE_PT_Limb_livesnap(bpy.types.Panel):
 					if armature.limbs[armature.active_limb].interaction.autoswitch_keyframe == True:
 						row_.prop(armature.limbs[armature.active_limb].interaction, "autoswitch_keyframe", text="Keyframe")
 					row_.enabled = False
+					
+					#check if multiple limb use same bone for storing data
+					bones = []
+					for limb in armature.limbs:
+						if limb.interaction.autoswitch == True:
+							if limb.interaction.autoswitch_data.bone in bones:
+								row_ = box.row()
+								row_.label("Multiple 'AutoSwitch' use same Bone", icon="ERROR")
+								break
+							bones.append(limb.interaction.autoswitch_data.bone)
 				except:
 					row_ = box.row()
 					row_.label("Wrong Autoswitch Data", icon="ERROR")
@@ -167,6 +177,16 @@ class POSE_PT_Limb_livesnap(bpy.types.Panel):
 					row_ = box.row()
 					row_.prop(armature.limbs[armature.active_limb].interaction, "autodisplay", text="AutoDisplay")
 					row_.enabled = False
+					#check if multiple limb use same bone for storing data
+					bones = []
+					for limb in armature.limbs:
+						if limb.interaction.autodisplay == True:
+							if limb.interaction.autodisplay_data.bone in bones:
+								row_ = box.row()
+								row_.label("Multiple 'AutoDisplay' use same Bone", icon="ERROR")
+								break
+							bones.append(limb.interaction.autodisplay_data.bone)
+			
 			
 class POSE_PT_Snap_Generate(bpy.types.Panel):
 	bl_label = "Generate"

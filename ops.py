@@ -38,12 +38,12 @@ class POSE_OT_limb_mirror_copy(bpy.types.Operator):
 		dst_limb.display.interaction = armature.limbs[src_limb_index].display.interaction
 		
 		dst_limb.interaction.autoswitch = armature.limbs[src_limb_index].interaction.autoswitch
-		dst_limb.interaction.autoswitch_data.bone = armature.limbs[src_limb_index].interaction.autoswitch_data.bone
+		dst_limb.interaction.autoswitch_data.bone = get_symm_name(armature.limbs[src_limb_index].interaction.autoswitch_data.bone)
 		dst_limb.interaction.autoswitch_data.property = armature.limbs[src_limb_index].interaction.autoswitch_data.property
 		dst_limb.interaction.autoswitch_keyframe = armature.limbs[src_limb_index].interaction.autoswitch_keyframe
 		
 		dst_limb.interaction.autodisplay = armature.limbs[src_limb_index].interaction.autodisplay
-		dst_limb.interaction.autodisplay_data.bone = armature.limbs[src_limb_index].interaction.autodisplay_data.bone
+		dst_limb.interaction.autodisplay_data.bone = get_symm_name(armature.limbs[src_limb_index].interaction.autodisplay_data.bone)
 		dst_limb.interaction.autodisplay_data.type = armature.limbs[src_limb_index].interaction.autodisplay_data.type
 		dst_limb.interaction.autodisplay_data.layer_ik = armature.limbs[src_limb_index].interaction.autodisplay_data.layer_ik
 		dst_limb.interaction.autodisplay_data.layer_fk = armature.limbs[src_limb_index].interaction.autodisplay_data.layer_fk

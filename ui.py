@@ -161,16 +161,16 @@ class POSE_PT_Limb_livesnap(bpy.types.Panel):
 					bones = []
 					for limb in armature.limbs:
 						if limb.interaction.autoswitch == True:
-							if limb.interaction.autoswitch_data.bone in bones:
+							if limb.interaction.autoswitch_data.bone_store in bones:
 								row_ = box.row()
-								row_.label("Multiple 'AutoSwitch' use same Bone", icon="ERROR")
+								row_.label("Multiple 'AutoSwitch' use same Bone to store data", icon="ERROR")
 								break
-							bones.append(limb.interaction.autoswitch_data.bone)
+							bones.append(limb.interaction.autoswitch_data.bone_store)
 				except:
 					row_ = box.row()
 					row_.label("Wrong Autoswitch Data", icon="ERROR")
 			if armature.limbs[armature.active_limb].interaction.autodisplay == True:
-				if armature.limbs[armature.active_limb].interaction.autodisplay_data.bone not in context.active_object.data.bones.keys():
+				if armature.limbs[armature.active_limb].interaction.autodisplay_data.bone_store not in context.active_object.data.bones.keys():
 					row_ = box.row()
 					row_.label("Wrong AutoDisplay data", icon="ERROR")
 				else:
@@ -181,11 +181,11 @@ class POSE_PT_Limb_livesnap(bpy.types.Panel):
 					bones = []
 					for limb in armature.limbs:
 						if limb.interaction.autodisplay == True:
-							if limb.interaction.autodisplay_data.bone in bones:
+							if limb.interaction.autodisplay_data.bone_store in bones:
 								row_ = box.row()
-								row_.label("Multiple 'AutoDisplay' use same Bone", icon="ERROR")
+								row_.label("Multiple 'AutoDisplay' use same Bone to store data", icon="ERROR")
 								break
-							bones.append(limb.interaction.autodisplay_data.bone)
+							bones.append(limb.interaction.autodisplay_data.bone_store)
 			
 			
 class POSE_PT_Snap_Generate(bpy.types.Panel):
@@ -606,6 +606,17 @@ class POSE_PT_LimbDetailInteraction(bpy.types.Panel):
 			op.level_2 = "autoswitch_data"
 			op.level_3 = "bone"
 			row_ = box.row()
+			col = row_.column()
+			row__ = col.row()
+			row__.prop_search(limb.interaction.autoswitch_data, "bone_store", armature.data, "bones", text="Bone (to store data)")
+			col = row_.column()
+			row__ = col.row()
+			op = row__.operator("pose.limb_select_bone", icon="BONE_DATA", text="")
+			op.level = 3
+			op.level_1 = "interaction"
+			op.level_2 = "autoswitch_data"
+			op.level_3 = "bone_store"
+			row_ = box.row()
 			row_.prop(limb.interaction.autoswitch_data, "property", text="Property")
 			row_ = box.row()
 			row_.prop(limb.interaction, "autoswitch_keyframe", text="Keyframe")
@@ -618,14 +629,14 @@ class POSE_PT_LimbDetailInteraction(bpy.types.Panel):
 			row_ = box.row()
 			col = row_.column()
 			row__ = col.row()
-			row__.prop_search(limb.interaction.autodisplay_data, "bone", armature.data, "bones", text="Bone")
+			row__.prop_search(limb.interaction.autodisplay_data, "bone_store", armature.data, "bones", text="Bone (to store data)")
 			col = row_.column()
 			row__ = col.row()
 			op = row__.operator("pose.limb_select_bone", icon="BONE_DATA", text="")
 			op.level = 3
 			op.level_1 = "interaction"
 			op.level_2 = "autodisplay_data"
-			op.level_3 = "bone"
+			op.level_3 = "bone_store"
 			row_ = box.row()
 			row_.prop(limb.interaction.autodisplay_data, "type", text="Type")
 			row_ = box.row()

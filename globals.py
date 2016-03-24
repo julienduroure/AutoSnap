@@ -61,11 +61,12 @@ class AutoSnap_DisplayPanel(bpy.types.PropertyGroup):
 ### Warning : report new attribute to copy mirror ops
 class AutoSnap_autoswitch_data(bpy.types.PropertyGroup):
 	bone = bpy.props.StringProperty(name="Switch Bone")
+	bone_store = bpy.props.StringProperty(name="Switch Bone to store data")
 	property = bpy.props.StringProperty(name="Switch Property")
 	
 ### Warning : report new attribute to copy mirror ops
 class AutoSnap_autodisplay_data(bpy.types.PropertyGroup):
-	bone = bpy.props.StringProperty(name="Display Bone")
+	bone_store = bpy.props.StringProperty(name="Display Bone to store data")
 	type = bpy.props.EnumProperty(name="AutoDisplay type", items=autodisplay_items, default="LAYER")
 	layer_ik = bpy.props.BoolVectorProperty(name="Layer IK", subtype='LAYER', size = 32)
 	layer_fk = bpy.props.BoolVectorProperty(name="Layer FK", subtype='LAYER', size = 32)

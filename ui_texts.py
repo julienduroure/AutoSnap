@@ -122,15 +122,14 @@ ui_layout_default ='''
 ###GENERATED_bone_PARAM###
 '''
 ui_autoswitch_param='''
-###tab###op.autoswitch = bpy.context.active_object.pose.bones["###AUTOSWITCH_BONE###"].autosnap_autoswitch
+###tab###op.autoswitch = bpy.context.active_object.pose.bones["###AUTOSWITCH_BONE_STORE###"].autosnap_autoswitch
 ###tab###op.autoswitch_data_bone = "###AUTOSWITCH_BONE###"
 ###tab###op.autoswitch_data_property = "###AUTOSWITCH_PROPERTY###"
-###tab###op.autoswitch_keyframe = bpy.context.active_object.pose.bones["###AUTOSWITCH_BONE###"].autosnap_autoswitch_keyframe
+###tab###op.autoswitch_keyframe = bpy.context.active_object.pose.bones["###AUTOSWITCH_BONE_STORE###"].autosnap_autoswitch_keyframe
 '''
 
 ui_autodisplay_param='''
-###tab###op.autodisplay = bpy.context.active_object.pose.bones["###AUTODISPLAY_BONE###"].autosnap_autodisplay
-###tab###op.autodisplay_data_bone = "###AUTODISPLAY_BONE###"
+###tab###op.autodisplay = bpy.context.active_object.pose.bones["###AUTODISPLAY_BONE_STORE###"].autosnap_autodisplay
 ###tab###op.autodisplay_data_type = "###AUTODISPLAY_TYPE###"
 ###tab###op.autodisplay_data_layer_ik = ###AUTODISPLAY_LAYER_IK###
 ###tab###op.autodisplay_data_layer_fk = ###AUTODISPLAY_LAYER_FK###
@@ -146,32 +145,32 @@ ui_autodisplay_param_ko='''
 '''
 
 ui_layout_default_switch_autoswitch_keyframe = '''
-			row_.prop(bpy.context.active_object.pose.bones["###SWITCH_BONE###"], "autosnap_autoswitch_keyframe", text="Keyframe")
+			row_.prop(bpy.context.active_object.pose.bones["###SWITCH_BONE_STORE###"], "autosnap_autoswitch_keyframe", text="Keyframe")
 '''
 
 ui_layout_default_switch_autoswitch = '''
 		row_ = box.row()
-		row_.prop(bpy.context.active_object.pose.bones["###SWITCH_BONE###"], "autosnap_autoswitch", text="AutoSwitch")
-		if bpy.context.active_object.pose.bones["###SWITCH_BONE###"].autosnap_autoswitch == True:
+		row_.prop(bpy.context.active_object.pose.bones["###SWITCH_BONE_STORE###"], "autosnap_autoswitch", text="AutoSwitch")
+		if bpy.context.active_object.pose.bones["###SWITCH_BONE_STORE###"].autosnap_autoswitch == True:
 			###GENERATED_interaction_AUTOSWITCH_KEYFRAME###
 			pass
 '''
 
 ui_layout_default_switch_autodisplay = '''
 		row_ = box.row()
-		row_.prop(bpy.context.active_object.pose.bones["###AUTODISPLAY_BONE###"], "autosnap_autodisplay", text="AutoDisplay")
+		row_.prop(bpy.context.active_object.pose.bones["###AUTODISPLAY_BONE_STORE###"], "autosnap_autodisplay", text="AutoDisplay")
 '''
 
 ui_layout_default_switch ='''
 		label = ""
 		try:
-			if int(armature.pose.bones["###SWITCH_BONE###"].get("###SWITCH_PROPERTY###")) == 1.0 and ###SWITCH_INVERT### == "IKIS0":
+			if int(armature.pose.bones["###SWITCH_BONE###"].get("###SWITCH_PROPERTY###")) == 1.0 and "###SWITCH_INVERT###" == "IKIS0":
 				label = "###IK2FK_LABEL###"
-			elif int(armature.pose.bones["###SWITCH_BONE###"].get("###SWITCH_PROPERTY###")) == 1.0 and ###SWITCH_INVERT### == "FKIS0":
+			elif int(armature.pose.bones["###SWITCH_BONE###"].get("###SWITCH_PROPERTY###")) == 1.0 and "###SWITCH_INVERT###" == "FKIS0":
 				label = "###FK2IK_LABEL###"
-			if int(armature.pose.bones["###SWITCH_BONE###"].get("###SWITCH_PROPERTY###")) == 0.0 and ###SWITCH_INVERT### == "IKIS0":
+			if int(armature.pose.bones["###SWITCH_BONE###"].get("###SWITCH_PROPERTY###")) == 0.0 and "###SWITCH_INVERT###" == "IKIS0":
 				label = "###FK2IK_LABEL###"
-			elif int(armature.pose.bones["###SWITCH_BONE###"].get("###SWITCH_PROPERTY###")) == 0.0 and ###SWITCH_INVERT### == "FKIS0":
+			elif int(armature.pose.bones["###SWITCH_BONE###"].get("###SWITCH_PROPERTY###")) == 0.0 and "###SWITCH_INVERT###" == "FKIS0":
 				label = "###IK2FK_LABEL###"
 		except:
 			label = ""

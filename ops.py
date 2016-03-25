@@ -130,6 +130,10 @@ class POSE_OT_limb_switch_ikfk(bpy.types.Operator):
 	autodisplay_data_layer_ik = bpy.props.BoolVectorProperty(name="Layer IK", subtype='LAYER', size = 32)
 	autodisplay_data_layer_fk = bpy.props.BoolVectorProperty(name="Layer FK", subtype='LAYER', size = 32)
 	
+	autokeyframe = bpy.props.BoolProperty()
+	autokeyframe_data_keying_set_FK = bpy.props.StringProperty()
+	autokeyframe_data_keying_set_IK = bpy.props.StringProperty()
+	
 	global_scale = bpy.props.BoolProperty()
 	ik_scale_type = bpy.props.EnumProperty(items=scale_type_items)
 	fk_scale_type = bpy.props.EnumProperty(items=scale_type_items)
@@ -332,7 +336,15 @@ class POSE_OT_limb_switch_ikfk(bpy.types.Operator):
 				return True, True
 			except:
 				self.report({'ERROR'}, "Wrong Bone property")
-				return False, {'CANCELLED'}			
+				return False, {'CANCELLED'}		
+
+		if self.autokeyframe == True:
+			if self.autoautokeyframe_data_keying_set_FK == "":
+				self.report({'ERROR'}, "FK Keying Set must be filled")
+				return False, {'CANCELLED'}		
+			if self.autoautokeyframe_data_keying_set_IK == "":
+				self.report({'ERROR'}, "IK Keying Set must be filled")
+				return False, {'CANCELLED'}		
 
 		return True, True
 		
@@ -437,6 +449,21 @@ class POSE_OT_limb_switch_ikfk(bpy.types.Operator):
 							cpt = cpt + 1
 				elif self.autodisplay_data_type == "HIDE":
 					pass #TODO
+					
+			if self.autokeyframe == True:
+				#store current keying set used
+				current_keying_set = context.scene.keying_sets.active_index
+				#Set keying_set to FK keying_set
+				context.scene.keying_sets.active_index = context.scene.keying_sets.find(self.autokeyframe_data_keying_set_FK)
+				#Insert Keyframe
+				bpy.ops.anim.keyframe_insert_menu(type='__ACTIVE__')
+				#Set keying_set to IK keying_set
+				context.scene.keying_sets.active_index = context.scene.keying_sets.find(self.autokeyframe_data_keying_set_IK)
+				#Insert Keyframe
+				bpy.ops.anim.keyframe_insert_menu(type='__ACTIVE__')
+				#Retrieve current keying set 
+				context.scene.keying_sets.active_index = current_keying_set
+				
 		return {'FINISHED'}
 		
 		

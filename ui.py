@@ -162,6 +162,10 @@ class POSE_PT_Limb_livesnap(bpy.types.Panel):
 				op.autodisplay_data_type = armature.limbs[armature.active_limb].interaction.autodisplay_data.type
 				op.autodisplay_data_layer_ik = armature.limbs[armature.active_limb].interaction.autodisplay_data.layer_ik
 				op.autodisplay_data_layer_fk = armature.limbs[armature.active_limb].interaction.autodisplay_data.layer_fk
+			op.autokeyframe =  armature.limbs[armature.active_limb].interaction.autokeyframe
+			if armature.limbs[armature.active_limb].interaction.autokeyframe == True:
+				op.autokeyframe_data_keying_set_FK = armature.limbs[armature.active_limb].interaction.autokeyframe_data.keying_set_FK
+				op.autokeyframe_data_keying_set_IK = armature.limbs[armature.active_limb].interaction.autokeyframe_data.keying_set_IK
 			self.populate_ops_param(context, op)
 			row_ = box.row()
 			if label == "":

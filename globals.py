@@ -72,13 +72,20 @@ class AutoSnap_autodisplay_data(bpy.types.PropertyGroup):
 	layer_fk = bpy.props.BoolVectorProperty(name="Layer FK", subtype='LAYER', size = 32)
 	
 ### Warning : report new attribute to copy mirror ops
+class AutoSnap_autokeyframe_data(bpy.types.PropertyGroup):
+	bone_store = bpy.props.StringProperty(name="Display Bone to store data")
+	keying_set_FK = bpy.props.StringProperty(name="Keying Set FK")
+	keying_set_IK = bpy.props.StringProperty(name="Keying Set IK")
+	
+### Warning : report new attribute to copy mirror ops
 class AutoSnap_Interaction(bpy.types.PropertyGroup):
 	autoswitch           = bpy.props.BoolProperty(name="Switch FK/IK property", default=False)
 	autoswitch_data      = bpy.props.PointerProperty(type=AutoSnap_autoswitch_data)
 	autoswitch_keyframe  = bpy.props.BoolProperty(name="Switch FK/IK property, and keyframe it", default=False)
 	autodisplay          = bpy.props.BoolProperty(name="Auto display", default=False)
 	autodisplay_data     = bpy.props.PointerProperty(type=AutoSnap_autodisplay_data)
-	#autokeyframe         = bpy.props.BoolProperty(name="Auto keyframe chain", default=False)
+	autokeyframe         = bpy.props.BoolProperty(name="Auto Keyframe Chain", default=False)
+	autokeyframe_data    = bpy.props.PointerProperty(type=AutoSnap_autokeyframe_data)
 
 class AutoSnap_Generation(bpy.types.PropertyGroup):
 	view_location = bpy.props.EnumProperty(name="View location", items=view_location_items, default="TOOLS")
@@ -160,6 +167,7 @@ def register():
 	bpy.utils.register_class(AutoSnap_DisplayPanel)
 	bpy.utils.register_class(AutoSnap_autoswitch_data)
 	bpy.utils.register_class(AutoSnap_autodisplay_data)
+	bpy.utils.register_class(AutoSnap_autokeyframe_data)
 	bpy.utils.register_class(AutoSnap_Interaction)
 	bpy.utils.register_class(LimbItem)
 	bpy.utils.register_class(AutoSnap_Generation)
@@ -169,6 +177,7 @@ def unregister():
 	bpy.utils.unregister_class(AutoSnap_DisplayPanel)
 	bpy.utils.unregister_class(AutoSnap_autoswitch_data)
 	bpy.utils.unregister_class(AutoSnap_autodisplay_data)
+	bpy.utils.unregister_class(AutoSnap_autokeyframe_data)
 	bpy.utils.unregister_class(AutoSnap_Interaction)
 	bpy.utils.unregister_class(BoneItem)
 	bpy.utils.unregister_class(BonePairItem)

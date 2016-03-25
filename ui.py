@@ -204,8 +204,26 @@ class POSE_PT_Limb_livesnap(bpy.types.Panel):
 								row_.label("Multiple 'AutoDisplay' use same Bone to store data", icon="ERROR")
 								break
 							bones.append(limb.interaction.autodisplay_data.bone_store)
-			
-			
+			if armature.limbs[armature.active_limb].interaction.autokeyframe == True:
+				if armature.limbs[armature.active_limb].interaction.autokeyframe_data.bone_store not in context.active_object.data.bones.keys():
+					row_ = box.row()
+					row_.label("Wrong AutoKeyframe data", icon="ERROR")
+					#TODO : add check keying sets
+				else:
+					row_ = box.row()
+					row_.prop(armature.limbs[armature.active_limb].interaction, "autokeyframe", text="AutoKeyframe")
+					row_.enabled = False
+					#check if multiple limb use same bone for storing data
+					bones = []
+					for limb in armature.limbs:
+						if limb.interaction.autokeyframe == True:
+							if limb.interaction.autokeyframe_data.bone_store in bones:
+								row_ = box.row()
+								row_.label("Multiple 'AutoKeyframe' use same Bone to store data", icon="ERROR")
+								break
+							bones.append(limb.interaction.autokeyframe_data.bone_store)
+							
+							
 class POSE_PT_Snap_Generate(bpy.types.Panel):
 	bl_label = "Generate"
 	bl_space_type = 'VIEW_3D'
@@ -717,6 +735,27 @@ class POSE_PT_LimbDetailInteraction(bpy.types.Panel):
 				op.layer = "layer_fk"
 			elif limb.interaction.autodisplay_data.type == "HIDE":
 				pass #TODO
+				
+		row = layout.row()
+		row.prop(limb.interaction, "autokeyframe", text="Auto Keyframe Chain")
+		if limb.interaction.autokeyframe == True:
+			row = layout.row()
+			box = row.box()
+			row_ = box.row()
+			col = row_.column()
+			row__ = col.row()
+			row__.prop_search(limb.interaction.autokeyframe_data, "bone_store", armature.data, "bones", text="Bone (to store data)")
+			col = row_.column()
+			row__ = col.row()
+			op = row__.operator("pose.limb_select_bone", icon="BONE_DATA", text="")
+			op.level = 3
+			op.level_1 = "interaction"
+			op.level_2 = "autokeyframe_data"
+			op.level_3 = "bone_store"
+			row_ = box.row()
+			row_.prop_search(limb.interaction.autokeyframe_data, "keying_set_FK", context.scene, "keying_sets", text="Keying Set FK")
+			row_ = box.row()
+			row_.prop_search(limb.interaction.autokeyframe_data, "keying_set_IK", context.scene, "keying_sets", text="Keying Set IK")
 			
 def register():
 	bpy.utils.register_class(POSE_UL_SideList)

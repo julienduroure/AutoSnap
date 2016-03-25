@@ -49,6 +49,11 @@ class POSE_OT_limb_mirror_copy(bpy.types.Operator):
 		dst_limb.interaction.autodisplay_data.layer_ik = armature.limbs[src_limb_index].interaction.autodisplay_data.layer_ik
 		dst_limb.interaction.autodisplay_data.layer_fk = armature.limbs[src_limb_index].interaction.autodisplay_data.layer_fk
 		
+		dst_limb.interaction.autokeyframe = armature.limbs[src_limb_index].interaction.autokeyframe
+		dst_limb.interaction.autokeyframe_data.bone_store = get_symm_name(armature.limbs[src_limb_index].interaction.autoautokeyframe_data.bone_store)
+		dst_limb.interaction.autokeyframe_data.keying_set_FK = armature.limbs[src_limb_index].interaction.autoautokeyframe_data.keying_set_FK
+		dst_limb.interaction.autokeyframe_data.keying_set_IK = armature.limbs[src_limb_index].interaction.autoautokeyframe_data.keying_set_IK
+		
 		dst_limb.fk2ik_label = armature.limbs[src_limb_index].fk2ik_label
 		dst_limb.ik2fk_label = armature.limbs[src_limb_index].ik2fk_label
 		

@@ -52,6 +52,12 @@ autodisplay_items = [
 #	("HIDE", "Hide", "", 2),
 ]
 
+### Warning : any modification on this enum must be reported on generated source code
+autokeyframe_items = [
+	("AVAILABLE", "Available", "", 1),
+	("KEYING_SET", "Keying Set", "", 2),
+]
+
 ### Warning : report new attribute to copy mirror ops
 class AutoSnap_DisplayPanel(bpy.types.PropertyGroup):
 	bone   = bpy.props.BoolProperty(name="Display Bones Settings", default=False)
@@ -74,6 +80,7 @@ class AutoSnap_autodisplay_data(bpy.types.PropertyGroup):
 ### Warning : report new attribute to copy mirror ops
 class AutoSnap_autokeyframe_data(bpy.types.PropertyGroup):
 	bone_store = bpy.props.StringProperty(name="Display Bone to store data")
+	type = bpy.props.EnumProperty(name="AutoKeyframe type", items=autokeyframe_items, default="AVAILABLE")
 	keying_set_FK = bpy.props.StringProperty(name="Keying Set FK")
 	keying_set_IK = bpy.props.StringProperty(name="Keying Set IK")
 	

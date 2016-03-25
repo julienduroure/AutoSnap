@@ -47,6 +47,12 @@ autodisplay_items = [
 ]
 
 ### Warning : any modification on this enum must be reported on live source code
+autokeyframe_items = 
+	("AVAILABLE", "Available", "", 1),
+	("KEYING_SET", "Keying Set", "", 2),
+]
+
+### Warning : any modification on this enum must be reported on live source code
 switch_invert_items = [
 	("IKIS0", "IK is 0", "", 1),
 	("FKIS0", "FK is 0", "", 2),

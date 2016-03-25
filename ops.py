@@ -51,6 +51,7 @@ class POSE_OT_limb_mirror_copy(bpy.types.Operator):
 		
 		dst_limb.interaction.autokeyframe = armature.limbs[src_limb_index].interaction.autokeyframe
 		dst_limb.interaction.autokeyframe_data.bone_store = get_symm_name(armature.limbs[src_limb_index].interaction.autoautokeyframe_data.bone_store)
+		dst_limb.interaction.autokeyframe_data.type = armature.limbs[src_limb_index].interaction.autoautokeyframe_data.type
 		dst_limb.interaction.autokeyframe_data.keying_set_FK = armature.limbs[src_limb_index].interaction.autoautokeyframe_data.keying_set_FK
 		dst_limb.interaction.autokeyframe_data.keying_set_IK = armature.limbs[src_limb_index].interaction.autoautokeyframe_data.keying_set_IK
 		
@@ -131,6 +132,7 @@ class POSE_OT_limb_switch_ikfk(bpy.types.Operator):
 	autodisplay_data_layer_fk = bpy.props.BoolVectorProperty(name="Layer FK", subtype='LAYER', size = 32)
 	
 	autokeyframe = bpy.props.BoolProperty()
+	autokeyframe_data_type   = bpy.props.EnumProperty(items=autokeyframe_items)
 	autokeyframe_data_keying_set_FK = bpy.props.StringProperty()
 	autokeyframe_data_keying_set_IK = bpy.props.StringProperty()
 	
@@ -338,7 +340,7 @@ class POSE_OT_limb_switch_ikfk(bpy.types.Operator):
 				self.report({'ERROR'}, "Wrong Bone property")
 				return False, {'CANCELLED'}		
 
-		if self.autokeyframe == True:
+		if self.autokeyframe == True and self.autoautokeyframe_data_type == "KEYING_SET":
 			if self.autoautokeyframe_data_keying_set_FK == "":
 				self.report({'ERROR'}, "FK Keying Set must be filled")
 				return False, {'CANCELLED'}		
@@ -419,7 +421,7 @@ class POSE_OT_limb_switch_ikfk(bpy.types.Operator):
 							else:
 								break
 						cpt = cpt + 1
-		
+
 			#AutoDisplay
 			if self.autodisplay == True:
 				if self.autodisplay_data_type == "LAYER":
@@ -451,21 +453,75 @@ class POSE_OT_limb_switch_ikfk(bpy.types.Operator):
 					pass #TODO
 					
 			if self.autokeyframe == True:
-				#store current keying set used
-				current_keying_set = context.scene.keying_sets.active_index
-				#Set keying_set to FK keying_set
-				context.scene.keying_sets.active_index = context.scene.keying_sets.find(self.autokeyframe_data_keying_set_FK)
-				#Insert Keyframe
-				bpy.ops.anim.keyframe_insert_menu(type='__ACTIVE__')
-				#Set keying_set to IK keying_set
-				context.scene.keying_sets.active_index = context.scene.keying_sets.find(self.autokeyframe_data_keying_set_IK)
-				#Insert Keyframe
-				bpy.ops.anim.keyframe_insert_menu(type='__ACTIVE__')
-				#Retrieve current keying set 
-				context.scene.keying_sets.active_index = current_keying_set
+				if self.autokeyframe_data_type == "KEYING_SET":
+					#store current keying set used
+					current_keying_set = context.scene.keying_sets.active_index
+					#Set keying_set to FK keying_set
+					context.scene.keying_sets.active_index = context.scene.keying_sets.find(self.autokeyframe_data_keying_set_FK)
+					#Insert Keyframe
+					bpy.ops.anim.keyframe_insert_menu(type='__ACTIVE__')
+					#Set keying_set to IK keying_set
+					context.scene.keying_sets.active_index = context.scene.keying_sets.find(self.autokeyframe_data_keying_set_IK)
+					#Insert Keyframe
+					bpy.ops.anim.keyframe_insert_menu(type='__ACTIVE__')
+					#Retrieve current keying set 
+					context.scene.keying_sets.active_index = current_keying_set
+				elif self.autokeyframe_data_type == "AVAILABLE":
+					#store current keying set used
+					current_keying_set = context.scene.keying_sets.active_index
+					#set keying_set to available
+					bpy.context.scene.keying_sets.active = bpy.context.scene.keying_sets_all['Available']
+					# Construct override context
+					override = {'selected_pose_bones': self.get_list_bones(context)}
+					#Insert Keyframe
+					bpy.ops.anim.keyframe_insert(override)
+					#Retrieve current keying set 
+					context.scene.keying_sets.active_index = current_keying_set	
 				
 		return {'FINISHED'}
 		
+	def get_list_bones(self, context):
+		list_ = []
+		if self.root != "" and self.root in context.active_object.data.bones.keys():
+			list_.append(context.active_object.pose.bones[self.root])
+		if self.ik1 != "" and self.ik1 in context.active_object.data.bones.keys():
+			list_.append(context.active_object.pose.bones[self.ik1])
+		if self.ik2 != "" and self.ik2 in context.active_object.data.bones.keys():
+			list_.append(context.active_object.pose.bones[self.ik2])
+		if self.ik3 != "" and self.ik3 in context.active_object.data.bones.keys():
+			list_.append(context.active_object.pose.bones[self.ik3])
+		if self.ik4 != "" and self.ik4 in context.active_object.data.bones.keys():
+			list_.append(context.active_object.pose.bones[self.ik4])
+		if self.ik5 != "" and self.ik5 in context.active_object.data.bones.keys():
+			list_.append(context.active_object.pose.bones[self.ik5])
+		if self.ik_scale != "" and self.ik_scale in context.active_object.data.bones.keys():
+			list_.append(context.active_object.pose.bones[self.ik_scale])
+		if self.ik_location != "" and self.ik_location in context.active_object.data.bones.keys():
+			list_.append(context.active_object.pose.bones[self.ik_location])	
+		if self.fk1 != "" and self.fk1 in context.active_object.data.bones.keys():
+			list_.append(context.active_object.pose.bones[self.fk1])
+		if self.fk2 != "" and self.fk2 in context.active_object.data.bones.keys():
+			list_.append(context.active_object.pose.bones[self.fk2])
+		if self.fk3 != "" and self.fk3 in context.active_object.data.bones.keys():
+			list_.append(context.active_object.pose.bones[self.fk3])
+		if self.fk4 != "" and self.fk4 in context.active_object.data.bones.keys():
+			list_.append(context.active_object.pose.bones[self.fk4])
+		if self.fk_scale != "" and self.fk_scale in context.active_object.data.bones.keys():
+			list_.append(context.active_object.pose.bones[self.fk_scale])
+		if self.fk_location != "" and self.fk_location in context.active_object.data.bones.keys():
+			list_.append(context.active_object.pose.bones[self.fk_location])
+
+		for bone in self.reinit_bones:
+			if bone.name != "" and bone.name in context.active_object.data.bones.keys():
+				list_.append(context.active_object.pose.bones[bone.name])
+				
+		for bone in self.add_bones:
+			if bone.name_FK != "" and bone.name_FK in context.active_object.data.bones.keys():
+				list_.append(context.active_object.pose.bones[bone.name_FK])	
+			if bone.name_IK != "" and bone.name_IK in context.active_object.data.bones.keys():
+				list_.append(context.active_object.pose.bones[bone.name_IK])
+				
+		return list_
 		
 	def perpendicular(self, v):
 		if v != mathutils.Vector((1,1,1)):

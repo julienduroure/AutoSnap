@@ -164,6 +164,7 @@ class POSE_PT_Limb_livesnap(bpy.types.Panel):
 				op.autodisplay_data_layer_fk = armature.limbs[armature.active_limb].interaction.autodisplay_data.layer_fk
 			op.autokeyframe =  armature.limbs[armature.active_limb].interaction.autokeyframe
 			if armature.limbs[armature.active_limb].interaction.autokeyframe == True:
+				op.autokeyframe_data_type          = armature.limbs[armature.active_limb].interaction.autokeyframe_data.type
 				op.autokeyframe_data_keying_set_FK = armature.limbs[armature.active_limb].interaction.autokeyframe_data.keying_set_FK
 				op.autokeyframe_data_keying_set_IK = armature.limbs[armature.active_limb].interaction.autokeyframe_data.keying_set_IK
 			self.populate_ops_param(context, op)
@@ -191,6 +192,7 @@ class POSE_PT_Limb_livesnap(bpy.types.Panel):
 				except:
 					row_ = box.row()
 					row_.label("Wrong Autoswitch Data", icon="ERROR")
+					
 			if armature.limbs[armature.active_limb].interaction.autodisplay == True:
 				if armature.limbs[armature.active_limb].interaction.autodisplay_data.bone_store not in context.active_object.data.bones.keys():
 					row_ = box.row()
@@ -208,11 +210,12 @@ class POSE_PT_Limb_livesnap(bpy.types.Panel):
 								row_.label("Multiple 'AutoDisplay' use same Bone to store data", icon="ERROR")
 								break
 							bones.append(limb.interaction.autodisplay_data.bone_store)
+							
 			if armature.limbs[armature.active_limb].interaction.autokeyframe == True:
 				if armature.limbs[armature.active_limb].interaction.autokeyframe_data.bone_store not in context.active_object.data.bones.keys():
 					row_ = box.row()
 					row_.label("Wrong AutoKeyframe data", icon="ERROR")
-					#TODO : add check keying sets
+					#TODO : add check keying sets ?
 				else:
 					row_ = box.row()
 					row_.prop(armature.limbs[armature.active_limb].interaction, "autokeyframe", text="AutoKeyframe")
@@ -746,6 +749,8 @@ class POSE_PT_LimbDetailInteraction(bpy.types.Panel):
 			row = layout.row()
 			box = row.box()
 			row_ = box.row()
+			row_.prop(limb.interaction.autokeyframe_data, "type", text="Type")
+			row_ = box.row()
 			col = row_.column()
 			row__ = col.row()
 			row__.prop_search(limb.interaction.autokeyframe_data, "bone_store", armature.data, "bones", text="Bone (to store data)")
@@ -756,10 +761,11 @@ class POSE_PT_LimbDetailInteraction(bpy.types.Panel):
 			op.level_1 = "interaction"
 			op.level_2 = "autokeyframe_data"
 			op.level_3 = "bone_store"
-			row_ = box.row()
-			row_.prop_search(limb.interaction.autokeyframe_data, "keying_set_FK", context.scene, "keying_sets", text="Keying Set FK")
-			row_ = box.row()
-			row_.prop_search(limb.interaction.autokeyframe_data, "keying_set_IK", context.scene, "keying_sets", text="Keying Set IK")
+			if limb.interaction.autokeyframe_data.type == "KEYING_SET":
+				row_ = box.row()
+				row_.prop_search(limb.interaction.autokeyframe_data, "keying_set_FK", context.scene, "keying_sets", text="Keying Set FK")
+				row_ = box.row()
+				row_.prop_search(limb.interaction.autokeyframe_data, "keying_set_IK", context.scene, "keying_sets", text="Keying Set IK")
 			
 def register():
 	bpy.utils.register_class(POSE_UL_SideList)

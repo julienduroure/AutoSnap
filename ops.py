@@ -56,11 +56,11 @@ class POSE_OT_limb_mirror_copy(bpy.types.Operator):
 		dst_limb.interaction.autokeyframe_data.keying_set_IK = armature.limbs[src_limb_index].interaction.autokeyframe_data.keying_set_IK
 		
 		dst_limb.layout.fk2ik_label = armature.limbs[src_limb_index].layout.fk2ik_label
-		dst_limb.layout.ik2fk_label = armature.limbs[src_limb_index].layout.ik2fk_label
-		
+		dst_limb.layout.ik2fk_label = armature.limbs[src_limb_index].layout.ik2fk_label		
 		dst_limb.layout.switch_bone = get_symm_name(armature.limbs[src_limb_index].layout.switch_bone)
 		dst_limb.layout.switch_property = armature.limbs[src_limb_index].layout.switch_property
 		dst_limb.layout.switch_invert = armature.limbs[src_limb_index].layout.switch_invert
+		dst_limb.layout.display_name = armature.limbs[src_limb_index].layout.display_name
 		
 		dst_limb.ik_type = armature.limbs[src_limb_index].ik_type
 		dst_limb.ik_scale_type = armature.limbs[src_limb_index].ik_scale_type

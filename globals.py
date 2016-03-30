@@ -91,10 +91,12 @@ class AutoSnap_Layout_data(bpy.types.PropertyGroup):
 
 	basic = bpy.props.BoolProperty(name="Basic layout", default=True, update=fct_upd_basic_layout)
 	
+	display_name = bpy.props.BoolProperty(name="Display name", default=True)
+	
 	fk2ik_label = bpy.props.StringProperty(name="fk2ik label", default="fk2ik")
 	ik2fk_label = bpy.props.StringProperty(name="ik2fk label", default="ik2fk")
 	
-	#DEFAULT_SWITCH
+	#SWITCH
 	switch_bone = bpy.props.StringProperty(name="Switch Bone", update=fct_upd_switch_bone)
 	switch_property = bpy.props.StringProperty(name="Switch Property",update=fct_upd_switch_property)
 	switch_invert = bpy.props.EnumProperty(items=switch_invert_items,name="Way", default = "IKIS0")

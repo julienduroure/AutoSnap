@@ -108,8 +108,9 @@ class POSE_PT_Limb_livesnap(bpy.types.Panel):
 		if armature.limbs[armature.active_limb].layout.basic == True:
 			row = layout.row()
 			box = row.box()
-			row_ = box.row()
-			row_.label(armature.limbs[armature.active_limb].name)
+			if armature.limbs[armature.active_limb].layout.display_name == True:
+				row_ = box.row()
+				row_.label(armature.limbs[armature.active_limb].name)
 			row_ = box.row()
 			op = row_.operator("pose.limb_switch_ikfk", text=armature.limbs[armature.active_limb].layout.fk2ik_label)
 			op.switch_type = "FORCED"
@@ -143,8 +144,9 @@ class POSE_PT_Limb_livesnap(bpy.types.Panel):
 				label = ""
 			row = layout.row()
 			box = row.box()
-			row_ = box.row()
-			row_.label(armature.limbs[armature.active_limb].name)
+			if armature.limbs[armature.active_limb].layout.display_name == True:
+				row_ = box.row()
+				row_.label(armature.limbs[armature.active_limb].name)
 			row_ = box.row()
 			op = row_.operator("pose.limb_switch_ikfk", text=label)
 			op.switch_type = "DEDUCTED"
@@ -643,6 +645,11 @@ class POSE_PT_LimbDetailLayout(bpy.types.Panel):
 			row_ = box.row()
 			row_.prop(limb.layout, "switch_property", text="Switch Property")
 			row_.prop(limb.layout, "switch_invert", text="way")
+			
+		row = layout.row()
+		box = row.row()
+		row_ = box.row()
+		row_.prop(limb.layout, "display_name", text="Display Name")
 			
 class POSE_PT_LimbDetailInteraction(bpy.types.Panel):
 	bl_label = "Limb Detail - Interaction"

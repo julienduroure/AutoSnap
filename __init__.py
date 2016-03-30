@@ -8,6 +8,7 @@ bl_info = {
 	"wiki_url": "http://julienduroure.com/AutoSnap",
 	"tracker_url": "https://github.com/julienduroure/AutoSnap",
 	"category": "Rigging",   
+	"warning": "Alpha Version. Please report bugs :)",
 }
 
 if "bpy" in locals():

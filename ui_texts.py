@@ -114,11 +114,15 @@ ui_generated_switch_param = '''
 ###tab###populate_add_bones(op, ###limb_add_bones###)
 '''
 
+ui_layout_basic_limb_name ='''
+		row_ = box.row()
+		row_.label("###limb###")
+'''
+
 ui_layout_basic ='''
 		row = layout.row()
 		box = row.box()
-		row_ = box.row()
-		row_.label("###limb###")
+###LIMB_NAME###
 		row_ = box.row()
 		op = row_.operator("pose.limb_switch_ikfk_###rig_id###", text="###FK2IK_LABEL###")
 		op.layout_basic = True
@@ -170,6 +174,11 @@ ui_layout_non_basic_autodisplay = '''
 		row_.prop(bpy.context.active_object.pose.bones["###AUTODISPLAY_BONE_STORE###"], "autosnap_autodisplay", text="AutoDisplay")
 '''
 
+ui_layout_non_basic_limb_name ='''
+###tab###row_ = box.row()
+###tab###row_.label("###limb###")
+'''
+
 ui_layout_non_basic ='''
 		label = ""
 		try:
@@ -185,8 +194,7 @@ ui_layout_non_basic ='''
 			label = ""
 		row = layout.row()
 		box = row.box()
-		row_ = box.row()
-		row_.label("###limb###")
+###LIMB_NAME###
 		row_ = box.row()
 		op = row_.operator("pose.limb_switch_ikfk_###rig_id###", text=label)
 		op.layout_basic = False

@@ -869,7 +869,12 @@ class POSE_OT_generate_snapping(bpy.types.Operator):
 				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###limb_reinit_bones###", str([bone.name for bone in limb.reinit_bones]))
 				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###limb_add_bones###", str([[bone.name_FK, bone.name_IK] for bone in limb.add_bones]))
 				
-				ui_layout_basic_ = ui_layout_basic.replace("###limb###", limb.name)
+				if limb.layout.display_name == True:
+					ui_layout_basic_limb_name_ = ui_layout_basic_limb_name.replace("###limb###", limb.name)
+					ui_layout_basic_ = ui_layout_basic.replace("###LIMB_NAME###", ui_layout_basic_limb_name_)
+				else:
+					ui_layout_basic_ = ui_layout_basic.replace("###LIMB_NAME###", "")
+				
 				ui_layout_basic_ = ui_layout_basic_.replace("###FK2IK_LABEL###", limb.layout.fk2ik_label)
 				ui_layout_basic_ = ui_layout_basic_.replace("###IK2FK_LABEL###", limb.layout.ik2fk_label)
 				ui_layout_basic_ = ui_layout_basic_.replace("###rig_id###", rig_id)
@@ -907,7 +912,13 @@ class POSE_OT_generate_snapping(bpy.types.Operator):
 				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###limb_reinit_bones###", str([bone.name for bone in limb.reinit_bones]))
 				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###limb_add_bones###", str([[bone.name_FK, bone.name_IK] for bone in limb.add_bones]))
 				
-				ui_layout_non_basic_ = ui_layout_non_basic.replace("###limb###", limb.name)
+				if limb.layout.display_name == True:
+					ui_layout_non_basic_limb_name_ = ui_layout_non_basic_limb_name.replace("###tab###","\t\t")
+					ui_layout_non_basic_limb_name_ = ui_layout_non_basic_limb_name_.replace("###limb###", limb.name)
+					ui_layout_non_basic_ = ui_layout_non_basic.replace("###LIMB_NAME###", ui_layout_non_basic_limb_name_)
+				else:
+					ui_layout_non_basic_ = ui_layout_non_basic.replace("###LIMB_NAME###", "")
+					
 				ui_layout_non_basic_ = ui_layout_non_basic_.replace("###FK2IK_LABEL###", limb.layout.fk2ik_label)
 				ui_layout_non_basic_ = ui_layout_non_basic_.replace("###IK2FK_LABEL###", limb.layout.ik2fk_label)
 				ui_layout_non_basic_ = ui_layout_non_basic_.replace("###rig_id###", rig_id)

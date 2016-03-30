@@ -47,7 +47,7 @@ autodisplay_items = [
 ]
 
 ### Warning : any modification on this enum must be reported on live source code
-autokeyframe_items = 
+autokeyframe_items = [
 	("AVAILABLE", "Available", "", 1),
 	("KEYING_SET", "Keying Set", "", 2),
 ]
@@ -128,13 +128,13 @@ ui_layout_default ='''
 		row_ = box.row()
 		op = row_.operator("pose.limb_switch_ikfk_###rig_id###", text="###FK2IK_LABEL###")
 		op.switch_type = "FORCED"
-		op.layout_type = "DEFAULT"
+		op.layout_basic = True
 		op.switch_forced_value = "FK2IK"
 ###GENERATED_bone_PARAM###
 		row_ = box.row()
 		op = row_.operator("pose.limb_switch_ikfk_###rig_id###", text="###IK2FK_LABEL###")
 		op.switch_type = "FORCED"
-		op.layout_type = "DEFAULT"
+		op.layout_basic = True
 		op.switch_forced_value = "IK2FK"
 ###GENERATED_bone_PARAM###
 '''
@@ -198,7 +198,7 @@ ui_layout_default_switch ='''
 		row_ = box.row()
 		op = row_.operator("pose.limb_switch_ikfk_###rig_id###", text=label)
 		op.switch_type = "DEDUCTED"
-		op.layout_type = "DEFAULT_SWITCH"
+		op.layout_basic = False
 		op.switch_bone = "###SWITCH_BONE###"
 		op.switch_property = "###SWITCH_PROPERTY###"
 		op.switch_invert   = "###SWITCH_INVERT###"

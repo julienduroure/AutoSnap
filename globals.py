@@ -23,11 +23,6 @@ view_location_items = [
 	("UI", "Properties", "", 2),
 ]
 
-layout_type_items = [
-	("DEFAULT", "Default", "", 1),
-	("DEFAULT_SWITCH", "Default - switch", "", 2),
-]
-
 ### Warning : any modification on this enum must be reported on generated source code
 switch_type_items = [
 	("FORCED", "Forced", "", 1),
@@ -80,8 +75,21 @@ def fct_upd_switch_property(self, contex):
 	armature = bpy.context.active_object
 	armature.limbs[armature.active_limb].interaction.autoswitch_data.property = armature.limbs[armature.active_limb].layout.switch_property
 	
+def fct_upd_basic_layout(self, context):
+	armature = bpy.context.active_object
+	if armature.limbs[armature.active_limb].layout.basic == True:
+		#uncheck interaction
+		armature.limbs[armature.active_limb].interaction.autodisplay = False
+		armature.limbs[armature.active_limb].interaction.autoswitch = False
+		armature.limbs[armature.active_limb].interaction.autoswitch_keyframe = False
+		armature.limbs[armature.active_limb].interaction.autokeyframe = False
+		armature.limbs[armature.active_limb].display.interaction = False
+		
+	
 ### Warning : report new attribute to copy mirror ops
 class AutoSnap_Layout_data(bpy.types.PropertyGroup):
+
+	basic = bpy.props.BoolProperty(name="Basic layout", default=True, update=fct_upd_basic_layout)
 	
 	fk2ik_label = bpy.props.StringProperty(name="fk2ik label", default="fk2ik")
 	ik2fk_label = bpy.props.StringProperty(name="ik2fk label", default="ik2fk")
@@ -125,7 +133,6 @@ class AutoSnap_Generation(bpy.types.PropertyGroup):
 	view_location = bpy.props.EnumProperty(name="View location", items=view_location_items, default="TOOLS")
 	panel_name    = bpy.props.StringProperty(name="Panel name")
 	tab_tool      = bpy.props.StringProperty(name="Tab")
-	layout_type   = bpy.props.EnumProperty(name="Layout type", items=layout_type_items, default="DEFAULT")
 
 class SideItem(bpy.types.PropertyGroup):
 	name_R = bpy.props.StringProperty(name="Side name R")

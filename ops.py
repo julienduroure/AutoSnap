@@ -112,7 +112,7 @@ class POSE_OT_limb_switch_ikfk(bpy.types.Operator):
 	bl_label = "Switch IK/FK"
 	bl_options = {'REGISTER'}	
 	
-	layout_type = bpy.props.StringProperty()
+	layout_basic = bpy.props.BoolProperty()
 	
 	switch_type  = bpy.props.EnumProperty(items=switch_type_items)
 	switch_forced_value = bpy.props.EnumProperty(items=switch_forced_value)
@@ -169,10 +169,10 @@ class POSE_OT_limb_switch_ikfk(bpy.types.Operator):
 	def poll(self, context):
 		return get_poll_snapping_op(context)
 		
-	def layout_check_default(self, context):
+	def layout_check_basic(self, context):
 		return True, True
 		
-	def layout_check_default_switch(self, context):
+	def layout_check_non_basic(self, context):
 		if self.switch_bone == "":
 			self.report({'ERROR'}, "Switch Bone must be filled")
 			return False, {'CANCELLED'}		
@@ -187,11 +187,11 @@ class POSE_OT_limb_switch_ikfk(bpy.types.Operator):
 
 		return True, True
 		
-	def layout_check(self, context, layout_type):
-		if layout_type == "DEFAULT":
-			return self.layout_check_default(context)
-		elif layout_type == "DEFAULT_SWITCH":
-			return self.layout_check_default_switch(context)
+	def layout_check(self, context, layout_basic):
+		if layout_basic == True:
+			return self.layout_check_basic(context)
+		elif layout_basic == False:
+			return self.layout_check_non_basic(context)
 		
 		self.report({'ERROR'}, "Unknow Layout type")
 		return False, {'CANCELLED'}	
@@ -352,12 +352,12 @@ class POSE_OT_limb_switch_ikfk(bpy.types.Operator):
 		
 	def execute(self, context):
 	
-		status, error = self.layout_check(context, self.layout_type)
+		status, error = self.layout_check(context, self.layout_basic)
 		if status == False:
 			return error
 			
-		#No interaction for DEFAULT layout
-		if self.layout_type != "DEFAULT":
+		#No interaction for basic layout
+		if self.layout_basic == False:
 			status, error = self.interaction_check(context)
 			if status == False:
 				return error
@@ -395,7 +395,7 @@ class POSE_OT_limb_switch_ikfk(bpy.types.Operator):
 			self.fk2ik(context.active_object, self.root, self.ik1, self.ik2, self.ik3, self.ik5, self.ik_scale, self.ik_location,  self.fk1, self.fk2, self.fk3, self.fk4, self.fk_scale, self.fk_location, self.add_bones)
 		
 
-		if self.layout_type != "DEFAULT": #No interaction for DEFAULT layout
+		if self.layout_basic == False: #No interaction for basic layout
 			#AutoSwitch
 			if self.switch_type == "DEDUCTED" and self.autoswitch == True:
 				if int(context.active_object.pose.bones[self.autoswitch_data_bone].get(self.autoswitch_data_property)) == 0:
@@ -837,9 +837,10 @@ class POSE_OT_generate_snapping(bpy.types.Operator):
 		ui_generated_text_ = ui_generated_text_.replace("###CATEGORY###", context.active_object.generation.tab_tool)
 		ui_generated_text_ = ui_generated_text_.replace("###rig_id###", rig_id )
 		
-		if context.active_object.generation.layout_type == "DEFAULT":
-			total_layout = ""
-			for limb in context.active_object.limbs:
+		total_layout_ = ""
+		for limb in context.active_object.limbs:
+			if limb.layout.basic == True:
+
 				ui_generated_switch_param_ = ui_generated_switch_param
 				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###tab###","\t\t")
 				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###root###", limb.root)
@@ -875,13 +876,9 @@ class POSE_OT_generate_snapping(bpy.types.Operator):
 				ui_layout_default_ = ui_layout_default_.replace("###rig_id###", rig_id)
 				ui_layout_default_ = ui_layout_default_.replace("###GENERATED_bone_PARAM###",ui_generated_switch_param_)
 				
-				total_layout = total_layout + ui_layout_default_
+				total_layout_ = total_layout_ + ui_layout_default_
 				
-			ui_generated_text_ = ui_generated_text_.replace("###LAYOUT###", total_layout)
-
-		elif context.active_object.generation.layout_type == "DEFAULT_SWITCH":
-			total_layout = ""
-			for limb in context.active_object.limbs:
+			else:
 				ui_generated_switch_param_ = ui_generated_switch_param
 				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###tab###","\t\t")
 				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###root###", limb.root)
@@ -980,9 +977,10 @@ class POSE_OT_generate_snapping(bpy.types.Operator):
 						
 					ui_layout_default_switch_ = ui_layout_default_switch_.replace("###GENERATED_autodisplay_UI###",ui_layout_default_switch_autodisplay_)		
 						
-				total_layout = total_layout + ui_layout_default_switch_
 
-			ui_generated_text_ = ui_generated_text_.replace("###LAYOUT###", total_layout)
+				total_layout_ = total_layout_ + ui_layout_default_switch_
+
+		ui_generated_text_ = ui_generated_text_.replace("###LAYOUT###", total_layout_)
 		
 		if context.active_object.data["autosnap_rig_id"] + "_autosnap_ui.py" in bpy.data.texts.keys():
 			bpy.data.texts.remove(bpy.data.texts[context.active_object.data["autosnap_rig_id"] + "_autosnap_ui.py"])

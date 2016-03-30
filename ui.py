@@ -105,7 +105,7 @@ class POSE_PT_Limb_livesnap(bpy.types.Panel):
 		layout = self.layout
 		armature = context.object
 		
-		if armature.generation.layout_type == "DEFAULT":
+		if armature.limbs[armature.active_limb].layout.basic == True:
 			row = layout.row()
 			box = row.box()
 			row_ = box.row()
@@ -113,7 +113,7 @@ class POSE_PT_Limb_livesnap(bpy.types.Panel):
 			row_ = box.row()
 			op = row_.operator("pose.limb_switch_ikfk", text=armature.limbs[armature.active_limb].layout.fk2ik_label)
 			op.switch_type = "FORCED"
-			op.layout_type = "DEFAULT"
+			op.layout_basic = armature.limbs[armature.active_limb].layout.basic
 			op.switch_forced_value = "FK2IK"
 			op.autoswitch =  armature.limbs[armature.active_limb].interaction.autoswitch
 			if armature.limbs[armature.active_limb].interaction.autoswitch == True:
@@ -124,11 +124,11 @@ class POSE_PT_Limb_livesnap(bpy.types.Panel):
 			row_ = box.row()
 			op = row_.operator("pose.limb_switch_ikfk", text=armature.limbs[armature.active_limb].layout.ik2fk_label)
 			op.switch_type = "FORCED"
-			op.layout_type = "DEFAULT"
+			op.layout_basic = armature.limbs[armature.active_limb].layout.basic
 			op.switch_forced_value = "IK2FK"
 			self.populate_ops_param(context, op)
 			
-		elif armature.generation.layout_type == "DEFAULT_SWITCH":
+		else:
 			label = ""
 			try:
 				if int(armature.pose.bones[armature.limbs[armature.active_limb].layout.switch_bone].get(armature.limbs[armature.active_limb].layout.switch_property)) == 1.0 and armature.limbs[armature.active_limb].layout.switch_invert == "IKIS0":
@@ -148,7 +148,7 @@ class POSE_PT_Limb_livesnap(bpy.types.Panel):
 			row_ = box.row()
 			op = row_.operator("pose.limb_switch_ikfk", text=label)
 			op.switch_type = "DEDUCTED"
-			op.layout_type = "DEFAULT_SWITCH"
+			op.layout_basic = armature.limbs[armature.active_limb].layout.basic
 			op.switch_bone = armature.limbs[armature.active_limb].layout.switch_bone
 			op.switch_property = armature.limbs[armature.active_limb].layout.switch_property
 			op.switch_invert   = armature.limbs[armature.active_limb].layout.switch_invert
@@ -253,23 +253,6 @@ class POSE_PT_Snap_Generate(bpy.types.Panel):
 			row.prop(armature.generation, "tab_tool")
 		row = layout.row()
 		row.operator("pose.generate_snapping", text="Generate")
-
-class POSE_PT_layout(bpy.types.Panel):
-	bl_label = "Layout"
-	bl_space_type = 'VIEW_3D'
-	bl_region_type = 'TOOLS'
-	bl_category = "AutoSnap"	
-	
-	@classmethod
-	def poll(self, context):
-		return context.active_object and context.active_object.type == "ARMATURE" and context.mode == 'POSE'
-		
-	def draw(self, context):
-		layout = self.layout
-		armature = context.object		
-		
-		row = layout.row()
-		row.prop(armature.generation, "layout_type")
 		
 class POSE_PT_Limbs(bpy.types.Panel):
 	bl_label = "Limbs"
@@ -612,12 +595,10 @@ class POSE_PT_LimbDetail(bpy.types.Panel):
 		row.prop(limb.display, "bone")
 		row = layout.row()
 		row.prop(limb.display, "layout")
-		if armature.generation.layout_type != "DEFAULT": #No interaction for DEFAULT layout
-			row = layout.row()
-			row.prop(limb.display, "interaction")
-		else:
-			row = layout.row()
-			row.label("No Interaction for this Layout")
+		row = layout.row()
+		row.prop(limb.display, "interaction")
+		if limb.layout.basic == True:
+			row.enabled = False
 			
 class POSE_PT_LimbDetailLayout(bpy.types.Panel):
 	bl_label = "Limb Detail - Layout"
@@ -634,16 +615,16 @@ class POSE_PT_LimbDetailLayout(bpy.types.Panel):
 		layout = self.layout
 		armature = context.active_object
 		limb = armature.limbs[armature.active_limb]
-		if armature.generation.layout_type == "DEFAULT":
-			row = layout.row()
-			row.prop(limb.layout, "fk2ik_label", "Label fk2ik")
-			row = layout.row()
-			row.prop(limb.layout, "ik2fk_label", "Label ik2fk")
-		elif armature.generation.layout_type == "DEFAULT_SWITCH":
-			row = layout.row()
-			row.prop(limb.layout, "fk2ik_label", "Label fk2ik")
-			row = layout.row()
-			row.prop(limb.layout, "ik2fk_label", "Label ik2fk")
+		
+		row = layout.row()
+		row.prop(limb.layout, "basic", "Basic Layout")
+		
+		row = layout.row()
+		row.prop(limb.layout, "fk2ik_label", "Label fk2ik")
+		row = layout.row()
+		row.prop(limb.layout, "ik2fk_label", "Label ik2fk")
+		
+		if limb.layout.basic == False:
 			row = layout.row()
 			col = row.column()
 			row_ = col.column(align=True)
@@ -777,7 +758,6 @@ def register():
 	
 	bpy.utils.register_class(POSE_MT_limb_specials)
 	
-	bpy.utils.register_class(POSE_PT_layout)
 	bpy.utils.register_class(POSE_PT_Limbs)
 	bpy.utils.register_class(POSE_PT_LimbDetail)
 	bpy.utils.register_class(POSE_PT_LimbDetailBones)
@@ -794,7 +774,6 @@ def unregister():
 	
 	bpy.utils.unregister_class(POSE_MT_limb_specials)
 	
-	bpy.utils.unregister_class(POSE_PT_layout)
 	bpy.utils.unregister_class(POSE_PT_Limbs) 
 	bpy.utils.unregister_class(POSE_PT_LimbDetail)
 	bpy.utils.unregister_class(POSE_PT_LimbDetailBones)

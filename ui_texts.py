@@ -120,7 +120,7 @@ ui_generated_switch_param = '''
 ###tab###populate_add_bones(op, ###limb_add_bones###)
 '''
 
-ui_layout_default ='''
+ui_layout_basic ='''
 		row = layout.row()
 		box = row.box()
 		row_ = box.row()
@@ -161,11 +161,11 @@ ui_autodisplay_param_ko='''
 ###tab###op.autodisplay = False
 '''
 
-ui_layout_default_switch_autoswitch_keyframe = '''
+ui_layout_non_basic_autoswitch_keyframe = '''
 			row_.prop(bpy.context.active_object.pose.bones["###SWITCH_BONE_STORE###"], "autosnap_autoswitch_keyframe", text="Keyframe")
 '''
 
-ui_layout_default_switch_autoswitch = '''
+ui_layout_non_basic_autoswitch = '''
 		row_ = box.row()
 		row_.prop(bpy.context.active_object.pose.bones["###SWITCH_BONE_STORE###"], "autosnap_autoswitch", text="AutoSwitch")
 		if bpy.context.active_object.pose.bones["###SWITCH_BONE_STORE###"].autosnap_autoswitch == True:
@@ -173,12 +173,12 @@ ui_layout_default_switch_autoswitch = '''
 			pass
 '''
 
-ui_layout_default_switch_autodisplay = '''
+ui_layout_non_basic_autodisplay = '''
 		row_ = box.row()
 		row_.prop(bpy.context.active_object.pose.bones["###AUTODISPLAY_BONE_STORE###"], "autosnap_autodisplay", text="AutoDisplay")
 '''
 
-ui_layout_default_switch ='''
+ui_layout_non_basic ='''
 		label = ""
 		try:
 			if int(armature.pose.bones["###SWITCH_BONE###"].get("###SWITCH_PROPERTY###")) == 1.0 and "###SWITCH_INVERT###" == "IKIS0":

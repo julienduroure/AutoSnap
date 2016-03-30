@@ -147,6 +147,16 @@ ui_autodisplay_param='''
 ###tab###op.autodisplay_data_layer_ik = ###AUTODISPLAY_LAYER_IK###
 ###tab###op.autodisplay_data_layer_fk = ###AUTODISPLAY_LAYER_FK###
 '''
+ui_autokeyframe_param_keyingset ='''
+###tab###op.autokeyframe_data_keying_set_FK = "###AUTOKEYFRAME_KEYING_SET_FK###"
+###tab###op.autokeyframe_data_keying_set_IK = "###AUTOKEYFRAME_KEYING_SET_IK###"
+'''
+
+ui_autokeyframe_param='''
+###tab###op.autokeyframe = bpy.context.active_object.pose.bones["###AUTOKEYFRAME_BONE_STORE###"].autosnap_autokeyframe
+###tab###op.autokeyframe_data_type = "###AUTOKEYFRAME_TYPE###"
+###AUTOKEYFRAME_PARAM###
+'''
 
 ui_autoswitch_param_ko='''
 ###tab###op.autoswitch = False
@@ -155,6 +165,10 @@ ui_autoswitch_param_ko='''
 
 ui_autodisplay_param_ko='''
 ###tab###op.autodisplay = False
+'''
+
+ui_autokeyframe_param_ko='''
+###tab###op.autodkeyframe = False
 '''
 
 ui_layout_non_basic_autoswitch_keyframe = '''
@@ -172,6 +186,11 @@ ui_layout_non_basic_autoswitch = '''
 ui_layout_non_basic_autodisplay = '''
 		row_ = box.row()
 		row_.prop(bpy.context.active_object.pose.bones["###AUTODISPLAY_BONE_STORE###"], "autosnap_autodisplay", text="AutoDisplay")
+'''
+
+ui_layout_non_basic_autokeyframe = '''
+		row_ = box.row()
+		row_.prop(bpy.context.active_object.pose.bones["###AUTOKEYFRAME_BONE_STORE###"], "autosnap_autokeyframe", text="AutoKeyframe")
 '''
 
 ui_layout_non_basic_limb_name ='''
@@ -203,9 +222,11 @@ ui_layout_non_basic ='''
 		op.switch_invert   = "###SWITCH_INVERT###"
 ###GENERATED_autoswitch_PARAM###
 ###GENERATED_autodisplay_PARAM###
+###GENERATED_autokeyframe_PARAM###
 ###GENERATED_bone_PARAM###
 ###GENERATED_autoswitch_UI###
 ###GENERATED_autodisplay_UI###
+###GENERATED_autokeyframe_UI###
 '''
 
 ui_generated_text = '''

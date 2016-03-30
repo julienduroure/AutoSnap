@@ -617,28 +617,32 @@ class POSE_PT_LimbDetailLayout(bpy.types.Panel):
 		limb = armature.limbs[armature.active_limb]
 		
 		row = layout.row()
-		row.prop(limb.layout, "basic", "Basic Layout")
+		box = row.box()
+		row_ = box.row()
+		row_.prop(limb.layout, "basic", "Basic Layout")
 		
-		row = layout.row()
-		row.prop(limb.layout, "fk2ik_label", "Label fk2ik")
-		row = layout.row()
-		row.prop(limb.layout, "ik2fk_label", "Label ik2fk")
+		row_ = box.row()
+		row_.prop(limb.layout, "fk2ik_label", "Label fk2ik")
+		row_ = box.row()
+		row_.prop(limb.layout, "ik2fk_label", "Label ik2fk")
 		
 		if limb.layout.basic == False:
 			row = layout.row()
-			col = row.column()
-			row_ = col.column(align=True)
-			row_.prop_search(limb.layout, "switch_bone", armature.data, "bones", text="Switch Bone")
-			col = row.column()
-			row_ = col.row()
-			op = row_.operator("pose.limb_select_bone", icon="BONE_DATA", text="")	
+			box = row.box()
+			row_ = box.row()
+			col = row_.column()
+			row__ = col.column(align=True)
+			row__.prop_search(limb.layout, "switch_bone", armature.data, "bones", text="Switch Bone")
+			col = row_.column()
+			row__ = col.row()
+			op = row__.operator("pose.limb_select_bone", icon="BONE_DATA", text="")	
 			op.bone = "switch_bone"
 			op.level = 2
 			op.level_1 = "layout"
 			op.level_2 = "switch_bone"
-			row = layout.row()
-			row.prop(limb.layout, "switch_property", text="Switch Property")
-			row.prop(limb.layout, "switch_invert", text="way")
+			row_ = box.row()
+			row_.prop(limb.layout, "switch_property", text="Switch Property")
+			row_.prop(limb.layout, "switch_invert", text="way")
 			
 class POSE_PT_LimbDetailInteraction(bpy.types.Panel):
 	bl_label = "Limb Detail - Interaction"

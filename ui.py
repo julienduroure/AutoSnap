@@ -117,6 +117,10 @@ class POSE_PT_Limb_livesnap(bpy.types.Panel):
 		if armature.limbs[armature.active_limb].layout.basic == True:
 			row = layout.row()
 			box = row.box()
+			if armature.limbs[armature.active_limb].layout.on_select == True:
+				if context.active_pose_bone.name not in [bone.name for bone in armature.limbs[armature.active_limb].select_bones]:
+					row_ = box.row()
+					row_.label("Preview Only : Bone is not in selected list", icon='ERROR')
 			if armature.limbs[armature.active_limb].layout.display_name == True:
 				row_ = box.row()
 				row_.label(armature.limbs[armature.active_limb].name)
@@ -151,6 +155,10 @@ class POSE_PT_Limb_livesnap(bpy.types.Panel):
 				label = ""
 			row = layout.row()
 			box = row.box()
+			if armature.limbs[armature.active_limb].layout.on_select == True:
+				if context.active_pose_bone.name not in [bone.name for bone in armature.limbs[armature.active_limb].select_bones]:
+					row_ = box.row()
+					row_.label("Preview Only : Bone is not in selected list", icon='ERROR')
 			if armature.limbs[armature.active_limb].layout.display_name == True:
 				row_ = box.row()
 				row_.label(armature.limbs[armature.active_limb].name)

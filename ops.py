@@ -50,17 +50,17 @@ class POSE_OT_limb_mirror_copy(bpy.types.Operator):
 		dst_limb.interaction.autodisplay_data.layer_fk = armature.limbs[src_limb_index].interaction.autodisplay_data.layer_fk
 		
 		dst_limb.interaction.autokeyframe = armature.limbs[src_limb_index].interaction.autokeyframe
-		dst_limb.interaction.autokeyframe_data.bone_store = get_symm_name(armature.limbs[src_limb_index].interaction.autoautokeyframe_data.bone_store)
-		dst_limb.interaction.autokeyframe_data.type = armature.limbs[src_limb_index].interaction.autoautokeyframe_data.type
-		dst_limb.interaction.autokeyframe_data.keying_set_FK = armature.limbs[src_limb_index].interaction.autoautokeyframe_data.keying_set_FK
-		dst_limb.interaction.autokeyframe_data.keying_set_IK = armature.limbs[src_limb_index].interaction.autoautokeyframe_data.keying_set_IK
+		dst_limb.interaction.autokeyframe_data.bone_store = get_symm_name(armature.limbs[src_limb_index].interaction.autokeyframe_data.bone_store)
+		dst_limb.interaction.autokeyframe_data.type = armature.limbs[src_limb_index].interaction.autokeyframe_data.type
+		dst_limb.interaction.autokeyframe_data.keying_set_FK = armature.limbs[src_limb_index].interaction.autokeyframe_data.keying_set_FK
+		dst_limb.interaction.autokeyframe_data.keying_set_IK = armature.limbs[src_limb_index].interaction.autokeyframe_data.keying_set_IK
 		
-		dst_limb.fk2ik_label = armature.limbs[src_limb_index].fk2ik_label
-		dst_limb.ik2fk_label = armature.limbs[src_limb_index].ik2fk_label
+		dst_limb.layout.fk2ik_label = armature.limbs[src_limb_index].layout.fk2ik_label
+		dst_limb.layout.ik2fk_label = armature.limbs[src_limb_index].layout.ik2fk_label
 		
-		dst_limb.switch_bone = get_symm_name(armature.limbs[src_limb_index].switch_bone)
-		dst_limb.switch_property = armature.limbs[src_limb_index].switch_property
-		dst_limb.switch_invert = armature.limbs[src_limb_index].switch_invert
+		dst_limb.layout.switch_bone = get_symm_name(armature.limbs[src_limb_index].layout.switch_bone)
+		dst_limb.layout.switch_property = armature.limbs[src_limb_index].layout.switch_property
+		dst_limb.layout.switch_invert = armature.limbs[src_limb_index].layout.switch_invert
 		
 		dst_limb.ik_type = armature.limbs[src_limb_index].ik_type
 		dst_limb.ik_scale_type = armature.limbs[src_limb_index].ik_scale_type
@@ -870,8 +870,8 @@ class POSE_OT_generate_snapping(bpy.types.Operator):
 				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###limb_add_bones###", str([[bone.name_FK, bone.name_IK] for bone in limb.add_bones]))
 				
 				ui_layout_default_ = ui_layout_default.replace("###limb###", limb.name)
-				ui_layout_default_ = ui_layout_default_.replace("###FK2IK_LABEL###", limb.fk2ik_label)
-				ui_layout_default_ = ui_layout_default_.replace("###IK2FK_LABEL###", limb.ik2fk_label)
+				ui_layout_default_ = ui_layout_default_.replace("###FK2IK_LABEL###", limb.layout.fk2ik_label)
+				ui_layout_default_ = ui_layout_default_.replace("###IK2FK_LABEL###", limb.layout.ik2fk_label)
 				ui_layout_default_ = ui_layout_default_.replace("###rig_id###", rig_id)
 				ui_layout_default_ = ui_layout_default_.replace("###GENERATED_bone_PARAM###",ui_generated_switch_param_)
 				
@@ -912,13 +912,13 @@ class POSE_OT_generate_snapping(bpy.types.Operator):
 				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###limb_add_bones###", str([[bone.name_FK, bone.name_IK] for bone in limb.add_bones]))
 				
 				ui_layout_default_switch_ = ui_layout_default_switch.replace("###limb###", limb.name)
-				ui_layout_default_switch_ = ui_layout_default_switch_.replace("###FK2IK_LABEL###", limb.fk2ik_label)
-				ui_layout_default_switch_ = ui_layout_default_switch_.replace("###IK2FK_LABEL###", limb.ik2fk_label)
+				ui_layout_default_switch_ = ui_layout_default_switch_.replace("###FK2IK_LABEL###", limb.layout.fk2ik_label)
+				ui_layout_default_switch_ = ui_layout_default_switch_.replace("###IK2FK_LABEL###", limb.layout.ik2fk_label)
 				ui_layout_default_switch_ = ui_layout_default_switch_.replace("###rig_id###", rig_id)
 				ui_layout_default_switch_ = ui_layout_default_switch_.replace("###GENERATED_bone_PARAM###",ui_generated_switch_param_)
-				ui_layout_default_switch_ = ui_layout_default_switch_.replace("###SWITCH_BONE###",limb.switch_bone)
-				ui_layout_default_switch_ = ui_layout_default_switch_.replace("###SWITCH_PROPERTY###",limb.switch_property)
-				ui_layout_default_switch_ = ui_layout_default_switch_.replace("###SWITCH_INVERT###",limb.switch_invert)
+				ui_layout_default_switch_ = ui_layout_default_switch_.replace("###SWITCH_BONE###",limb.layout.switch_bone)
+				ui_layout_default_switch_ = ui_layout_default_switch_.replace("###SWITCH_PROPERTY###",limb.layout.switch_property)
+				ui_layout_default_switch_ = ui_layout_default_switch_.replace("###SWITCH_INVERT###",limb.layout.switch_invert)
 				
 				if limb.interaction.autoswitch == True:
 					#create properties and set to False by default

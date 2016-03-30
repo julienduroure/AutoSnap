@@ -66,11 +66,30 @@ class AutoSnap_DisplayPanel(bpy.types.PropertyGroup):
 	
 def fct_upd_autoswitch_data_bone(self, context):
 	armature = bpy.context.active_object
-	armature.limbs[armature.active_limb].switch_bone = armature.limbs[armature.active_limb].interaction.autoswitch_data.bone
+	armature.limbs[armature.active_limb].layout.switch_bone = armature.limbs[armature.active_limb].interaction.autoswitch_data.bone
 	
 def fct_upd_autoswitch_data_property(self, context):
 	armature = bpy.context.active_object
-	armature.limbs[armature.active_limb].switch_property = armature.limbs[armature.active_limb].interaction.autoswitch_data.property
+	armature.limbs[armature.active_limb].layout.switch_property = armature.limbs[armature.active_limb].interaction.autoswitch_data.property
+	
+def fct_upd_switch_bone(self, context):
+	armature = bpy.context.active_object
+	armature.limbs[armature.active_limb].interaction.autoswitch_data.bone = armature.limbs[armature.active_limb].layout.switch_bone
+	
+def fct_upd_switch_property(self, contex):
+	armature = bpy.context.active_object
+	armature.limbs[armature.active_limb].interaction.autoswitch_data.property = armature.limbs[armature.active_limb].layout.switch_property
+	
+### Warning : report new attribute to copy mirror ops
+class AutoSnap_Layout_data(bpy.types.PropertyGroup):
+	
+	fk2ik_label = bpy.props.StringProperty(name="fk2ik label", default="fk2ik")
+	ik2fk_label = bpy.props.StringProperty(name="ik2fk label", default="ik2fk")
+	
+	#DEFAULT_SWITCH
+	switch_bone = bpy.props.StringProperty(name="Switch Bone", update=fct_upd_switch_bone)
+	switch_property = bpy.props.StringProperty(name="Switch Property",update=fct_upd_switch_property)
+	switch_invert = bpy.props.EnumProperty(items=switch_invert_items,name="Way", default = "IKIS0")
 	
 ### Warning : report new attribute to copy mirror ops
 class AutoSnap_autoswitch_data(bpy.types.PropertyGroup):
@@ -120,26 +139,11 @@ class BoneItem(bpy.types.PropertyGroup):
 class BonePairItem(bpy.types.PropertyGroup):
 	name_FK = bpy.props.StringProperty(name="Bone name FK")
 	name_IK = bpy.props.StringProperty(name="Bone name IK")
-
-def fct_upd_switch_bone(self, context):
-	armature = bpy.context.active_object
-	armature.limbs[armature.active_limb].interaction.autoswitch_data.bone = armature.limbs[armature.active_limb].switch_bone
-	
-def fct_upd_switch_property(self, contex):
-	armature = bpy.context.active_object
-	armature.limbs[armature.active_limb].interaction.autoswitch_data.property = armature.limbs[armature.active_limb].switch_property
 	
 ### Warning : report new attribute to copy mirror ops
 class LimbItem(bpy.types.PropertyGroup):
 
-	#DEFAULT & DEFAULT_SWITCH
-	fk2ik_label = bpy.props.StringProperty(name="fk2ik label", default="fk2ik")
-	ik2fk_label = bpy.props.StringProperty(name="ik2fk label", default="ik2fk")
-	
-	#DEFAULT_SWITCH
-	switch_bone = bpy.props.StringProperty(name="Switch Bone", update=fct_upd_switch_bone)
-	switch_property = bpy.props.StringProperty(name="Switch Property",update=fct_upd_switch_property)
-	switch_invert = bpy.props.EnumProperty(items=switch_invert_items,name="Way", default = "IKIS0")
+	layout  = bpy.props.PointerProperty(type=AutoSnap_Layout_data)
 	
 	display = bpy.props.PointerProperty(type=AutoSnap_DisplayPanel)
 	
@@ -187,6 +191,7 @@ def addonpref():
 def register():
 	bpy.utils.register_class(BoneItem)
 	bpy.utils.register_class(BonePairItem)
+	bpy.utils.register_class(AutoSnap_Layout_data)
 	bpy.utils.register_class(AutoSnap_DisplayPanel)
 	bpy.utils.register_class(AutoSnap_autoswitch_data)
 	bpy.utils.register_class(AutoSnap_autodisplay_data)
@@ -197,6 +202,7 @@ def register():
 
 def unregister():
 	bpy.utils.unregister_class(LimbItem)
+	bpy.utils.unregister_class(AutoSnap_Layout_data)
 	bpy.utils.unregister_class(AutoSnap_DisplayPanel)
 	bpy.utils.unregister_class(AutoSnap_autoswitch_data)
 	bpy.utils.unregister_class(AutoSnap_autodisplay_data)

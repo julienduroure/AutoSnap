@@ -314,13 +314,15 @@ class POSE_OT_limb_select_bone(bpy.types.Operator):
 					armature.limbs[armature.active_limb].add_bones[armature.limbs[armature.active_limb].active_add_bone].name_IK = bone_name
 			else:
 				armature.limbs[armature.active_limb][self.bone] = bone_name
-				if self.bone == "switch_bone":
-					armature.limbs[armature.active_limb].interaction.autoswitch_data.bone = bone_name
-				
+
+		elif self.level == 2:
+			armature.limbs[armature.active_limb][self.level_1][self.level_2] = bone_name
+			if self.bone == "switch_bone":
+				armature.limbs[armature.active_limb].interaction.autoswitch_data.bone = bone_name
 		elif self.level == 3:
 			armature.limbs[armature.active_limb][self.level_1][self.level_2][self.level_3] = bone_name
 			if self.level_1 == "interaction" and self.level_2 == "autoswitch_data" and self.level_3 == "bone":
-				armature.limbs[armature.active_limb].switch_bone = bone_name
+				armature.limbs[armature.active_limb].layout.switch_bone = bone_name
 		
 	
 		return {'FINISHED'}   

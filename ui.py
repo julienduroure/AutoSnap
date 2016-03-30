@@ -113,9 +113,8 @@ class POSE_PT_Limb_livesnap(bpy.types.Panel):
 				row_.label(armature.limbs[armature.active_limb].name)
 			row_ = box.row()
 			op = row_.operator("pose.limb_switch_ikfk", text=armature.limbs[armature.active_limb].layout.fk2ik_label)
-			op.switch_type = "FORCED"
 			op.layout_basic = armature.limbs[armature.active_limb].layout.basic
-			op.switch_forced_value = "FK2IK"
+			op.switch_way = "FK2IK"
 			op.autoswitch =  armature.limbs[armature.active_limb].interaction.autoswitch
 			if armature.limbs[armature.active_limb].interaction.autoswitch == True:
 				op.autoswitch_data_bone = armature.limbs[armature.active_limb].interaction.autoswitch_data.bone
@@ -124,9 +123,8 @@ class POSE_PT_Limb_livesnap(bpy.types.Panel):
 			
 			row_ = box.row()
 			op = row_.operator("pose.limb_switch_ikfk", text=armature.limbs[armature.active_limb].layout.ik2fk_label)
-			op.switch_type = "FORCED"
 			op.layout_basic = armature.limbs[armature.active_limb].layout.basic
-			op.switch_forced_value = "IK2FK"
+			op.switch_way = "IK2FK"
 			self.populate_ops_param(context, op)
 			
 		else:
@@ -149,7 +147,6 @@ class POSE_PT_Limb_livesnap(bpy.types.Panel):
 				row_.label(armature.limbs[armature.active_limb].name)
 			row_ = box.row()
 			op = row_.operator("pose.limb_switch_ikfk", text=label)
-			op.switch_type = "DEDUCTED"
 			op.layout_basic = armature.limbs[armature.active_limb].layout.basic
 			op.switch_bone = armature.limbs[armature.active_limb].layout.switch_bone
 			op.switch_property = armature.limbs[armature.active_limb].layout.switch_property

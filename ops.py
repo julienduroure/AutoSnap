@@ -114,8 +114,7 @@ class POSE_OT_limb_switch_ikfk(bpy.types.Operator):
 	
 	layout_basic = bpy.props.BoolProperty()
 	
-	switch_type  = bpy.props.EnumProperty(items=switch_type_items)
-	switch_forced_value = bpy.props.EnumProperty(items=switch_forced_value)
+	switch_way = bpy.props.EnumProperty(items=switch_way)
 	
 	switch_bone = bpy.props.StringProperty()
 	switch_property = bpy.props.StringProperty()
@@ -363,17 +362,17 @@ class POSE_OT_limb_switch_ikfk(bpy.types.Operator):
 				return error
 	
 		way = ""
-		if self.switch_type == "FORCED" and self.switch_forced_value == "FK2IK":
+		if self.layout_basic == True and self.switch_way == "FK2IK":
 			way = "FK2IK"
-		elif self.switch_type == "FORCED" and self.switch_forced_value == "IK2FK":
+		elif self.layout_basic == True and self.switch_way == "IK2FK":
 			way = "IK2FK"
-		elif self.switch_type == "DEDUCTED" and int(context.active_object.pose.bones[self.switch_bone].get(self.switch_property)) == 1.0 and self.switch_invert == "IKIS0":
+		elif self.layout_basic == False and int(context.active_object.pose.bones[self.switch_bone].get(self.switch_property)) == 1.0 and self.switch_invert == "IKIS0":
 			way = "IK2FK"
-		elif self.switch_type == "DEDUCTED" and int(context.active_object.pose.bones[self.switch_bone].get(self.switch_property)) == 1.0 and self.switch_invert == "FKIS0":
+		elif self.layout_basic == False and int(context.active_object.pose.bones[self.switch_bone].get(self.switch_property)) == 1.0 and self.switch_invert == "FKIS0":
 			way = "FK2IK"
-		elif self.switch_type == "DEDUCTED" and int(context.active_object.pose.bones[self.switch_bone].get(self.switch_property)) == 0.0 and self.switch_invert == "IKIS0":
+		elif self.layout_basic == False and int(context.active_object.pose.bones[self.switch_bone].get(self.switch_property)) == 0.0 and self.switch_invert == "IKIS0":
 			way = "FK2IK"
-		elif self.switch_type == "DEDUCTED" and int(context.active_object.pose.bones[self.switch_bone].get(self.switch_property)) == 0.0 and self.switch_invert == "FKIS0":
+		elif self.layout_basic == False and int(context.active_object.pose.bones[self.switch_bone].get(self.switch_property)) == 0.0 and self.switch_invert == "FKIS0":
 			way = "IK2FK"	
 			
 		status, error = self.common_check(context)
@@ -397,7 +396,7 @@ class POSE_OT_limb_switch_ikfk(bpy.types.Operator):
 
 		if self.layout_basic == False: #No interaction for basic layout
 			#AutoSwitch
-			if self.switch_type == "DEDUCTED" and self.autoswitch == True:
+			if self.layout_basic == False and self.autoswitch == True:
 				if int(context.active_object.pose.bones[self.autoswitch_data_bone].get(self.autoswitch_data_property)) == 0:
 					context.active_object.pose.bones[self.autoswitch_data_bone][self.autoswitch_data_property] = 1.0
 				else:

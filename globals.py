@@ -24,19 +24,13 @@ view_location_items = [
 ]
 
 ### Warning : any modification on this enum must be reported on generated source code
-switch_type_items = [
-	("FORCED", "Forced", "", 1),
-	("DEDUCTED", "DEDUCTED", "", 2),
-]
-
-### Warning : any modification on this enum must be reported on generated source code
 switch_invert_items = [
 	("IKIS0", "IK is 0", "", 1),
 	("FKIS0", "FK is 0", "", 2),
 ]
 
 ### Warning : any modification on this enum must be reported on generated source code
-switch_forced_value = [
+switch_way = [
 	("IK2FK", "ik2fk", "", 1),
 	("FK2IK", "fk2ik", "", 2),
 ]

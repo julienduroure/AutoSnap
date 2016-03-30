@@ -87,6 +87,8 @@ class AutoSnap_Layout_data(bpy.types.PropertyGroup):
 	
 	display_name = bpy.props.BoolProperty(name="Display name", default=True)
 	
+	on_select = bpy.props.BoolProperty(name="On select", default=False)
+	
 	fk2ik_label = bpy.props.StringProperty(name="fk2ik label", default="fk2ik")
 	ik2fk_label = bpy.props.StringProperty(name="ik2fk label", default="ik2fk")
 	
@@ -185,6 +187,9 @@ class LimbItem(bpy.types.PropertyGroup):
 	
 	add_bones = bpy.props.CollectionProperty(type=BonePairItem)
 	active_add_bone = bpy.props.IntProperty()
+	
+	select_bones = bpy.props.CollectionProperty(type=BoneItem)
+	active_select_bone = bpy.props.IntProperty()
 
 #shortcut to prefs
 def addonpref():

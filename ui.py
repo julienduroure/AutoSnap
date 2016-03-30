@@ -28,6 +28,15 @@ class POSE_UL_ReInitBoneList(bpy.types.UIList):
 		elif self.layout_type in {'GRID'}:
 			layout.alignment = 'CENTER'
 			
+class POSE_UL_SelectBoneList(bpy.types.UIList):
+	def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
+		
+		if self.layout_type in {'DEFAULT', 'COMPACT'}:
+			layout.prop(item, "name", text="", emboss=False)
+			
+		elif self.layout_type in {'GRID'}:
+			layout.alignment = 'CENTER'
+			
 class POSE_UL_AddBoneList(bpy.types.UIList):
 	def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
 		
@@ -647,6 +656,35 @@ class POSE_PT_LimbDetailLayout(bpy.types.Panel):
 		box = row.row()
 		row_ = box.row()
 		row_.prop(limb.layout, "display_name", text="Display Name")
+		
+		row = layout.row()
+		box = row.row()
+		row_ = box.row()
+		row_.prop(limb.layout, "on_select", text="Display On Select")
+		if limb.layout.on_select == True:
+			row = layout.row()
+			row.template_list("POSE_UL_SelectBoneList", "", armature.limbs[armature.active_limb], "select_bones", armature.limbs[armature.active_limb], "active_select_bone")
+			
+			col = row.column()
+			row_ = col.column(align=True)
+			row_.operator("pose.select_bone_add", icon="ZOOMIN", text="")
+			row_.operator("pose.select_bone_remove", icon="ZOOMOUT", text="")
+				
+			row_ = col.column(align=True)
+			row_.separator()
+			row_.operator("pose.select_bone_move", icon='TRIA_UP', text="").direction = 'UP'
+			row_.operator("pose.select_bone_move", icon='TRIA_DOWN', text="").direction = 'DOWN'
+			
+			if len(armature.limbs[armature.active_limb].select_bones) > 0:
+				row = layout.row()
+				col = row.column()
+				row_ = col.column(align=True)
+				row_.prop_search(armature.limbs[armature.active_limb].select_bones[armature.limbs[armature.active_limb].active_select_bone], "name", armature.data, "bones", text="Bone")
+				col = row.column()
+				row_ = col.column(align=True)
+				op = row_.operator("pose.limb_select_bone", icon="BONE_DATA", text="")
+				op.bone = "select_bone"
+				op.level = 0
 			
 class POSE_PT_LimbDetailInteraction(bpy.types.Panel):
 	bl_label = "Limb Detail - Interaction"
@@ -763,6 +801,7 @@ def register():
 	bpy.utils.register_class(POSE_UL_LimbList)
 	bpy.utils.register_class(POSE_UL_ReInitBoneList)
 	bpy.utils.register_class(POSE_UL_AddBoneList)
+	bpy.utils.register_class(POSE_UL_SelectBoneList)
 	
 	bpy.utils.register_class(POSE_MT_limb_specials)
 	
@@ -779,6 +818,7 @@ def unregister():
 	bpy.utils.unregister_class(POSE_UL_LimbList)
 	bpy.utils.unregister_class(POSE_UL_ReInitBoneList)
 	bpy.utils.unregister_class(POSE_UL_AddBoneList)
+	bpy.utils.unregister_class(POSE_UL_SelectBoneList)
 	
 	bpy.utils.unregister_class(POSE_MT_limb_specials)
 	

@@ -61,6 +61,7 @@ class POSE_OT_limb_mirror_copy(bpy.types.Operator):
 		dst_limb.layout.switch_property = armature.limbs[src_limb_index].layout.switch_property
 		dst_limb.layout.switch_invert = armature.limbs[src_limb_index].layout.switch_invert
 		dst_limb.layout.display_name = armature.limbs[src_limb_index].layout.display_name
+		dst_limb.layout.on_select = armature.limbs[src_limb_index].layout.on_select
 		
 		dst_limb.ik_type = armature.limbs[src_limb_index].ik_type
 		dst_limb.ik_scale_type = armature.limbs[src_limb_index].ik_scale_type
@@ -101,6 +102,11 @@ class POSE_OT_limb_mirror_copy(bpy.types.Operator):
 			dst_bone.name_FK = get_symm_name(src_bone.name_FK)
 			dst_bone.name_IK = get_symm_name(src_bone.name_IK)
 		dst_limb.active_add_bone = armature.limbs[src_limb_index].active_add_bone
+		
+		for src_bone in armature.limbs[src_limb_index].select_bones:
+			dst_bone = dst_limb.select_bones.add()
+			dst_bone.name = get_symm_name(src_bone.name)
+		dst_limb.active_select_bone = armature.limbs[src_limb_index].active_select_bone		
 		
 		armature.active_limb = len(armature.limbs) - 1
 			

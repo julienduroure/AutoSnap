@@ -877,7 +877,9 @@ class POSE_OT_generate_snapping(bpy.types.Operator):
 				
 				if limb.layout.display_name == True:
 					ui_layout_basic_limb_name_ = ui_layout_basic_limb_name.replace("###limb###", limb.name)
+					ui_layout_basic_limb_name_ = ui_layout_basic_limb_name_.replace("###tab###", "\t\t")
 					ui_layout_basic_ = ui_layout_basic.replace("###LIMB_NAME###", ui_layout_basic_limb_name_)
+					
 				else:
 					ui_layout_basic_ = ui_layout_basic.replace("###LIMB_NAME###", "")
 				
@@ -885,6 +887,7 @@ class POSE_OT_generate_snapping(bpy.types.Operator):
 				ui_layout_basic_ = ui_layout_basic_.replace("###IK2FK_LABEL###", limb.layout.ik2fk_label)
 				ui_layout_basic_ = ui_layout_basic_.replace("###rig_id###", rig_id)
 				ui_layout_basic_ = ui_layout_basic_.replace("###GENERATED_bone_PARAM###",ui_generated_switch_param_)
+				ui_layout_basic_ = ui_layout_basic_.replace("###tab###", "\t\t")
 				
 				total_layout_ = total_layout_ + ui_layout_basic_
 				
@@ -1004,17 +1007,20 @@ class POSE_OT_generate_snapping(bpy.types.Operator):
 					if limb.interaction.autoswitch_keyframe == True:
 						ui_layout_non_basic_autoswitch_keyframe_ = ui_layout_non_basic_autoswitch_keyframe.replace("###SWITCH_BONE_STORE###", limb.interaction.autoswitch_data.bone_store)
 						ui_layout_non_basic_autoswitch_ = ui_layout_non_basic_autoswitch_.replace("###GENERATED_interaction_AUTOSWITCH_KEYFRAME###",ui_layout_non_basic_autoswitch_keyframe_)
+						ui_layout_non_basic_autoswitch_ = ui_layout_non_basic_autoswitch_.replace("###tab###", "\t\t")
 					else:
 						ui_layout_non_basic_autoswitch_ = ui_layout_non_basic_autoswitch_.replace("###GENERATED_interaction_AUTOSWITCH_KEYFRAME###","")
-
+						
+					ui_layout_non_basic_autoswitch_ = ui_layout_non_basic_autoswitch_.replace("###tab###", "\t\t")
 					ui_layout_non_basic_ = ui_layout_non_basic_.replace("###GENERATED_autoswitch_UI###",ui_layout_non_basic_autoswitch_)
+					
 					
 				#autodisplay : UI
 				if limb.interaction.autodisplay == False:
 					ui_layout_non_basic_ = ui_layout_non_basic_.replace("###GENERATED_autodisplay_UI###","")
 				else:
 					ui_layout_non_basic_autodisplay_ = ui_layout_non_basic_autodisplay.replace("###AUTODISPLAY_BONE_STORE###",limb.interaction.autodisplay_data.bone_store)
-						
+					ui_layout_non_basic_autodisplay_ = ui_layout_non_basic_autodisplay_.replace("###tab###", "\t\t")
 					ui_layout_non_basic_ = ui_layout_non_basic_.replace("###GENERATED_autodisplay_UI###",ui_layout_non_basic_autodisplay_)		
 					
 				#autokeyframe : UI
@@ -1022,10 +1028,10 @@ class POSE_OT_generate_snapping(bpy.types.Operator):
 					ui_layout_non_basic_ = ui_layout_non_basic_.replace("###GENERATED_autokeyframe_UI###","")
 				else:
 					ui_layout_non_basic_autokeyframe_ = ui_layout_non_basic_autokeyframe.replace("###AUTOKEYFRAME_BONE_STORE###",limb.interaction.autokeyframe_data.bone_store)
-						
+					ui_layout_non_basic_autokeyframe_ = ui_layout_non_basic_autokeyframe_.replace("###tab###", "\t\t")
 					ui_layout_non_basic_ = ui_layout_non_basic_.replace("###GENERATED_autokeyframe_UI###",ui_layout_non_basic_autokeyframe_)		
 						
-
+				ui_layout_non_basic_ = ui_layout_non_basic_.replace("###tab###", "\t\t")
 				total_layout_ = total_layout_ + ui_layout_non_basic_
 
 		ui_generated_text_ = ui_generated_text_.replace("###LAYOUT###", total_layout_)

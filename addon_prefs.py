@@ -37,7 +37,7 @@ class AutoSnapPreferences(bpy.types.AddonPreferences):
 		row.prop(self, "autokeyframe")
 		row.prop(self, "autokeyframe_type")
 		
-		col = row_global.column()
+		col = row_global.column(align=True)
 		row = col.row()
 		if len(addonpref().sides) > 0:
 			row.template_list("POSE_UL_SideList", "", addonpref(), "sides", addonpref(), "active_side")
@@ -52,11 +52,8 @@ class AutoSnapPreferences(bpy.types.AddonPreferences):
 			row_.operator("pose.side_move", icon='TRIA_UP', text="").direction = 'UP'
 			row_.operator("pose.side_move", icon='TRIA_DOWN', text="").direction = 'DOWN'
 
-			col_ = row.column()
-			row_ = col_.row()
 		else:
-			row.label("Here, an ops soon")
-			pass #TODO add an operator to init sides
+			row.operator("pose.side_init", text="Init sides, for mirror")
   
 
 def register():

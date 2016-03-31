@@ -368,6 +368,22 @@ class POSE_OT_side_remove(bpy.types.Operator):
 			
 		return {'FINISHED'}   
 		
+
+class POSE_OT_side_init(bpy.types.Operator):
+	"""Init Side"""
+	bl_idname = "pose.side_init"
+	bl_label = "Init Side"
+	bl_options = {'REGISTER'}
+	
+	@classmethod
+	def poll(self, context):
+		return True
+				
+	def execute(self, context):	
+		init_sides(context)
+			
+		return {'FINISHED'}  	
+		
 class POSE_OT_limb_select_bone(bpy.types.Operator):
 	"""Set active bone to limb bone"""
 	bl_idname = "pose.limb_select_bone"
@@ -447,6 +463,7 @@ def register():
 	bpy.utils.register_class(POSE_OT_side_move)
 	bpy.utils.register_class(POSE_OT_side_add)
 	bpy.utils.register_class(POSE_OT_side_remove)
+	bpy.utils.register_class(POSE_OT_side_init)
 	
 	bpy.utils.register_class(POSE_OT_reinit_bone_move)
 	bpy.utils.register_class(POSE_OT_reinit_bone_add)
@@ -471,6 +488,7 @@ def unregister():
 	bpy.utils.unregister_class(POSE_OT_side_move)
 	bpy.utils.unregister_class(POSE_OT_side_add)
 	bpy.utils.unregister_class(POSE_OT_side_remove)
+	bpy.utils.unregister_class(POSE_OT_side_init)
 	
 	bpy.utils.unregister_class(POSE_OT_reinit_bone_move)
 	bpy.utils.unregister_class(POSE_OT_reinit_bone_add)

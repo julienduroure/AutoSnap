@@ -271,6 +271,16 @@ class POSE_OT_limb_add(bpy.types.Operator):
 
 		limb = armature.limbs.add()
 		limb.name = "Limb.%d" % len(armature.limbs)
+		
+		#Set default values
+		limb.interaction.autoswitch = addonpref().autoswitch
+		limb.interaction.autoswitch_keyframe = addonpref().autoswitch_keyframe
+		limb.interaction.autodisplay = addonpref().autodisplay
+		limb.interaction.autodisplay_data.type = addonpref().autodisplay_type
+		limb.interaction.autokeyframe = addonpref().autokeyframe
+		limb.interaction.autokeyframe_data.type = addonpref().autokeyframe_type
+		limb.layout.basic = addonpref().basic
+		
 		armature.active_limb = len(armature.limbs) - 1
 		
 		return {'FINISHED'}

@@ -7,12 +7,37 @@ class AutoSnapPreferences(bpy.types.AddonPreferences):
 
 	sides = bpy.props.CollectionProperty(type=SideItem) 
 	active_side = bpy.props.IntProperty()   
+	
+	basic = bpy.props.BoolProperty(name="Default Basic On", default=False)
+	
+	autoswitch = bpy.props.BoolProperty(name="Default AutoSwitch On", default=True)
+	autoswitch_keyframe = bpy.props.BoolProperty(name="Default AutoSwitch Keyframe On", default=True)
+	autodisplay = bpy.props.BoolProperty(name="Default AutoDisplay On", default=True)
+	autokeyframe = bpy.props.BoolProperty(name="Default AutoKeyframe On", default=True)
+	
+	autodisplay_type  = bpy.props.EnumProperty(name="AutoDisplay Default", items=autodisplay_items, default="LAYER")	
+	autokeyframe_type = bpy.props.EnumProperty(name="AutoKeyframe Default", items=autokeyframe_items, default="AVAILABLE")
 
 	def draw(self, context):
 		layout = self.layout
+		
 		row_global    = layout.row()
+		col = row_global.column()  	
+		
+		row = col.row()
+		row.prop(self, "basic")
+		row = col.row()
+		row.prop(self, "autoswitch")
+		if self.autoswitch == True:
+			row.prop(self, "autoswitch_keyframe")
+		row = col.row()
+		row.prop(self, "autodisplay")
+		row.prop(self, "autodisplay_type")
+		row = col.row()
+		row.prop(self, "autokeyframe")
+		row.prop(self, "autokeyframe_type")
+		
 		col = row_global.column()
-
 		row = col.row()
 		if len(addonpref().sides) > 0:
 			row.template_list("POSE_UL_SideList", "", addonpref(), "sides", addonpref(), "active_side")
@@ -30,9 +55,9 @@ class AutoSnapPreferences(bpy.types.AddonPreferences):
 			col_ = row.column()
 			row_ = col_.row()
 		else:
+			row.label("Here, an ops soon")
 			pass #TODO add an operator to init sides
-
-            
+  
 
 def register():
 	bpy.utils.register_class(SideItem)

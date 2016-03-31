@@ -119,7 +119,12 @@ ui_layout_basic_limb_name ='''
 ###tab###row_.label("###limb###")
 '''
 
+ui_layout_on_select ='''
+###tab_minus###if bpy.context.active_pose_bone.name in ###ON_SELECT_TAB###:
+'''
+
 ui_layout_basic ='''
+###ON_SELECT###
 ###tab###row = layout.row()
 ###tab###box = row.box()
 ###LIMB_NAME###
@@ -199,6 +204,7 @@ ui_layout_non_basic_limb_name ='''
 '''
 
 ui_layout_non_basic ='''
+###ON_SELECT###
 ###tab###label = ""
 ###tab###try:
 ###tab###	if int(armature.pose.bones["###SWITCH_BONE###"].get("###SWITCH_PROPERTY###")) == 1.0 and "###SWITCH_INVERT###" == "IKIS0":

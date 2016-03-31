@@ -844,9 +844,20 @@ class POSE_OT_generate_snapping(bpy.types.Operator):
 		
 		total_layout_ = ""
 		for limb in context.active_object.limbs:
-			tabs = "\t\t"
+			if limb.layout.on_select == True:
+				tabs = "\t\t\t"
+				ui_layout_on_select_ = ui_layout_on_select.replace("###ON_SELECT_TAB###", str([bone.name for bone in limb.select_bones]))
+				ui_layout_on_select_ = ui_layout_on_select_.replace("###tab_minus###", "\t\t")
+			else:
+				tabs = "\t\t"
+			
 			if limb.layout.basic == True:
-
+			
+				if limb.layout.on_select == False:
+					ui_layout_basic_ = ui_layout_basic.replace("###ON_SELECT###", "")
+				else:
+					ui_layout_basic_ = ui_layout_basic.replace("###ON_SELECT###", ui_layout_on_select_)
+					
 				ui_generated_switch_param_ = ui_generated_switch_param
 				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###tab###",tabs)
 				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###root###", limb.root)
@@ -879,10 +890,10 @@ class POSE_OT_generate_snapping(bpy.types.Operator):
 				if limb.layout.display_name == True:
 					ui_layout_basic_limb_name_ = ui_layout_basic_limb_name.replace("###limb###", limb.name)
 					ui_layout_basic_limb_name_ = ui_layout_basic_limb_name_.replace("###tab###", tabs)
-					ui_layout_basic_ = ui_layout_basic.replace("###LIMB_NAME###", ui_layout_basic_limb_name_)
+					ui_layout_basic_ = ui_layout_basic_.replace("###LIMB_NAME###", ui_layout_basic_limb_name_)
 					
 				else:
-					ui_layout_basic_ = ui_layout_basic.replace("###LIMB_NAME###", "")
+					ui_layout_basic_ = ui_layout_basic_.replace("###LIMB_NAME###", "")
 				
 				ui_layout_basic_ = ui_layout_basic_.replace("###FK2IK_LABEL###", limb.layout.fk2ik_label)
 				ui_layout_basic_ = ui_layout_basic_.replace("###IK2FK_LABEL###", limb.layout.ik2fk_label)
@@ -893,6 +904,12 @@ class POSE_OT_generate_snapping(bpy.types.Operator):
 				total_layout_ = total_layout_ + ui_layout_basic_
 				
 			else:
+			
+				if limb.layout.on_select == False:
+					ui_layout_non_basic_ = ui_layout_non_basic.replace("###ON_SELECT###", "")
+				else:
+					ui_layout_non_basic_ = ui_layout_non_basic.replace("###ON_SELECT###", ui_layout_on_select_)
+			
 				ui_generated_switch_param_ = ui_generated_switch_param
 				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###tab###",tabs)
 				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###root###", limb.root)
@@ -925,7 +942,7 @@ class POSE_OT_generate_snapping(bpy.types.Operator):
 				if limb.layout.display_name == True:
 					ui_layout_non_basic_limb_name_ = ui_layout_non_basic_limb_name.replace("###tab###",tabs)
 					ui_layout_non_basic_limb_name_ = ui_layout_non_basic_limb_name_.replace("###limb###", limb.name)
-					ui_layout_non_basic_ = ui_layout_non_basic.replace("###LIMB_NAME###", ui_layout_non_basic_limb_name_)
+					ui_layout_non_basic_ = ui_layout_non_basic_.replace("###LIMB_NAME###", ui_layout_non_basic_limb_name_)
 				else:
 					ui_layout_non_basic_ = ui_layout_non_basic.replace("###LIMB_NAME###", "")
 					

@@ -47,7 +47,7 @@ autokeyframe_items = [
 	("KEYING_SET", "Keying Set", "", 2),
 ]
 
-### Warning : report new attribute to copy mirror ops
+### Warning : report new attribute to copy ops
 class AutoSnap_DisplayPanel(bpy.types.PropertyGroup):
 	bone   = bpy.props.BoolProperty(name="Display Bones Settings", default=False)
 	layout = bpy.props.BoolProperty(name="Display Layout Settings", default=False)
@@ -80,7 +80,7 @@ def fct_upd_basic_layout(self, context):
 		armature.limbs[armature.active_limb].display.interaction = False
 		
 	
-### Warning : report new attribute to copy mirror ops
+### Warning : report new attribute to copy ops
 class AutoSnap_Layout_data(bpy.types.PropertyGroup):
 
 	basic = bpy.props.BoolProperty(name="Basic layout", default=True, update=fct_upd_basic_layout)
@@ -97,27 +97,27 @@ class AutoSnap_Layout_data(bpy.types.PropertyGroup):
 	switch_property = bpy.props.StringProperty(name="Switch Property",update=fct_upd_switch_property)
 	switch_invert = bpy.props.EnumProperty(items=switch_invert_items,name="Way", default = "IKIS0")
 	
-### Warning : report new attribute to copy mirror ops
+### Warning : report new attribute to copy ops
 class AutoSnap_autoswitch_data(bpy.types.PropertyGroup):
 	bone = bpy.props.StringProperty(name="Switch Bone", update=fct_upd_autoswitch_data_bone)
 	bone_store = bpy.props.StringProperty(name="Switch Bone to store data")
 	property = bpy.props.StringProperty(name="Switch Property", update=fct_upd_autoswitch_data_property)
 	
-### Warning : report new attribute to copy mirror ops
+### Warning : report new attribute to copy ops
 class AutoSnap_autodisplay_data(bpy.types.PropertyGroup):
 	bone_store = bpy.props.StringProperty(name="Display Bone to store data")
 	type = bpy.props.EnumProperty(name="AutoDisplay type", items=autodisplay_items, default="LAYER")
 	layer_ik = bpy.props.BoolVectorProperty(name="Layer IK", subtype='LAYER', size = 32)
 	layer_fk = bpy.props.BoolVectorProperty(name="Layer FK", subtype='LAYER', size = 32)
 	
-### Warning : report new attribute to copy mirror ops
+### Warning : report new attribute to copy ops
 class AutoSnap_autokeyframe_data(bpy.types.PropertyGroup):
 	bone_store = bpy.props.StringProperty(name="Display Bone to store data")
 	type = bpy.props.EnumProperty(name="AutoKeyframe type", items=autokeyframe_items, default="AVAILABLE")
 	keying_set_FK = bpy.props.StringProperty(name="Keying Set FK")
 	keying_set_IK = bpy.props.StringProperty(name="Keying Set IK")
 	
-### Warning : report new attribute to copy mirror ops
+### Warning : report new attribute to copy ops
 class AutoSnap_Interaction(bpy.types.PropertyGroup):
 	autoswitch           = bpy.props.BoolProperty(name="Switch FK/IK property", default=False)
 	autoswitch_data      = bpy.props.PointerProperty(type=AutoSnap_autoswitch_data)

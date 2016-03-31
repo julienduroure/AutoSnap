@@ -2,6 +2,9 @@ import bpy
 
 from .globals import *
 
+def get_name(bone):
+	return bone
+	
 def get_symm_name(bone):
 	#first check if last digit are .xxx with [dot] and then xxx is integer
 	end_name = ""

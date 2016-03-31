@@ -53,7 +53,10 @@ class POSE_MT_limb_specials(bpy.types.Menu):
 	def draw(self, context):
 		layout = self.layout
 	
-		layout.operator("pose.limb_mirror_copy", icon='ARROW_LEFTRIGHT')
+		op = layout.operator("pose.limb_copy", icon='COPY_ID', text="Copy Limb")
+		op.mirror = False
+		op = layout.operator("pose.limb_copy", icon='ARROW_LEFTRIGHT', text="Mirror Copy Limb")
+		op.mirror = True
 	
 class POSE_PT_Limb_livesnap(bpy.types.Panel):
 	bl_label = "Live Snapping"

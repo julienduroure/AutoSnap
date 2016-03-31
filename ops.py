@@ -12,17 +12,24 @@ def get_poll_snapping_op(context):
 	return context.active_object and context.active_object.type == "ARMATURE" and len(context.active_object.limbs) > 0 and context.mode == 'POSE'
 
 
-class POSE_OT_limb_mirror_copy(bpy.types.Operator):
-	"""Copy active limb, and mirror it"""
-	bl_idname = "pose.limb_mirror_copy"
-	bl_label = "Mirror Copy Limb"
+class POSE_OT_limb_copy(bpy.types.Operator):
+	"""Copy active limb, with mirror option"""
+	bl_idname = "pose.limb_copy"
+	bl_label = "Copy Limb"
 	bl_options = {'REGISTER'}
+	
+	mirror = bpy.props.BoolProperty(name="Mirror", default=False)
 	
 	@classmethod
 	def poll(self, context):
 		return context.active_object and context.active_object.type == "ARMATURE" and len(context.active_object.limbs) > 0
 				
 	def execute(self, context):
+	
+		if self.mirror == True:
+			fct = get_symm_name
+		else:
+			fct = get_name
 
 		if len(addonpref().sides) == 0:
 			init_sides(context)	
@@ -31,33 +38,33 @@ class POSE_OT_limb_mirror_copy(bpy.types.Operator):
 		src_limb_index = armature.active_limb
 		dst_limb = armature.limbs.add()
 		
-		dst_limb.name = get_symm_name(armature.limbs[src_limb_index].name)
+		dst_limb.name = fct(armature.limbs[src_limb_index].name)
 		
 		dst_limb.display.bone   = armature.limbs[src_limb_index].display.bone
 		dst_limb.display.layout = armature.limbs[src_limb_index].display.layout
 		dst_limb.display.interaction = armature.limbs[src_limb_index].display.interaction
 		
 		dst_limb.interaction.autoswitch = armature.limbs[src_limb_index].interaction.autoswitch
-		dst_limb.interaction.autoswitch_data.bone = get_symm_name(armature.limbs[src_limb_index].interaction.autoswitch_data.bone)
-		dst_limb.interaction.autoswitch_data.bone_store = get_symm_name(armature.limbs[src_limb_index].interaction.autoswitch_data.bone_store)
+		dst_limb.interaction.autoswitch_data.bone = fct(armature.limbs[src_limb_index].interaction.autoswitch_data.bone)
+		dst_limb.interaction.autoswitch_data.bone_store = fct(armature.limbs[src_limb_index].interaction.autoswitch_data.bone_store)
 		dst_limb.interaction.autoswitch_data.property = armature.limbs[src_limb_index].interaction.autoswitch_data.property
 		dst_limb.interaction.autoswitch_keyframe = armature.limbs[src_limb_index].interaction.autoswitch_keyframe
 		
 		dst_limb.interaction.autodisplay = armature.limbs[src_limb_index].interaction.autodisplay
-		dst_limb.interaction.autodisplay_data.bone_store = get_symm_name(armature.limbs[src_limb_index].interaction.autodisplay_data.bone_store)
+		dst_limb.interaction.autodisplay_data.bone_store = fct(armature.limbs[src_limb_index].interaction.autodisplay_data.bone_store)
 		dst_limb.interaction.autodisplay_data.type = armature.limbs[src_limb_index].interaction.autodisplay_data.type
 		dst_limb.interaction.autodisplay_data.layer_ik = armature.limbs[src_limb_index].interaction.autodisplay_data.layer_ik
 		dst_limb.interaction.autodisplay_data.layer_fk = armature.limbs[src_limb_index].interaction.autodisplay_data.layer_fk
 		
 		dst_limb.interaction.autokeyframe = armature.limbs[src_limb_index].interaction.autokeyframe
-		dst_limb.interaction.autokeyframe_data.bone_store = get_symm_name(armature.limbs[src_limb_index].interaction.autokeyframe_data.bone_store)
+		dst_limb.interaction.autokeyframe_data.bone_store = fct(armature.limbs[src_limb_index].interaction.autokeyframe_data.bone_store)
 		dst_limb.interaction.autokeyframe_data.type = armature.limbs[src_limb_index].interaction.autokeyframe_data.type
 		dst_limb.interaction.autokeyframe_data.keying_set_FK = armature.limbs[src_limb_index].interaction.autokeyframe_data.keying_set_FK
 		dst_limb.interaction.autokeyframe_data.keying_set_IK = armature.limbs[src_limb_index].interaction.autokeyframe_data.keying_set_IK
 		
 		dst_limb.layout.fk2ik_label = armature.limbs[src_limb_index].layout.fk2ik_label
 		dst_limb.layout.ik2fk_label = armature.limbs[src_limb_index].layout.ik2fk_label		
-		dst_limb.layout.switch_bone = get_symm_name(armature.limbs[src_limb_index].layout.switch_bone)
+		dst_limb.layout.switch_bone = fct(armature.limbs[src_limb_index].layout.switch_bone)
 		dst_limb.layout.switch_property = armature.limbs[src_limb_index].layout.switch_property
 		dst_limb.layout.switch_invert = armature.limbs[src_limb_index].layout.switch_invert
 		dst_limb.layout.display_name = armature.limbs[src_limb_index].layout.display_name
@@ -74,38 +81,38 @@ class POSE_OT_limb_mirror_copy(bpy.types.Operator):
 		dst_limb.with_reinit_bones = armature.limbs[src_limb_index].with_reinit_bones
 		dst_limb.with_add_bones = armature.limbs[src_limb_index].with_add_bones
 		
-		dst_limb.root = get_symm_name(armature.limbs[src_limb_index].root)
+		dst_limb.root = fct(armature.limbs[src_limb_index].root)
 		
-		dst_limb.ik1 = get_symm_name(armature.limbs[src_limb_index].ik1)
-		dst_limb.ik2 = get_symm_name(armature.limbs[src_limb_index].ik2)
-		dst_limb.ik3 = get_symm_name(armature.limbs[src_limb_index].ik3)
-		dst_limb.ik4 = get_symm_name(armature.limbs[src_limb_index].ik4)
-		dst_limb.ik5 = get_symm_name(armature.limbs[src_limb_index].ik5)
-		dst_limb.ik_scale = get_symm_name(armature.limbs[src_limb_index].ik_scale)
-		dst_limb.ik_location = get_symm_name(armature.limbs[src_limb_index].ik_location)
+		dst_limb.ik1 = fct(armature.limbs[src_limb_index].ik1)
+		dst_limb.ik2 = fct(armature.limbs[src_limb_index].ik2)
+		dst_limb.ik3 = fct(armature.limbs[src_limb_index].ik3)
+		dst_limb.ik4 = fct(armature.limbs[src_limb_index].ik4)
+		dst_limb.ik5 = fct(armature.limbs[src_limb_index].ik5)
+		dst_limb.ik_scale = fct(armature.limbs[src_limb_index].ik_scale)
+		dst_limb.ik_location = fct(armature.limbs[src_limb_index].ik_location)
 		
-		dst_limb.fk1 = get_symm_name(armature.limbs[src_limb_index].fk1)
-		dst_limb.fk2 = get_symm_name(armature.limbs[src_limb_index].fk2)
-		dst_limb.fk3 = get_symm_name(armature.limbs[src_limb_index].fk3)
-		dst_limb.fk4 = get_symm_name(armature.limbs[src_limb_index].fk4)
-		dst_limb.fk_scale = get_symm_name(armature.limbs[src_limb_index].fk_scale)
-		dst_limb.fk_location = get_symm_name(armature.limbs[src_limb_index].fk_location)
+		dst_limb.fk1 = fct(armature.limbs[src_limb_index].fk1)
+		dst_limb.fk2 = fct(armature.limbs[src_limb_index].fk2)
+		dst_limb.fk3 = fct(armature.limbs[src_limb_index].fk3)
+		dst_limb.fk4 = fct(armature.limbs[src_limb_index].fk4)
+		dst_limb.fk_scale = fct(armature.limbs[src_limb_index].fk_scale)
+		dst_limb.fk_location = fct(armature.limbs[src_limb_index].fk_location)
 
 
 		for src_bone in armature.limbs[src_limb_index].reinit_bones:
 			dst_bone = dst_limb.reinit_bones.add()
-			dst_bone.name = get_symm_name(src_bone.name)
+			dst_bone.name = fct(src_bone.name)
 		dst_limb.active_reinit_bone = armature.limbs[src_limb_index].active_reinit_bone
 		
 		for src_bone in armature.limbs[src_limb_index].add_bones:
 			dst_bone = dst_limb.add_bones.add()
-			dst_bone.name_FK = get_symm_name(src_bone.name_FK)
-			dst_bone.name_IK = get_symm_name(src_bone.name_IK)
+			dst_bone.name_FK = fct(src_bone.name_FK)
+			dst_bone.name_IK = fct(src_bone.name_IK)
 		dst_limb.active_add_bone = armature.limbs[src_limb_index].active_add_bone
 		
 		for src_bone in armature.limbs[src_limb_index].select_bones:
 			dst_bone = dst_limb.select_bones.add()
-			dst_bone.name = get_symm_name(src_bone.name)
+			dst_bone.name = fct(src_bone.name)
 		dst_limb.active_select_bone = armature.limbs[src_limb_index].active_select_bone		
 		
 		armature.active_limb = len(armature.limbs) - 1
@@ -1067,13 +1074,13 @@ class POSE_OT_generate_snapping(bpy.types.Operator):
 def register():
 	bpy.utils.register_class(POSE_OT_limb_switch_ikfk)
 
-	bpy.utils.register_class(POSE_OT_limb_mirror_copy)
+	bpy.utils.register_class(POSE_OT_limb_copy)
 	
 	bpy.utils.register_class(POSE_OT_generate_snapping)
 
 def unregister():
 	bpy.utils.unregister_class(POSE_OT_limb_switch_ikfk)
 
-	bpy.utils.unregister_class(POSE_OT_limb_mirror_copy)
+	bpy.utils.unregister_class(POSE_OT_limb_copy)
 	
 	bpy.utils.unregister_class(POSE_OT_generate_snapping)

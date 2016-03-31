@@ -48,6 +48,8 @@ class POSE_OT_reinit_bone_add(bpy.types.Operator):
 		index_limb = armature.active_limb
 
 		bone = armature.limbs[index_limb].reinit_bones.add()
+		if context.active_pose_bone:
+			bone.name = context.active_pose_bone.name
 		armature.limbs[index_limb].active_reinit_bone = len(armature.limbs[index_limb].reinit_bones) - 1
 		
 		return {'FINISHED'}
@@ -120,6 +122,8 @@ class POSE_OT_select_bone_add(bpy.types.Operator):
 		index_limb = armature.active_limb
 
 		bone = armature.limbs[index_limb].select_bones.add()
+		if context.active_pose_bone:
+			bone.name = context.active_pose_bone.name
 		armature.limbs[index_limb].active_select_bone = len(armature.limbs[index_limb].select_bones) - 1
 		
 		return {'FINISHED'}

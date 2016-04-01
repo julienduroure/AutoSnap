@@ -507,7 +507,8 @@ class POSE_OT_limb_switch_ikfk(bpy.types.Operator):
 					#set keying_set to available
 					bpy.context.scene.keying_sets.active = bpy.context.scene.keying_sets_all['Available']
 					# Construct override context
-					override = {'selected_pose_bones': self.get_list_bones(context)}
+					override = bpy.context.copy()
+					override['selected_pose_bones'] = self.get_list_bones(context)
 					#Insert Keyframe
 					bpy.ops.anim.keyframe_insert(override)
 					#Retrieve current keying set 

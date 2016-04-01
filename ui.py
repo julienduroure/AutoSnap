@@ -179,8 +179,13 @@ class POSE_PT_Limb_livesnap(bpy.types.Panel):
 			op.autodisplay =  armature.limbs[armature.active_limb].interaction.autodisplay
 			if armature.limbs[armature.active_limb].interaction.autodisplay == True:
 				op.autodisplay_data_type = armature.limbs[armature.active_limb].interaction.autodisplay_data.type
-				op.autodisplay_data_layer_ik = armature.limbs[armature.active_limb].interaction.autodisplay_data.layer_ik
-				op.autodisplay_data_layer_fk = armature.limbs[armature.active_limb].interaction.autodisplay_data.layer_fk
+				if armature.limbs[armature.active_limb].interaction.autodisplay_data.type == "LAYER":
+					op.autodisplay_data_layer_ik = armature.limbs[armature.active_limb].interaction.autodisplay_data.layer_ik
+					op.autodisplay_data_layer_fk = armature.limbs[armature.active_limb].interaction.autodisplay_data.layer_fk
+				elif armature.limbs[armature.active_limb].interaction.autodisplay_data.type == "HIDE":
+					op.autodisplay_data_bone = armature.limbs[armature.active_limb].interaction.autodisplay_data.bone
+					op.autodisplay_data_property = armature.limbs[armature.active_limb].interaction.autodisplay_data.property
+					op.autodisplay_data_invert = armature.limbs[armature.active_limb].interaction.autodisplay_data.invert
 			op.autokeyframe =  armature.limbs[armature.active_limb].interaction.autokeyframe
 			if armature.limbs[armature.active_limb].interaction.autokeyframe == True:
 				op.autokeyframe_data_type          = armature.limbs[armature.active_limb].interaction.autokeyframe_data.type

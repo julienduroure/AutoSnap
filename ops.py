@@ -146,6 +146,9 @@ class POSE_OT_limb_switch_ikfk(bpy.types.Operator):
 	autodisplay_data_type = bpy.props.EnumProperty(items=autodisplay_items)
 	autodisplay_data_layer_ik = bpy.props.BoolVectorProperty(name="Layer IK", subtype='LAYER', size = 32)
 	autodisplay_data_layer_fk = bpy.props.BoolVectorProperty(name="Layer FK", subtype='LAYER', size = 32)
+	autodisplay_data_bone = bpy.props.StringProperty()
+	autodisplay_data_property = bpy.props.StringProperty()
+	autodisplay_data_invert = bpy.props.BoolProperty()
 	
 	autokeyframe = bpy.props.BoolProperty()
 	autokeyframe_data_type   = bpy.props.EnumProperty(items=autokeyframe_items)
@@ -200,6 +203,7 @@ class POSE_OT_limb_switch_ikfk(bpy.types.Operator):
 		except:
 			self.report({'ERROR'}, "Wrong Bone property")
 			return False, {'CANCELLED'}			
+			
 
 		return True, True
 		
@@ -353,14 +357,22 @@ class POSE_OT_limb_switch_ikfk(bpy.types.Operator):
 				int(context.active_object.pose.bones[self.autoswitch_data_bone].get(self.autoswitch_data_property))
 				return True, True
 			except:
-				self.report({'ERROR'}, "Wrong Bone property")
+				self.report({'ERROR'}, "Wrong Bone property (AutoSwitch)")
+				return False, {'CANCELLED'}		
+				
+		if self.autodisplay == True and self.autodisplay_data_type == "HIDE":
+			try:
+				int(context.active_object.pose.bones[self.autodisplay_data_bone].get(self.autodisplay_data_property))
+				return True, True
+			except:
+				self.report({'ERROR'}, "Wrong Bone property (AutoDisplay)")
 				return False, {'CANCELLED'}		
 
-		if self.autokeyframe == True and self.autoautokeyframe_data_type == "KEYING_SET":
-			if self.autoautokeyframe_data_keying_set_FK == "":
+		if self.autokeyframe == True and self.autokeyframe_data_type == "KEYING_SET":
+			if self.autokeyframe_data_keying_set_FK == "":
 				self.report({'ERROR'}, "FK Keying Set must be filled")
 				return False, {'CANCELLED'}		
-			if self.autoautokeyframe_data_keying_set_IK == "":
+			if self.autokeyframe_data_keying_set_IK == "":
 				self.report({'ERROR'}, "IK Keying Set must be filled")
 				return False, {'CANCELLED'}		
 
@@ -466,8 +478,15 @@ class POSE_OT_limb_switch_ikfk(bpy.types.Operator):
 								context.active_object.data.layers[cpt] = False
 							cpt = cpt + 1
 				elif self.autodisplay_data_type == "HIDE":
-					pass #TODO
-					
+					if int(context.active_object.pose.bones[self.autodisplay_data_bone].get(self.autodisplay_data_property)) == 0 and self.autodisplay_data_invert == False:
+						context.active_object.pose.bones[self.autodisplay_data_bone][self.autodisplay_data_property] = 1.0
+					elif int(context.active_object.pose.bones[self.autodisplay_data_bone].get(self.autodisplay_data_property)) == 0 and self.autodisplay_data_invert == True:
+						context.active_object.pose.bones[self.autodisplay_data_bone][self.autodisplay_data_property] = 0.0
+					elif int(context.active_object.pose.bones[self.autodisplay_data_bone].get(self.autodisplay_data_property)) == 1 and self.autodisplay_data_invert == False:
+						context.active_object.pose.bones[self.autodisplay_data_bone][self.autodisplay_data_property] = 0.0
+					elif int(context.active_object.pose.bones[self.autodisplay_data_bone].get(self.autodisplay_data_property)) == 1 and self.autodisplay_data_invert == True:
+						context.active_object.pose.bones[self.autodisplay_data_bone][self.autodisplay_data_property] = 1.0
+						
 			if self.autokeyframe == True:
 				if self.autokeyframe_data_type == "KEYING_SET":
 					#store current keying set used

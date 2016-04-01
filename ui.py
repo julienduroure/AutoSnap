@@ -440,6 +440,9 @@ class POSE_PT_LimbDetailBones(bpy.types.Panel):
 		row__ = box.row()
 		row__.prop(limb, "with_reinit_bones", text="Roll/Rock bones to reinit")
 		if limb.with_reinit_bones == True:
+			row__ = box.row()
+			op = row__.operator("pose.limb_selected_bones_select", text="Fill from selection")
+			op.bone = "reinit_bones"
 			row__= box.row()
 			row__.template_list("POSE_UL_ReInitBoneList", "", armature.limbs[armature.active_limb], "reinit_bones", armature.limbs[armature.active_limb], "active_reinit_bone")
 			
@@ -673,6 +676,9 @@ class POSE_PT_LimbDetailLayout(bpy.types.Panel):
 		row_ = box.row()
 		row_.prop(limb.layout, "on_select", text="Display On Select")
 		if limb.layout.on_select == True:
+			row = layout.row()
+			op = row.operator("pose.limb_selected_bones_select", text="Fill from selection")
+			op.bone = "select_bones"
 			row = layout.row()
 			row.template_list("POSE_UL_SelectBoneList", "", armature.limbs[armature.active_limb], "select_bones", armature.limbs[armature.active_limb], "active_select_bone")
 			

@@ -384,6 +384,36 @@ class POSE_OT_side_init(bpy.types.Operator):
 			
 		return {'FINISHED'}  	
 		
+class POSE_OT_limb_select_bone_from_selection(bpy.types.Operator):
+	"""Set selected bones to colection"""
+	bl_idname = "pose.limb_selected_bones_select"
+	bl_label = "Add selected bones"
+	bl_options = {'REGISTER'}	
+	
+	bone = bpy.props.StringProperty()
+	
+	@classmethod
+	def poll(self, context):
+		return context.active_object and context.active_object.type == "ARMATURE" and len(context.active_object.limbs) > 0
+		
+	def execute(self, context):
+		armature = context.object
+		selected = context.selected_pose_bones
+		
+		if self.bone == "reinit_bones":
+			for bone in selected:
+				if bone.name not in [reinit.name for reinit in armature.limbs[armature.active_limb].reinit_bones]:
+					new_bone = armature.limbs[armature.active_limb].reinit_bones.add()
+					new_bone.name = bone.name
+					armature.limbs[armature.active_limb].active_reinit_bone = len(armature.limbs[armature.active_limb].reinit_bones) - 1
+		elif self.bone == "select_bones":
+			for bone in selected:
+				if bone.name not in [sel.name for sel in armature.limbs[armature.active_limb].select_bones]:
+					new_bone = armature.limbs[armature.active_limb].select_bones.add()
+					new_bone.name = bone.name
+					armature.limbs[armature.active_limb].active_select_bone = len(armature.limbs[armature.active_limb].select_bones) - 1
+		return {'FINISHED'}  
+		
 class POSE_OT_limb_select_bone(bpy.types.Operator):
 	"""Set active bone to limb bone"""
 	bl_idname = "pose.limb_select_bone"
@@ -478,6 +508,7 @@ def register():
 	bpy.utils.register_class(POSE_OT_add_bone_remove)
 	
 	bpy.utils.register_class(POSE_OT_limb_select_bone)
+	bpy.utils.register_class(POSE_OT_limb_select_bone_from_selection)
 	bpy.utils.register_class(POSE_OT_limb_select_layer)
 
 def unregister():
@@ -503,5 +534,6 @@ def unregister():
 	bpy.utils.unregister_class(POSE_OT_add_bone_remove)
 	
 	bpy.utils.unregister_class(POSE_OT_limb_select_bone)
+	bpy.utils.unregister_class(POSE_OT_limb_select_bone_from_selection)
 	bpy.utils.unregister_class(POSE_OT_limb_select_layer)
 

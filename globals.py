@@ -38,7 +38,7 @@ switch_way = [
 ### Warning : any modification on this enum must be reported on generated source code
 autodisplay_items = [
 	("LAYER", "Layer", "", 1),
-#	("HIDE", "Hide", "", 2),
+	("HIDE", "Hide", "", 2),
 ]
 
 ### Warning : any modification on this enum must be reported on generated source code
@@ -109,6 +109,9 @@ class AutoSnap_autodisplay_data(bpy.types.PropertyGroup):
 	type = bpy.props.EnumProperty(name="AutoDisplay type", items=autodisplay_items, default="LAYER")
 	layer_ik = bpy.props.BoolVectorProperty(name="Layer IK", subtype='LAYER', size = 32)
 	layer_fk = bpy.props.BoolVectorProperty(name="Layer FK", subtype='LAYER', size = 32)
+	bone = bpy.props.StringProperty(name="Display Bone")
+	property = bpy.props.StringProperty(name="Display Property")
+	invert = bpy.props.BoolProperty(name="Invert Property", default=False)
 	
 ### Warning : report new attribute to copy ops
 class AutoSnap_autokeyframe_data(bpy.types.PropertyGroup):

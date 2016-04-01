@@ -37,7 +37,7 @@ switch_way = [
 ### Warning : any modification on this enum must be reported on live source code
 autodisplay_items = [
 	("LAYER", "Layer", "", 1),
-#	("HIDE", "Hide", "", 2),
+	("HIDE", "Hide", "", 2),
 ]
 
 ### Warning : any modification on this enum must be reported on live source code

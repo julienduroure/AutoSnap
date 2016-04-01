@@ -55,12 +55,16 @@ class POSE_OT_limb_copy(bpy.types.Operator):
 		dst_limb.interaction.autodisplay_data.type = armature.limbs[src_limb_index].interaction.autodisplay_data.type
 		dst_limb.interaction.autodisplay_data.layer_ik = armature.limbs[src_limb_index].interaction.autodisplay_data.layer_ik
 		dst_limb.interaction.autodisplay_data.layer_fk = armature.limbs[src_limb_index].interaction.autodisplay_data.layer_fk
+		dst_limb.interaction.autodisplay_data.bone = fct(armature.limbs[src_limb_index].interaction.autodisplay_data.bone)
+		dst_limb.interaction.autodisplay_data.property = armature.limbs[src_limb_index].interaction.autodisplay_data.property
+		dst_limb.interaction.autodisplay_data.invert = armature.limbs[src_limb_index].interaction.autodisplay_data.invert
 		
 		dst_limb.interaction.autokeyframe = armature.limbs[src_limb_index].interaction.autokeyframe
 		dst_limb.interaction.autokeyframe_data.bone_store = fct(armature.limbs[src_limb_index].interaction.autokeyframe_data.bone_store)
 		dst_limb.interaction.autokeyframe_data.type = armature.limbs[src_limb_index].interaction.autokeyframe_data.type
 		dst_limb.interaction.autokeyframe_data.keying_set_FK = armature.limbs[src_limb_index].interaction.autokeyframe_data.keying_set_FK
 		dst_limb.interaction.autokeyframe_data.keying_set_IK = armature.limbs[src_limb_index].interaction.autokeyframe_data.keying_set_IK
+		
 		
 		dst_limb.layout.fk2ik_label = armature.limbs[src_limb_index].layout.fk2ik_label
 		dst_limb.layout.ik2fk_label = armature.limbs[src_limb_index].layout.ik2fk_label		

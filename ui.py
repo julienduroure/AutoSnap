@@ -217,18 +217,23 @@ class POSE_PT_Limb_livesnap(bpy.types.Panel):
 					row_ = box.row()
 					row_.label("Wrong AutoDisplay data", icon="ERROR")
 				else:
-					row_ = box.row()
-					row_.prop(armature.limbs[armature.active_limb].interaction, "autodisplay", text="AutoDisplay")
-					row_.enabled = False
-					#check if multiple limb use same bone for storing data
-					bones = []
-					for limb in armature.limbs:
-						if limb.interaction.autodisplay == True:
-							if limb.interaction.autodisplay_data.bone_store in bones:
-								row_ = box.row()
-								row_.label("Multiple 'AutoDisplay' use same Bone to store data", icon="ERROR")
-								break
-							bones.append(limb.interaction.autodisplay_data.bone_store)
+					try:
+						int(armature.pose.bones[armature.limbs[armature.active_limb].interaction.autodisplay_data.bone].get(armature.limbs[armature.active_limb].interaction.autodisplay_data.property))
+						row_ = box.row()
+						row_.prop(armature.limbs[armature.active_limb].interaction, "autodisplay", text="AutoDisplay")
+						row_.enabled = False
+						#check if multiple limb use same bone for storing data
+						bones = []
+						for limb in armature.limbs:
+							if limb.interaction.autodisplay == True:
+								if limb.interaction.autodisplay_data.bone_store in bones:
+									row_ = box.row()
+									row_.label("Multiple 'AutoDisplay' use same Bone to store data", icon="ERROR")
+									break
+								bones.append(limb.interaction.autodisplay_data.bone_store)
+					except:
+						row_ = box.row()
+						row_.label("Wrong AutoDisplay Data", icon="ERROR")						
 							
 			if armature.limbs[armature.active_limb].interaction.autokeyframe == True:
 				if armature.limbs[armature.active_limb].interaction.autokeyframe_data.bone_store not in context.active_object.data.bones.keys():
@@ -787,7 +792,19 @@ class POSE_PT_LimbDetailInteraction(bpy.types.Panel):
 				op = row__.operator("pose.limb_select_layer", icon="BONE_DATA", text="")
 				op.layer = "layer_fk"
 			elif limb.interaction.autodisplay_data.type == "HIDE":
-				pass #TODO
+				col = row_.column()
+				row__ = col.row()
+				row__.prop_search(limb.interaction.autodisplay_data, "bone", armature.data, "bones", text="Bone")
+				col = row_.column()
+				row__ = col.row()
+				op = row__.operator("pose.limb_select_bone", icon="BONE_DATA", text="")
+				op.level = 3
+				op.level_1 = "interaction"
+				op.level_2 = "autodisplay_data"
+				op.level_3 = "bone"
+				row_ = box.row()
+				row_.prop(limb.interaction.autodisplay_data, "property", text="Property")
+				row_.prop(limb.interaction.autodisplay_data, "invert", text="Invert")
 				
 		row = layout.row()
 		row.prop(limb.interaction, "autokeyframe", text="Auto Keyframe Chain")

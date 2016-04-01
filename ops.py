@@ -1017,7 +1017,10 @@ class POSE_OT_generate_snapping(bpy.types.Operator):
 						ui_autodisplay_param_layer_ = ui_autodisplay_param_layer_.replace("###AUTODISPLAY_LAYER_FK###", str([layer for layer in limb.interaction.autodisplay_data.layer_fk]))
 						ui_autodisplay_param_ = ui_autodisplay_param_.replace("###AUTODISPLAY_PARAM_TYPE###", ui_autodisplay_param_layer_)
 					elif limb.interaction.autodisplay_data.type == "HIDE":
-						pass
+						ui_autodisplay_param_hide_ = ui_autodisplay_param_hide.replace("###AUTODISPLAY_BONE###", limb.interaction.autodisplay_data.bone)
+						ui_autodisplay_param_hide_ = ui_autodisplay_param_hide_.replace("###AUTODISPLAY_PROPERTY###", limb.interaction.autodisplay_data.property)
+						ui_autodisplay_param_hide_ = ui_autodisplay_param_hide_.replace("###AUTODISPLAY_INVERT###", str(limb.interaction.autodisplay_data.invert))
+						ui_autodisplay_param_ = ui_autodisplay_param_.replace("###AUTODISPLAY_PARAM_TYPE###", ui_autodisplay_param_hide_)
 					ui_autodisplay_param_ = ui_autodisplay_param_.replace("###tab###", tabs)
 				else:
 					ui_autodisplay_param_ = ui_autodisplay_param_ko

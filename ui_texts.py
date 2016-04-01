@@ -151,6 +151,12 @@ ui_autodisplay_param_layer ='''
 ###tab###op.autodisplay_data_layer_fk = ###AUTODISPLAY_LAYER_FK###
 '''
 
+ui_autodisplay_param_hide ='''
+###tab###op.autodisplay_data_bone = "###AUTODISPLAY_BONE###"
+###tab###op.autodisplay_data_property = "###AUTODISPLAY_PROPERTY###"
+###tab###op.autodisplay_data_invert = ###AUTODISPLAY_INVERT###
+'''
+
 ui_autodisplay_param='''
 ###tab###op.autodisplay = bpy.context.active_object.pose.bones["###AUTODISPLAY_BONE_STORE###"].autosnap_autodisplay
 ###tab###op.autodisplay_data_type = "###AUTODISPLAY_TYPE###"

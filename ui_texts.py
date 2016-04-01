@@ -120,7 +120,7 @@ ui_layout_basic_limb_name ='''
 '''
 
 ui_layout_on_select ='''
-###tab_minus###if bpy.context.active_pose_bone.name in ###ON_SELECT_TAB###:
+###tab_minus###if bpy.context.active_pose_bone and bpy.context.active_pose_bone.name in ###ON_SELECT_TAB###:
 '''
 
 ui_layout_basic ='''

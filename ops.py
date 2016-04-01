@@ -1012,8 +1012,12 @@ class POSE_OT_generate_snapping(bpy.types.Operator):
 				if limb.interaction.autodisplay_data.bone_store != "":
 					ui_autodisplay_param_ = ui_autodisplay_param.replace("###AUTODISPLAY_BONE_STORE###", limb.interaction.autodisplay_data.bone_store)
 					ui_autodisplay_param_ = ui_autodisplay_param_.replace("###AUTODISPLAY_TYPE###", limb.interaction.autodisplay_data.type)
-					ui_autodisplay_param_ = ui_autodisplay_param_.replace("###AUTODISPLAY_LAYER_IK###", str([layer for layer in limb.interaction.autodisplay_data.layer_ik]))
-					ui_autodisplay_param_ = ui_autodisplay_param_.replace("###AUTODISPLAY_LAYER_FK###", str([layer for layer in limb.interaction.autodisplay_data.layer_fk]))
+					if limb.interaction.autodisplay_data.type == "LAYER":
+						ui_autodisplay_param_layer_ = ui_autodisplay_param_layer.replace("###AUTODISPLAY_LAYER_IK###", str([layer for layer in limb.interaction.autodisplay_data.layer_ik]))
+						ui_autodisplay_param_layer_ = ui_autodisplay_param_layer_.replace("###AUTODISPLAY_LAYER_FK###", str([layer for layer in limb.interaction.autodisplay_data.layer_fk]))
+						ui_autodisplay_param_ = ui_autodisplay_param_.replace("###AUTODISPLAY_PARAM_TYPE###", ui_autodisplay_param_layer_)
+					elif limb.interaction.autodisplay_data.type == "HIDE":
+						pass
 					ui_autodisplay_param_ = ui_autodisplay_param_.replace("###tab###", tabs)
 				else:
 					ui_autodisplay_param_ = ui_autodisplay_param_ko

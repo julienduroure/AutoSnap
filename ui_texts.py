@@ -146,11 +146,15 @@ ui_autoswitch_param='''
 ###tab###op.autoswitch_keyframe = bpy.context.active_object.pose.bones["###AUTOSWITCH_BONE_STORE###"].autosnap_autoswitch_keyframe
 '''
 
+ui_autodisplay_param_layer ='''
+###tab###op.autodisplay_data_layer_ik = ###AUTODISPLAY_LAYER_IK###
+###tab###op.autodisplay_data_layer_fk = ###AUTODISPLAY_LAYER_FK###
+'''
+
 ui_autodisplay_param='''
 ###tab###op.autodisplay = bpy.context.active_object.pose.bones["###AUTODISPLAY_BONE_STORE###"].autosnap_autodisplay
 ###tab###op.autodisplay_data_type = "###AUTODISPLAY_TYPE###"
-###tab###op.autodisplay_data_layer_ik = ###AUTODISPLAY_LAYER_IK###
-###tab###op.autodisplay_data_layer_fk = ###AUTODISPLAY_LAYER_FK###
+###AUTODISPLAY_PARAM_TYPE###
 '''
 ui_autokeyframe_param_keyingset ='''
 ###tab###op.autokeyframe_data_keying_set_FK = "###AUTOKEYFRAME_KEYING_SET_FK###"

@@ -245,11 +245,25 @@ class POSE_PT_Limb_livesnap(bpy.types.Panel):
 					row_ = box.row()
 					row_.label("Wrong AutoDisplay data", icon="ERROR")
 				else:
-					try:
-						int(armature.pose.bones[armature.limbs[armature.active_limb].interaction.autodisplay_data.bone].get(armature.limbs[armature.active_limb].interaction.autodisplay_data.property))
-						row_ = box.row()
-						row_.prop(armature.limbs[armature.active_limb].interaction, "autodisplay", text="AutoDisplay")
-						row_.enabled = False
+					if armature.limbs[armature.active_limb].interaction.autodisplay_data.type == "HIDE":
+						try:
+							int(armature.pose.bones[armature.limbs[armature.active_limb].interaction.autodisplay_data.bone].get(armature.limbs[armature.active_limb].interaction.autodisplay_data.property))
+							row_ = box.row()
+							row_.prop(armature.limbs[armature.active_limb].interaction, "autodisplay", text="AutoDisplay")
+							row_.enabled = False
+							#check if multiple limb use same bone for storing data
+							bones = []
+							for limb in armature.limbs:
+								if limb.interaction.autodisplay == True:
+									if limb.interaction.autodisplay_data.bone_store in bones:
+										row_ = box.row()
+										row_.label("Multiple 'AutoDisplay' use same Bone to store data", icon="ERROR")
+										break
+									bones.append(limb.interaction.autodisplay_data.bone_store)
+						except:
+							row_ = box.row()
+							row_.label("Wrong AutoDisplay Data", icon="ERROR")
+					else: #Layer
 						#check if multiple limb use same bone for storing data
 						bones = []
 						for limb in armature.limbs:
@@ -258,10 +272,7 @@ class POSE_PT_Limb_livesnap(bpy.types.Panel):
 									row_ = box.row()
 									row_.label("Multiple 'AutoDisplay' use same Bone to store data", icon="ERROR")
 									break
-								bones.append(limb.interaction.autodisplay_data.bone_store)
-					except:
-						row_ = box.row()
-						row_.label("Wrong AutoDisplay Data", icon="ERROR")						
+								bones.append(limb.interaction.autodisplay_data.bone_store)						
 							
 			if armature.limbs[armature.active_limb].interaction.autokeyframe == True:
 				if armature.limbs[armature.active_limb].interaction.autokeyframe_data.bone_store not in context.active_object.data.bones.keys():

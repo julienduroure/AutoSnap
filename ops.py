@@ -693,10 +693,16 @@ class POSE_OT_limb_switch_ikfk(bpy.types.Operator):
 		ik1.scale.z = ik1.scale.z / ik_scale_data[2] / root_scale_data[2]
 		bpy.ops.object.mode_set(mode='OBJECT')
 		bpy.ops.object.mode_set(mode='POSE')
-		ik2.scale = obj.convert_space(ik2, obj.convert_space(fk2, fk2.matrix, 'POSE', 'WORLD'), 'WORLD','POSE').to_scale()
-		ik2.scale.x = ik2.scale.x / ik1.scale.x / ik_scale_data[0] / root_scale_data[0]
-		ik2.scale.y = ik2.scale.y / ik1.scale.y / ik_scale_data[1] / root_scale_data[1]
-		ik2.scale.z = ik2.scale.z / ik1.scale.z / ik_scale_data[2] / root_scale_data[2]
+		if obj.data.bones[ik2_].use_inherit_scale == True:
+			ik2.scale = obj.convert_space(ik2, obj.convert_space(fk2, fk2.matrix, 'POSE', 'WORLD'), 'WORLD','POSE').to_scale()
+			ik2.scale.x = ik2.scale.x / ik1.scale.x / ik_scale_data[0] / root_scale_data[0]
+			ik2.scale.y = ik2.scale.y / ik1.scale.y / ik_scale_data[1] / root_scale_data[1]
+			ik2.scale.z = ik2.scale.z / ik1.scale.z / ik_scale_data[2] / root_scale_data[2]
+		else:
+			ik2.scale = obj.convert_space(ik2, obj.convert_space(fk2, fk2.matrix, 'POSE', 'WORLD'), 'WORLD','POSE').to_scale()
+			ik2.scale.x = ik2.scale.x / ik_scale_data[0] / root_scale_data[0]
+			ik2.scale.y = ik2.scale.y / ik_scale_data[1] / root_scale_data[1]
+			ik2.scale.z = ik2.scale.z / ik_scale_data[2] / root_scale_data[2]			
 		bpy.ops.object.mode_set(mode='OBJECT')
 		bpy.ops.object.mode_set(mode='POSE')
 		

@@ -47,18 +47,19 @@ class AutoSnapPreferences(bpy.types.AddonPreferences):
 		layout = self.layout
 		
 		row_global    = layout.row()
-		col = row_global.column()  	
+		col = row_global.column()
 		
-		row = col.row()
+		box = col.box()
+		row = box.row()
 		row.prop(self, "basic")
-		row = col.row()
+		row = box.row()
 		row.prop(self, "autoswitch")
 		if self.autoswitch == True:
 			row.prop(self, "autoswitch_keyframe")
-		row = col.row()
+		row = box.row()
 		row.prop(self, "autodisplay")
 		row.prop(self, "autodisplay_type")
-		row = col.row()
+		row = box.row()
 		row.prop(self, "autokeyframe")
 		row.prop(self, "autokeyframe_type")
 		

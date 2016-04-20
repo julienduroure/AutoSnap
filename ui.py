@@ -266,6 +266,9 @@ class POSE_PT_Limb_livesnap(bpy.types.Panel):
 							row_ = box.row()
 							row_.label("Wrong AutoDisplay Data", icon="ERROR")
 					else: #Layer
+						row_ = box.row()
+						row_.prop(armature.limbs[armature.active_limb].interaction, "autodisplay", text="AutoDisplay")
+						row_.enabled = False
 						#check if multiple limb use same bone for storing data
 						bones = []
 						for limb in armature.limbs:

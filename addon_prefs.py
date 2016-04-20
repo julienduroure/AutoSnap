@@ -42,6 +42,10 @@ class AutoSnapPreferences(bpy.types.AddonPreferences):
 	autokeyframe_type = bpy.props.EnumProperty(name="AutoKeyframe Default", items=autokeyframe_items, default="AVAILABLE")
 	
 	generated_enable = bpy.props.BoolProperty(name="Generation enabled", default=False)
+	
+	panel_name = bpy.props.StringProperty(name="Default Panel name", default="Snapping")
+	tab_tool = bpy.props.StringProperty(name="Default Tab name", default="Snapping")
+	
 
 	def draw(self, context):
 		layout = self.layout
@@ -83,6 +87,11 @@ class AutoSnapPreferences(bpy.types.AddonPreferences):
 			
 		row_global    = layout.row()
 		row_global.prop(self, "generated_enable")
+		if self.generated_enable == True:
+			row_global    = layout.row()
+			row_global.prop(self, "panel_name", text="Panel Name")
+			row_global    = layout.row()
+			row_global.prop(self, "tab_tool", text="Panel Name")
   
 
 def register():

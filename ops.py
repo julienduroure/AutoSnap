@@ -869,9 +869,9 @@ class POSE_OT_generate_snapping(bpy.types.Operator):
 		tab_tool      = bpy.props.StringProperty(name="Tab")
 		
 		if context.active_object.generation.panel_name == "":
-			context.active_object.generation.panel_name = "Snapping" #TODO move to constant & user pref ?
+			context.active_object.generation.panel_name = addonpref().panel_name
 		if context.active_object.generation.tab_tool == "":
-			context.active_object.generation.tab_tool = "Snapping" #TODO move to constant & user pref ?
+			context.active_object.generation.tab_tool = addonpref().tab_tool
 		
 		#Add rig_id custom prop if not exists, and assign a random value
 		if context.active_object.data.get('autosnap_rig_id') is None:

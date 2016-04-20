@@ -23,6 +23,8 @@
 
 import bpy
 
+from .globals import *
+
 class POSE_UL_SideList(bpy.types.UIList):
 	def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
 		
@@ -302,7 +304,7 @@ class POSE_PT_Snap_Generate(bpy.types.Panel):
 	
 	@classmethod
 	def poll(self, context):
-		return context.active_object and context.active_object.type == "ARMATURE" and len(context.active_object.limbs) > 0 and context.mode == 'POSE'
+		return context.active_object and context.active_object.type == "ARMATURE" and len(context.active_object.limbs) > 0 and context.mode == 'POSE' and addonpref().generated_enable == True
 		
 	def draw(self, context):
 		layout = self.layout

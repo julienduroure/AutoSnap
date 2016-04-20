@@ -40,6 +40,8 @@ class AutoSnapPreferences(bpy.types.AddonPreferences):
 	
 	autodisplay_type  = bpy.props.EnumProperty(name="AutoDisplay Default", items=autodisplay_items, default="LAYER")	
 	autokeyframe_type = bpy.props.EnumProperty(name="AutoKeyframe Default", items=autokeyframe_items, default="AVAILABLE")
+	
+	generated_enable = bpy.props.BoolProperty(name="Generation enabled", default=False)
 
 	def draw(self, context):
 		layout = self.layout
@@ -77,6 +79,9 @@ class AutoSnapPreferences(bpy.types.AddonPreferences):
 
 		else:
 			row.operator("pose.side_init", text="Init sides, for mirror")
+			
+		row_global    = layout.row()
+		row_global.prop(self, "generated_enable")
   
 
 def register():

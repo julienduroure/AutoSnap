@@ -116,6 +116,7 @@ class POSE_OT_juas_limb_copy(bpy.types.Operator):
 		dst_limb.ik5 = fct(armature.juas_limbs[src_limb_index].ik5)
 		dst_limb.ik_scale = fct(armature.juas_limbs[src_limb_index].ik_scale)
 		dst_limb.ik_location = fct(armature.juas_limbs[src_limb_index].ik_location)
+		dst_limb.ik_mech_foot = fct(armature.juas_limbs[src_limb_index].ik_mech_foot)
 		
 		dst_limb.fk1 = fct(armature.juas_limbs[src_limb_index].fk1)
 		dst_limb.fk2 = fct(armature.juas_limbs[src_limb_index].fk2)
@@ -197,6 +198,7 @@ class POSE_OT_juas_limb_switch_ikfk(bpy.types.Operator):
 	ik5 = bpy.props.StringProperty()
 	ik_scale = bpy.props.StringProperty()
 	ik_location = bpy.props.StringProperty()
+	ik_mech_foot = bpy.props.StringProperty()
 	fk1 = bpy.props.StringProperty()
 	fk2 = bpy.props.StringProperty()
 	fk3 = bpy.props.StringProperty()
@@ -302,6 +304,9 @@ class POSE_OT_juas_limb_switch_ikfk(bpy.types.Operator):
 			return False, {'CANCELLED'}
 		if self.ik_location != "" and self.ik_location not in context.active_object.data.bones.keys():
 			self.report({'ERROR'}, "Bone " + self.ik_location + " doesn't exist")
+			return False, {'CANCELLED'}
+		if self.ik_mech_foot != "" and self.ik_mech_foot not in context.active_object.data.bones.keys():
+			self.report({'ERROR'}, "Bone " + self.ik_mech_foot + " doesn't exist")
 			return False, {'CANCELLED'}
 		if self.fk1 != "" and self.fk1 not in context.active_object.data.bones.keys():
 			self.report({'ERROR'}, "Bone " + self.fk1 + " doesn't exist")
@@ -440,9 +445,9 @@ class POSE_OT_juas_limb_switch_ikfk(bpy.types.Operator):
 				return error			
 		
 		if way == "IK2FK":
-			self.ik2fk(context.active_object, self.root, self.ik1, self.ik2, self.ik3, self.ik4, self.ik5, self.fk1, self.fk2, self.fk3, self.fk4, self.ik_scale, self.fk_scale, self.ik_location, self.fk_location, self.roll_bones, self.add_bones)
+			self.ik2fk(context.active_object, self.root, self.ik1, self.ik2, self.ik3, self.ik4, self.ik5, self.fk1, self.fk2, self.fk3, self.fk4, self.ik_scale, self.fk_scale, self.ik_location, self.fk_location, self.roll_bones, self.ik_mech_foot, self.add_bones)
 		elif way == "FK2IK":
-			self.fk2ik(context.active_object, self.root, self.ik1, self.ik2, self.ik3, self.ik5, self.ik_scale, self.ik_location,  self.fk1, self.fk2, self.fk3, self.fk4, self.fk_scale, self.fk_location, self.add_bones)
+			self.fk2ik(context.active_object, self.root, self.ik1, self.ik2, self.ik3, self.ik5, self.ik_scale, self.ik_location,  self.fk1, self.fk2, self.fk3, self.fk4, self.fk_scale, self.fk_location, self.add_bones, self.ik_mech_foot)
 		
 
 		if self.layout_basic == False: #No interaction for basic layout
@@ -555,7 +560,9 @@ class POSE_OT_juas_limb_switch_ikfk(bpy.types.Operator):
 		if self.ik_scale != "" and self.ik_scale in context.active_object.data.bones.keys():
 			list_.append(context.active_object.pose.bones[self.ik_scale])
 		if self.ik_location != "" and self.ik_location in context.active_object.data.bones.keys():
-			list_.append(context.active_object.pose.bones[self.ik_location])	
+			list_.append(context.active_object.pose.bones[self.ik_location])
+		if self.ik_mech_foot != "" and self.ik_mech_foot in context.active_object.data.bones.keys():
+			list_.append(context.active_object.pose.bones[self.ik_mech_foot])				
 		if self.fk1 != "" and self.fk1 in context.active_object.data.bones.keys():
 			list_.append(context.active_object.pose.bones[self.fk1])
 		if self.fk2 != "" and self.fk2 in context.active_object.data.bones.keys():
@@ -603,7 +610,7 @@ class POSE_OT_juas_limb_switch_ikfk(bpy.types.Operator):
 			angle = -angle + 2*math.pi
 		return angle
 			
-	def ik2fk(self, obj, root_, ik1_, ik2_, ik3_, ik4_, ik5_, fk1_, fk2_, fk3_, fk4_, ik_scale_, fk_scale_, ik_location_, fk_location_, roll_bones, add_bones):
+	def ik2fk(self, obj, root_, ik1_, ik2_, ik3_, ik4_, ik5_, fk1_, fk2_, fk3_, fk4_, ik_scale_, fk_scale_, ik_location_, fk_location_, roll_bones, ik_mech_foot_, add_bones):
 		ik1 = obj.pose.bones[ik1_]
 		ik2 = obj.pose.bones[ik2_]
 		ik3 = obj.pose.bones[ik3_]
@@ -611,6 +618,8 @@ class POSE_OT_juas_limb_switch_ikfk(bpy.types.Operator):
 			ik4 = obj.pose.bones[ik4_]
 		if ik5_ != "":
 			ik5 = obj.pose.bones[ik5_]
+		if ik_mech_foot_ != "":
+			ik_mech_foot = obj.pose.bones[ik_mech_foot_]
 		fk1 = obj.pose.bones[fk1_]
 		fk2 = obj.pose.bones[fk2_]
 		fk3 = obj.pose.bones[fk3_]
@@ -748,12 +757,14 @@ class POSE_OT_juas_limb_switch_ikfk(bpy.types.Operator):
 			bpy.ops.object.mode_set(mode='OBJECT')
 			bpy.ops.object.mode_set(mode='POSE')
 			
-	def fk2ik(self, obj, root_, ik1_, ik2_, ik3_, ik5_, ik_scale_, ik_location_, fk1_, fk2_, fk3_, fk4_, fk_scale_, fk_location_, add_bones):
+	def fk2ik(self, obj, root_, ik1_, ik2_, ik3_, ik5_, ik_scale_, ik_location_, fk1_, fk2_, fk3_, fk4_, fk_scale_, fk_location_, add_bones, ik_mech_foot_):
 		ik1 = obj.pose.bones[ik1_]
 		ik2 = obj.pose.bones[ik2_]
 		ik3 = obj.pose.bones[ik3_]
 		if ik5_ != "":
 			ik5 = obj.pose.bones[ik5_]
+		if ik_mech_foot_ != "":
+			ik_mech_foot = obj.pose.bones[ik_mech_foot_]
 		fk1 = obj.pose.bones[fk1_]
 		fk2 = obj.pose.bones[fk2_]
 		fk3 = obj.pose.bones[fk3_]
@@ -830,7 +841,8 @@ class POSE_OT_juas_limb_switch_ikfk(bpy.types.Operator):
 		ik3_current_rotation_mode = ik3.rotation_mode
 		fk3.rotation_mode = 'QUATERNION'
 		ik3.rotation_mode = 'QUATERNION'
-		fk3.matrix = obj.convert_space(fk3, obj.convert_space(ik3, ik3.matrix,'POSE','WORLD'), 'WORLD','POSE')
+		#fk3.matrix = obj.convert_space(fk3, obj.convert_space(ik3, ik3.matrix,'POSE','WORLD'), 'WORLD','POSE')
+		fk3.matrix = obj.convert_space(fk3, obj.convert_space(ik_mech_foot, ik_mech_foot.matrix,'POSE','WORLD'), 'WORLD','POSE') * ( ik_mech_foot.bone.matrix_local.inverted() * ik3.bone.matrix_local)
 		fk3.rotation_mode = fk3_current_rotation_mode
 		ik3.rotation_mode = ik3_current_rotation_mode
 		bpy.ops.object.mode_set(mode='OBJECT')

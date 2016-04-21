@@ -198,6 +198,7 @@ class JuAS_LimbItem(bpy.types.PropertyGroup):
 	ik5  = bpy.props.StringProperty(name="IK toe")
 	ik_scale = bpy.props.StringProperty(name="IK Scale")
 	ik_location = bpy.props.StringProperty(name="IK location")
+	ik_mech_foot = bpy.props.StringProperty(name="IK mech foot")
 	
 	fk1  = bpy.props.StringProperty(name="FK 1")
 	fk2  = bpy.props.StringProperty(name="FK 2")

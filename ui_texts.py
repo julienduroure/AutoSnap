@@ -139,6 +139,7 @@ ui_generated_switch_param = '''###tab###op.root = "###root###"
 ###tab###op.ik3 = "###ik3###"
 ###tab###op.ik4 = "###ik4###"
 ###tab###op.ik5 = "###ik5###"
+###tab###op.ik_mech_foot = "###ik_mech_foot###"
 		
 ###tab###op.fk1 = "###fk1###"
 ###tab###op.fk2 = "###fk2###"

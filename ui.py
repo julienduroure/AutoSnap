@@ -114,6 +114,7 @@ class POSE_PT_JuAS_Limb_livesnap(bpy.types.Panel):
 		op.ik3 = armature.juas_limbs[armature.juas_active_limb].ik3
 		op.ik4 = armature.juas_limbs[armature.juas_active_limb].ik4
 		op.ik5 = armature.juas_limbs[armature.juas_active_limb].ik5
+		op.ik_mech_foot = armature.juas_limbs[armature.juas_active_limb].ik_mech_foot
 		
 		op.fk1 = armature.juas_limbs[armature.juas_active_limb].fk1
 		op.fk2 = armature.juas_limbs[armature.juas_active_limb].fk2
@@ -468,8 +469,18 @@ class POSE_PT_JuAS_LimbDetailBones(bpy.types.Panel):
 		row___ = box_.row()
 		box = row___.box()
 		row__ = box.row()
-		row__.prop(limb, "with_roll_bones", text="Roll/Rock bones to roll")
+		row__.prop(limb, "with_roll_bones", text="Roll System")
 		if limb.with_roll_bones == True:
+			row__ = box.row()
+			row_ = row__.row()
+			col = row_.column()
+			row = col.column(align=True)
+			row.prop_search(limb, "ik_mech_foot", armature.data, "bones", text="Mech Foot")
+			col = row_.column()
+			row = col.column(align=True)
+			op = row.operator("pose.juas_limb_select_bone", icon="BONE_DATA", text="")
+			op.bone = "ik_mech_foot"
+			op.level = 0
 			row__ = box.row()
 			op = row__.operator("pose.juas_limb_selected_bones_select", text="Fill from selection")
 			op.bone = "roll_bones"

@@ -88,7 +88,7 @@ class POSE_OT_juas_limb_copy(bpy.types.Operator):
 		dst_limb.interaction.autokeyframe_data.keying_set_FK = armature.juas_limbs[src_limb_index].interaction.autokeyframe_data.keying_set_FK
 		dst_limb.interaction.autokeyframe_data.keying_set_IK = armature.juas_limbs[src_limb_index].interaction.autokeyframe_data.keying_set_IK
 		
-		
+		dst_limb.layout.basic = armature.juas_limbs[src_limb_index].layout.basic
 		dst_limb.layout.fk2ik_label = armature.juas_limbs[src_limb_index].layout.fk2ik_label
 		dst_limb.layout.ik2fk_label = armature.juas_limbs[src_limb_index].layout.ik2fk_label		
 		dst_limb.layout.switch_bone = fct(armature.juas_limbs[src_limb_index].layout.switch_bone)

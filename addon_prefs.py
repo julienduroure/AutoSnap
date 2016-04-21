@@ -67,6 +67,15 @@ class AutoSnapPreferences(bpy.types.AddonPreferences):
 		row.prop(self, "autokeyframe")
 		row.prop(self, "autokeyframe_type")
 		
+		box = col.box()
+		row = box.row()
+		row.prop(self, "generated_enable")
+		if self.generated_enable == True:
+			row = box.row()
+			row.prop(self, "panel_name", text="Panel Name")
+			row = box.row()
+			row.prop(self, "tab_tool", text="Tab Name")
+		
 		col = row_global.column(align=True)
 		row = col.row()
 		if len(addonpref().sides) > 0:
@@ -84,15 +93,6 @@ class AutoSnapPreferences(bpy.types.AddonPreferences):
 
 		else:
 			row.operator("pose.side_init", text="Init sides, for mirror")
-			
-		row_global    = layout.row()
-		row_global.prop(self, "generated_enable")
-		if self.generated_enable == True:
-			row_global    = layout.row()
-			row_global.prop(self, "panel_name", text="Panel Name")
-			row_global    = layout.row()
-			row_global.prop(self, "tab_tool", text="Panel Name")
-  
 
 def register():
 	bpy.utils.register_class(SideItem)

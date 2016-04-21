@@ -150,10 +150,10 @@ ui_generated_switch_param = '''###tab###op.root = "###root###"
 ###tab###op.ik_location = "###ik_location###"
 ###tab###op.fk_location = "###fk_location###"
 
-###tab###op.with_reinit_bones = ###WITH_REINIT_BONES###
+###tab###op.with_roll_bones = ###WITH_ROLL_BONES###
 ###tab###op.with_add_bones = ###WITH_ADD_BONES###
 
-###tab###populate_reinit_bones(op, ###limb_reinit_bones###)
+###tab###populate_roll_bones(op, ###limb_roll_bones###)
 ###tab###populate_add_bones(op, ###limb_add_bones###)
 '''
 
@@ -299,9 +299,9 @@ import bpy
 
 autosnap_rig_id = "###rig_id###"
 
-def populate_reinit_bones(op, list_):
+def populate_roll_bones(op, list_):
 	for bone in list_:
-		item_dst = op.reinit_bones.add()
+		item_dst = op.roll_bones.add()
 		item_dst.name = bone
 		
 def populate_add_bones(op, list_):

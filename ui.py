@@ -44,7 +44,7 @@ class POSE_UL_JuAS_LimbList(bpy.types.UIList):
 		elif self.layout_type in {'GRID'}:
 			layout.alignment = 'CENTER'
 			
-class POSE_UL_JuAS_ReInitBoneList(bpy.types.UIList):
+class POSE_UL_JuAS_RollBoneList(bpy.types.UIList):
 	def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
 		
 		if self.layout_type in {'DEFAULT', 'COMPACT'}:
@@ -106,7 +106,7 @@ class POSE_PT_JuAS_Limb_livesnap(bpy.types.Panel):
 		op.fk_location_type = armature.juas_limbs[armature.juas_active_limb].fk_location_type
 		op.with_limb_end_fk	= armature.juas_limbs[armature.juas_active_limb].with_limb_end_fk
 		op.with_limb_end_ik	= armature.juas_limbs[armature.juas_active_limb].with_limb_end_ik
-		op.with_reinit_bones   = armature.juas_limbs[armature.juas_active_limb].with_reinit_bones
+		op.with_roll_bones   = armature.juas_limbs[armature.juas_active_limb].with_roll_bones
 		op.with_add_bones      = armature.juas_limbs[armature.juas_active_limb].with_add_bones
 		
 		op.ik1 = armature.juas_limbs[armature.juas_active_limb].ik1
@@ -125,11 +125,11 @@ class POSE_PT_JuAS_Limb_livesnap(bpy.types.Panel):
 		op.ik_location = armature.juas_limbs[armature.juas_active_limb].ik_location
 		op.fk_location = armature.juas_limbs[armature.juas_active_limb].fk_location
 		
-		for item_src in armature.juas_limbs[armature.juas_active_limb].reinit_bones:
-			item_dst = op.reinit_bones.add()
+		for item_src in armature.juas_limbs[armature.juas_active_limb].roll_bones:
+			item_dst = op.roll_bones.add()
 			item_dst.name = item_src.name
-		if len(armature.juas_limbs[armature.juas_active_limb].reinit_bones) == 0:
-			op.with_reinit_bones = False
+		if len(armature.juas_limbs[armature.juas_active_limb].roll_bones) == 0:
+			op.with_roll_bones = False
 			
 		for item_src in armature.juas_limbs[armature.juas_active_limb].add_bones:
 			item_dst = op.add_bones.add()
@@ -468,33 +468,33 @@ class POSE_PT_JuAS_LimbDetailBones(bpy.types.Panel):
 		row___ = box_.row()
 		box = row___.box()
 		row__ = box.row()
-		row__.prop(limb, "with_reinit_bones", text="Roll/Rock bones to reinit")
-		if limb.with_reinit_bones == True:
+		row__.prop(limb, "with_roll_bones", text="Roll/Rock bones to roll")
+		if limb.with_roll_bones == True:
 			row__ = box.row()
 			op = row__.operator("pose.juas_limb_selected_bones_select", text="Fill from selection")
-			op.bone = "reinit_bones"
+			op.bone = "roll_bones"
 			row__= box.row()
-			row__.template_list("POSE_UL_JuAS_ReInitBoneList", "", armature.juas_limbs[armature.juas_active_limb], "reinit_bones", armature.juas_limbs[armature.juas_active_limb], "active_reinit_bone")
+			row__.template_list("POSE_UL_JuAS_RollBoneList", "", armature.juas_limbs[armature.juas_active_limb], "roll_bones", armature.juas_limbs[armature.juas_active_limb], "active_roll_bone")
 			
 			col = row__.column()
 			row = col.column(align=True)
-			row.operator("pose.juas_reinit_bone_add", icon="ZOOMIN", text="")
-			row.operator("pose.juas_reinit_bone_remove", icon="ZOOMOUT", text="")
+			row.operator("pose.juas_roll_bone_add", icon="ZOOMIN", text="")
+			row.operator("pose.juas_roll_bone_remove", icon="ZOOMOUT", text="")
 				
 			row = col.column(align=True)
 			row.separator()
-			row.operator("pose.juas_reinit_bone_move", icon='TRIA_UP', text="").direction = 'UP'
-			row.operator("pose.juas_reinit_bone_move", icon='TRIA_DOWN', text="").direction = 'DOWN'
+			row.operator("pose.juas_roll_bone_move", icon='TRIA_UP', text="").direction = 'UP'
+			row.operator("pose.juas_roll_bone_move", icon='TRIA_DOWN', text="").direction = 'DOWN'
 			
-			if len(armature.juas_limbs[armature.juas_active_limb].reinit_bones) > 0:
+			if len(armature.juas_limbs[armature.juas_active_limb].roll_bones) > 0:
 				row_ = box.row()
 				col = row_.column()
 				row = col.column(align=True)
-				row.prop_search(armature.juas_limbs[armature.juas_active_limb].reinit_bones[armature.juas_limbs[armature.juas_active_limb].active_reinit_bone], "name", armature.data, "bones", text="Bone")
+				row.prop_search(armature.juas_limbs[armature.juas_active_limb].roll_bones[armature.juas_limbs[armature.juas_active_limb].active_roll_bone], "name", armature.data, "bones", text="Bone")
 				col = row_.column()
 				row = col.column(align=True)
 				op = row.operator("pose.juas_limb_select_bone", icon="BONE_DATA", text="")
-				op.bone = "reinit_bone"
+				op.bone = "roll_bone"
 				op.level = 0
 
 			
@@ -841,7 +841,7 @@ class POSE_PT_JuAS_LimbDetailInteraction(bpy.types.Panel):
 def register():
 	bpy.utils.register_class(POSE_UL_JuAS_SideList)
 	bpy.utils.register_class(POSE_UL_JuAS_LimbList)
-	bpy.utils.register_class(POSE_UL_JuAS_ReInitBoneList)
+	bpy.utils.register_class(POSE_UL_JuAS_RollBoneList)
 	bpy.utils.register_class(POSE_UL_JuAS_AddBoneList)
 	bpy.utils.register_class(POSE_UL_JuAS_SelectBoneList)
 	
@@ -858,7 +858,7 @@ def register():
 def unregister():
 	bpy.utils.unregister_class(POSE_UL_JuAS_SideList)
 	bpy.utils.unregister_class(POSE_UL_JuAS_LimbList)
-	bpy.utils.unregister_class(POSE_UL_JuAS_ReInitBoneList)
+	bpy.utils.unregister_class(POSE_UL_JuAS_RollBoneList)
 	bpy.utils.unregister_class(POSE_UL_JuAS_AddBoneList)
 	bpy.utils.unregister_class(POSE_UL_JuAS_SelectBoneList)
 	

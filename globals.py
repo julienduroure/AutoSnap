@@ -186,7 +186,7 @@ class JuAS_LimbItem(bpy.types.PropertyGroup):
 	global_scale	 = bpy.props.BoolProperty(name="Global scale", default=False)
 	with_limb_end_fk	= bpy.props.BoolProperty(name="Limb End FK", default=False)
 	with_limb_end_ik	= bpy.props.BoolProperty(name="Limb End IK", default=False)
-	with_reinit_bones   = bpy.props.BoolProperty(name="Limb Reinit bones", default=False)
+	with_roll_bones   = bpy.props.BoolProperty(name="Limb Roll bones", default=False)
 	with_add_bones      = bpy.props.BoolProperty(name="Limb Additional bones", default=False)
 
 	name = bpy.props.StringProperty(name="Limb Name")
@@ -206,8 +206,8 @@ class JuAS_LimbItem(bpy.types.PropertyGroup):
 	fk_scale = bpy.props.StringProperty(name="FK Scale")
 	fk_location = bpy.props.StringProperty(name="FK location")
 	
-	reinit_bones = bpy.props.CollectionProperty(type=JuAS_BoneItem)
-	active_reinit_bone = bpy.props.IntProperty()
+	roll_bones = bpy.props.CollectionProperty(type=JuAS_BoneItem)
+	active_roll_bone = bpy.props.IntProperty()
 	
 	add_bones = bpy.props.CollectionProperty(type=JuAS_BonePairItem)
 	active_add_bone = bpy.props.IntProperty()

@@ -104,7 +104,7 @@ class POSE_OT_juas_limb_copy(bpy.types.Operator):
 		dst_limb.global_scale = armature.juas_limbs[src_limb_index].global_scale
 		dst_limb.with_limb_end_fk = armature.juas_limbs[src_limb_index].with_limb_end_fk
 		dst_limb.with_limb_end_ik = armature.juas_limbs[src_limb_index].with_limb_end_ik
-		dst_limb.with_reinit_bones = armature.juas_limbs[src_limb_index].with_reinit_bones
+		dst_limb.with_roll_bones = armature.juas_limbs[src_limb_index].with_roll_bones
 		dst_limb.with_add_bones = armature.juas_limbs[src_limb_index].with_add_bones
 		
 		dst_limb.root = fct(armature.juas_limbs[src_limb_index].root)
@@ -125,10 +125,10 @@ class POSE_OT_juas_limb_copy(bpy.types.Operator):
 		dst_limb.fk_location = fct(armature.juas_limbs[src_limb_index].fk_location)
 
 
-		for src_bone in armature.juas_limbs[src_limb_index].reinit_bones:
-			dst_bone = dst_limb.reinit_bones.add()
+		for src_bone in armature.juas_limbs[src_limb_index].roll_bones:
+			dst_bone = dst_limb.roll_bones.add()
 			dst_bone.name = fct(src_bone.name)
-		dst_limb.active_reinit_bone = armature.juas_limbs[src_limb_index].active_reinit_bone
+		dst_limb.active_roll_bone = armature.juas_limbs[src_limb_index].active_roll_bone
 		
 		for src_bone in armature.juas_limbs[src_limb_index].add_bones:
 			dst_bone = dst_limb.add_bones.add()
@@ -184,7 +184,7 @@ class POSE_OT_juas_limb_switch_ikfk(bpy.types.Operator):
 	fk_location_type = bpy.props.EnumProperty(items=location_type_items)
 	with_limb_end_fk	= bpy.props.BoolProperty()
 	with_limb_end_ik	= bpy.props.BoolProperty()
-	with_reinit_bones   = bpy.props.BoolProperty()
+	with_roll_bones   = bpy.props.BoolProperty()
 	with_add_bones      = bpy.props.BoolProperty()
 	ik_type = bpy.props.EnumProperty(items=IK_type_items)
 	
@@ -203,7 +203,7 @@ class POSE_OT_juas_limb_switch_ikfk(bpy.types.Operator):
 	fk4 = bpy.props.StringProperty()
 	fk_scale = bpy.props.StringProperty()
 	fk_location = bpy.props.StringProperty()
-	reinit_bones = bpy.props.CollectionProperty(type=JuAS_BoneItem)
+	roll_bones = bpy.props.CollectionProperty(type=JuAS_BoneItem)
 	add_bones    = bpy.props.CollectionProperty(type=JuAS_BonePairItem)
 	
 	@classmethod
@@ -358,15 +358,15 @@ class POSE_OT_juas_limb_switch_ikfk(bpy.types.Operator):
 		if self.ik_type == "ROTATION": #No pole if IK type is set to rotation
 			self.ik4 = ""
 			
-		if self.with_reinit_bones == False:
-			while len(self.reinit_bones) != 0:
-				self.reinit_bones.remove(0)
+		if self.with_roll_bones == False:
+			while len(self.roll_bones) != 0:
+				self.roll_bones.remove(0)
 				
 		if self.ik4 != "" and self.ik4 not in context.active_object.data.bones.keys():
 			self.report({'ERROR'}, "Bone " + self.ik4 + " doesn't exist")
 			return False, {'CANCELLED'}
 			
-		for bone in self.reinit_bones:
+		for bone in self.roll_bones:
 			if bone.name not in context.active_object.data.bones.keys():
 				self.report({'ERROR'}, "Bone " + bone.name + " doesn't exist")
 				return False, {'CANCELLED'}
@@ -440,7 +440,7 @@ class POSE_OT_juas_limb_switch_ikfk(bpy.types.Operator):
 				return error			
 		
 		if way == "IK2FK":
-			self.ik2fk(context.active_object, self.root, self.ik1, self.ik2, self.ik3, self.ik4, self.ik5, self.fk1, self.fk2, self.fk3, self.fk4, self.ik_scale, self.fk_scale, self.ik_location, self.fk_location, self.reinit_bones, self.add_bones)
+			self.ik2fk(context.active_object, self.root, self.ik1, self.ik2, self.ik3, self.ik4, self.ik5, self.fk1, self.fk2, self.fk3, self.fk4, self.ik_scale, self.fk_scale, self.ik_location, self.fk_location, self.roll_bones, self.add_bones)
 		elif way == "FK2IK":
 			self.fk2ik(context.active_object, self.root, self.ik1, self.ik2, self.ik3, self.ik5, self.ik_scale, self.ik_location,  self.fk1, self.fk2, self.fk3, self.fk4, self.fk_scale, self.fk_location, self.add_bones)
 		
@@ -569,7 +569,7 @@ class POSE_OT_juas_limb_switch_ikfk(bpy.types.Operator):
 		if self.fk_location != "" and self.fk_location in context.active_object.data.bones.keys():
 			list_.append(context.active_object.pose.bones[self.fk_location])
 
-		for bone in self.reinit_bones:
+		for bone in self.roll_bones:
 			if bone.name != "" and bone.name in context.active_object.data.bones.keys():
 				list_.append(context.active_object.pose.bones[bone.name])
 				
@@ -603,7 +603,7 @@ class POSE_OT_juas_limb_switch_ikfk(bpy.types.Operator):
 			angle = -angle + 2*math.pi
 		return angle
 			
-	def ik2fk(self, obj, root_, ik1_, ik2_, ik3_, ik4_, ik5_, fk1_, fk2_, fk3_, fk4_, ik_scale_, fk_scale_, ik_location_, fk_location_, reinit_bones, add_bones):
+	def ik2fk(self, obj, root_, ik1_, ik2_, ik3_, ik4_, ik5_, fk1_, fk2_, fk3_, fk4_, ik_scale_, fk_scale_, ik_location_, fk_location_, roll_bones, add_bones):
 		ik1 = obj.pose.bones[ik1_]
 		ik2 = obj.pose.bones[ik2_]
 		ik3 = obj.pose.bones[ik3_]
@@ -667,7 +667,7 @@ class POSE_OT_juas_limb_switch_ikfk(bpy.types.Operator):
 			bpy.ops.object.mode_set(mode='OBJECT')
 			bpy.ops.object.mode_set(mode='POSE')
 		
-		for bone in reinit_bones:
+		for bone in roll_bones:
 			obj.pose.bones[bone.name].matrix_basis = mathutils.Matrix()
 			
 		for b_FK, b_IK in [[bone.name_FK, bone.name_IK] for bone in add_bones]:
@@ -941,9 +941,9 @@ class POSE_OT_juas_generate_snapping(bpy.types.Operator):
 				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###fk_scale###", limb.fk_scale)
 				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###ik_location###", limb.ik_location)
 				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###fk_location###", limb.fk_location)
-				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###WITH_REINIT_BONES###", str(limb.with_reinit_bones))
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###WITH_ROLL_BONES###", str(limb.with_roll_bones))
 				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###WITH_ADD_BONES###", str(limb.with_add_bones))
-				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###limb_reinit_bones###", str([bone.name for bone in limb.reinit_bones]))
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###limb_roll_bones###", str([bone.name for bone in limb.roll_bones]))
 				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###limb_add_bones###", str([[bone.name_FK, bone.name_IK] for bone in limb.add_bones]))
 				
 				if limb.layout.display_name == True:
@@ -993,9 +993,9 @@ class POSE_OT_juas_generate_snapping(bpy.types.Operator):
 				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###fk_scale###", limb.fk_scale)
 				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###ik_location###", limb.ik_location)
 				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###fk_location###", limb.fk_location)
-				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###WITH_REINIT_BONES###", str(limb.with_reinit_bones))
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###WITH_ROLL_BONES###", str(limb.with_roll_bones))
 				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###WITH_ADD_BONES###", str(limb.with_add_bones))
-				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###limb_reinit_bones###", str([bone.name for bone in limb.reinit_bones]))
+				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###limb_roll_bones###", str([bone.name for bone in limb.roll_bones]))
 				ui_generated_switch_param_ = ui_generated_switch_param_.replace("###limb_add_bones###", str([[bone.name_FK, bone.name_IK] for bone in limb.add_bones]))
 				
 				if limb.layout.display_name == True:

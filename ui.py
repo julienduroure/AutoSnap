@@ -229,91 +229,55 @@ class POSE_PT_JuAS_Limb_livesnap(bpy.types.Panel):
 						row_.prop(armature.juas_limbs[armature.juas_active_limb].interaction, "autoswitch_keyframe", text="Keyframe")
 					row_.enabled = False
 					
-					#check if multiple limb use same bone for storing data
-					if addonpref().generated_enable == True:
-						bones = []
-						for limb in armature.juas_limbs:
-							if limb.interaction.autoswitch == True:
-								if limb.interaction.autoswitch_data.bone_store in bones:
-									row_ = box.row()
-									row_.label("Multiple 'AutoSwitch' use same Bone to store data", icon="ERROR")
-									break
-								bones.append(limb.interaction.autoswitch_data.bone_store)
 				except:
 					row_ = box.row()
 					row_.label("Wrong Autoswitch Data", icon="ERROR")
 					
 			if armature.juas_limbs[armature.juas_active_limb].interaction.autodisplay == True:
-				if armature.juas_limbs[armature.juas_active_limb].interaction.autodisplay_data.bone_store not in context.active_object.data.bones.keys() and addonpref().generated_enable == True:
-						row_ = box.row()
-						row_.label("Wrong AutoDisplay data", icon="ERROR")
-				else:
-					if armature.juas_limbs[armature.juas_active_limb].interaction.autodisplay_data.type == "HIDE":
-						try:
-							int(armature.pose.bones[armature.juas_limbs[armature.juas_active_limb].interaction.autodisplay_data.bone].get(armature.juas_limbs[armature.juas_active_limb].interaction.autodisplay_data.property))
-							row_ = box.row()
-							row_.prop(armature.juas_limbs[armature.juas_active_limb].interaction, "autodisplay", text="AutoDisplay")
-							row_.enabled = False
-							
-							if addonpref().generated_enable == True:
-							#check if multiple limb use same bone for storing data
-								bones = []
-								for limb in armature.juas_limbs:
-									if limb.interaction.autodisplay == True:
-										if limb.interaction.autodisplay_data.bone_store in bones:
-											row_ = box.row()
-											row_.label("Multiple 'AutoDisplay' use same Bone to store data", icon="ERROR")
-											break
-										bones.append(limb.interaction.autodisplay_data.bone_store)
-						except:
-							row_ = box.row()
-							row_.label("Wrong AutoDisplay Data", icon="ERROR")
-					else: #Layer
+				if armature.juas_limbs[armature.juas_active_limb].interaction.autodisplay_data.type == "HIDE":
+					try:
+						int(armature.pose.bones[armature.juas_limbs[armature.juas_active_limb].interaction.autodisplay_data.bone].get(armature.juas_limbs[armature.juas_active_limb].interaction.autodisplay_data.property))
 						row_ = box.row()
 						row_.prop(armature.juas_limbs[armature.juas_active_limb].interaction, "autodisplay", text="AutoDisplay")
 						row_.enabled = False
 						
-						if addonpref().generated_enable == True:
-							#check if multiple limb use same bone for storing data
-							bones = []
-							for limb in armature.juas_limbs:
-								if limb.interaction.autodisplay == True:
-									if limb.interaction.autodisplay_data.bone_store in bones:
-										row_ = box.row()
-										row_.label("Multiple 'AutoDisplay' use same Bone to store data", icon="ERROR")
-										break
-									bones.append(limb.interaction.autodisplay_data.bone_store)						
+					except:
+						row_ = box.row()
+						row_.label("Wrong AutoDisplay Data", icon="ERROR")
+				else: #Layer
+					row_ = box.row()
+					row_.prop(armature.juas_limbs[armature.juas_active_limb].interaction, "autodisplay", text="AutoDisplay")
+					row_.enabled = False				
 							
 			if armature.juas_limbs[armature.juas_active_limb].interaction.autokeyframe == True:
-				if armature.juas_limbs[armature.juas_active_limb].interaction.autokeyframe_data.bone_store not in context.active_object.data.bones.keys() and addonpref().generated_enable == True:
+				error = False
+				if armature.juas_limbs[armature.juas_active_limb].interaction.autokeyframe_data.type == "KEYING_SET":
+					if bpy.context.scene.keying_sets.get(armature.juas_limbs[armature.juas_active_limb].interaction.autokeyframe_data.keying_set_FK) is None:
 						row_ = box.row()
-						row_.label("Wrong AutoKeyframe data", icon="ERROR")
-				else:
-					error = False
-					if armature.juas_limbs[armature.juas_active_limb].interaction.autokeyframe_data.type == "KEYING_SET":
-						if bpy.context.scene.keying_sets.get(armature.juas_limbs[armature.juas_active_limb].interaction.autokeyframe_data.keying_set_FK) is None:
-							row_ = box.row()
-							row_.label("Wrong AutoKeyframe Keying Set FK", icon="ERROR")
-							error = True
-						if bpy.context.scene.keying_sets.get(armature.juas_limbs[armature.juas_active_limb].interaction.autokeyframe_data.keying_set_IK) is None:
-							row_ = box.row()
-							row_.label("Wrong AutoKeyframe Keying Set IK", icon="ERROR")
-							error = True
-					if error == False:
+						row_.label("Wrong AutoKeyframe Keying Set FK", icon="ERROR")
+						error = True
+					if bpy.context.scene.keying_sets.get(armature.juas_limbs[armature.juas_active_limb].interaction.autokeyframe_data.keying_set_IK) is None:
 						row_ = box.row()
-						row_.prop(armature.juas_limbs[armature.juas_active_limb].interaction, "autokeyframe", text="AutoKeyframe")
-						row_.enabled = False
+						row_.label("Wrong AutoKeyframe Keying Set IK", icon="ERROR")
+						error = True
+				if error == False:
+					row_ = box.row()
+					row_.prop(armature.juas_limbs[armature.juas_active_limb].interaction, "autokeyframe", text="AutoKeyframe")
+					row_.enabled = False
 					
-					if addonpref().generated_enable == True:
-						#check if multiple limb use same bone for storing data
-						bones = []
-						for limb in armature.juas_limbs:
-							if limb.interaction.autokeyframe == True:
-								if limb.interaction.autokeyframe_data.bone_store in bones:
-									row_ = box.row()
-									row_.label("Multiple 'AutoKeyframe' use same Bone to store data", icon="ERROR")
-									break
-								bones.append(limb.interaction.autokeyframe_data.bone_store)
+			if addonpref().generated_enable == True and ( armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch == True or armature.juas_limbs[armature.juas_active_limb].interaction.autodisplay == True or armature.juas_limbs[armature.juas_active_limb].interaction.autokeyframe == True):
+				if armature.juas_limbs[armature.juas_active_limb].interaction.bone_store not in context.active_object.data.bones.keys():
+						row_ = box.row()
+						row_.label("Wrong Bone to store data", icon="ERROR")
+				else:
+					#check if multiple limb use same bone for storing data
+					bones = []
+					for limb in armature.juas_limbs:
+						if limb.interaction.bone_store in bones:
+							row_ = box.row()
+							row_.label("Multiple limb use same Bone to store data", icon="ERROR")
+							break
+						bones.append(limb.interaction.bone_store)
 							
 							
 class POSE_PT_JuAS_Snap_Generate(bpy.types.Panel):
@@ -337,7 +301,7 @@ class POSE_PT_JuAS_Snap_Generate(bpy.types.Panel):
 			row = layout.row()
 			row.prop(armature.juas_generation, "tab_tool")
 		row = layout.row()
-		row.operator("pose.generate_snapping", text="Generate")
+		row.operator("pose.juas_generate_snapping", text="Generate")
 		
 class POSE_PT_JuAS_Limbs(bpy.types.Panel):
 	bl_label = "Limbs"
@@ -786,6 +750,20 @@ class POSE_PT_JuAS_LimbDetailInteraction(bpy.types.Panel):
 		armature = context.active_object
 		limb = armature.juas_limbs[armature.juas_active_limb]
 		
+		if addonpref().generated_enable == True:
+			row = layout.row()
+			box = row.box()
+			row_ = box.row()
+			col = row_.column()
+			row__ = col.row()
+			row__.prop_search(limb.interaction, "bone_store", armature.data, "bones", text="Bone to store data")
+			col = row_.column()
+			row__ = col.row()
+			op = row__.operator("pose.juas_limb_select_bone", icon="BONE_DATA", text="")
+			op.level = 2
+			op.level_1 = "interaction"
+			op.level_2 = "bone_store"
+		
 		row = layout.row()
 		row.prop(limb.interaction, "autoswitch", text="Auto Switch")
 		if limb.interaction.autoswitch == True:
@@ -802,18 +780,6 @@ class POSE_PT_JuAS_LimbDetailInteraction(bpy.types.Panel):
 			op.level_1 = "interaction"
 			op.level_2 = "autoswitch_data"
 			op.level_3 = "bone"
-			if addonpref().generated_enable == True:
-				row_ = box.row()
-				col = row_.column()
-				row__ = col.row()
-				row__.prop_search(limb.interaction.autoswitch_data, "bone_store", armature.data, "bones", text="Bone (to store data)")
-				col = row_.column()
-				row__ = col.row()
-				op = row__.operator("pose.juas_limb_select_bone", icon="BONE_DATA", text="")
-				op.level = 3
-				op.level_1 = "interaction"
-				op.level_2 = "autoswitch_data"
-				op.level_3 = "bone_store"
 			row_ = box.row()
 			row_.prop(limb.interaction.autoswitch_data, "property", text="Property")
 			row_ = box.row()
@@ -824,18 +790,6 @@ class POSE_PT_JuAS_LimbDetailInteraction(bpy.types.Panel):
 		if limb.interaction.autodisplay == True:
 			row = layout.row()
 			box = row.box()
-			if addonpref().generated_enable == True:
-				row_ = box.row()
-				col = row_.column()
-				row__ = col.row()
-				row__.prop_search(limb.interaction.autodisplay_data, "bone_store", armature.data, "bones", text="Bone (to store data)")
-				col = row_.column()
-				row__ = col.row()
-				op = row__.operator("pose.juas_limb_select_bone", icon="BONE_DATA", text="")
-				op.level = 3
-				op.level_1 = "interaction"
-				op.level_2 = "autodisplay_data"
-				op.level_3 = "bone_store"
 			row_ = box.row()
 			row_.prop(limb.interaction.autodisplay_data, "type", text="Type")
 			row_ = box.row()
@@ -872,23 +826,12 @@ class POSE_PT_JuAS_LimbDetailInteraction(bpy.types.Panel):
 				
 		row = layout.row()
 		row.prop(limb.interaction, "autokeyframe", text="Auto Keyframe Chain")
+		
 		if limb.interaction.autokeyframe == True:
 			row = layout.row()
 			box = row.box()
 			row_ = box.row()
 			row_.prop(limb.interaction.autokeyframe_data, "type", text="Type")
-			if addonpref().generated_enable == True:
-				row_ = box.row()
-				col = row_.column()
-				row__ = col.row()
-				row__.prop_search(limb.interaction.autokeyframe_data, "bone_store", armature.data, "bones", text="Bone (to store data)")
-				col = row_.column()
-				row__ = col.row()
-				op = row__.operator("pose.juas_limb_select_bone", icon="BONE_DATA", text="")
-				op.level = 3
-				op.level_1 = "interaction"
-				op.level_2 = "autokeyframe_data"
-				op.level_3 = "bone_store"
 			if limb.interaction.autokeyframe_data.type == "KEYING_SET":
 				row_ = box.row()
 				row_.prop_search(limb.interaction.autokeyframe_data, "keying_set_FK", context.scene, "keying_sets", text="Keying Set FK")

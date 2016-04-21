@@ -123,12 +123,10 @@ class JuAS_Layout_data(bpy.types.PropertyGroup):
 ### Warning : report new attribute to copy ops
 class JuAS_autoswitch_data(bpy.types.PropertyGroup):
 	bone = bpy.props.StringProperty(name="Switch Bone", update=fct_upd_autoswitch_data_bone)
-	bone_store = bpy.props.StringProperty(name="Switch Bone to store data")
 	property = bpy.props.StringProperty(name="Switch Property", update=fct_upd_autoswitch_data_property)
 	
 ### Warning : report new attribute to copy ops
 class JuAS_autodisplay_data(bpy.types.PropertyGroup):
-	bone_store = bpy.props.StringProperty(name="Display Bone to store data")
 	type = bpy.props.EnumProperty(name="AutoDisplay type", items=autodisplay_items, default="LAYER")
 	layer_ik = bpy.props.BoolVectorProperty(name="Layer IK", subtype='LAYER', size = 32)
 	layer_fk = bpy.props.BoolVectorProperty(name="Layer FK", subtype='LAYER', size = 32)
@@ -138,7 +136,6 @@ class JuAS_autodisplay_data(bpy.types.PropertyGroup):
 	
 ### Warning : report new attribute to copy ops
 class JuAS_autokeyframe_data(bpy.types.PropertyGroup):
-	bone_store = bpy.props.StringProperty(name="Display Bone to store data")
 	type = bpy.props.EnumProperty(name="AutoKeyframe type", items=autokeyframe_items, default="AVAILABLE")
 	keying_set_FK = bpy.props.StringProperty(name="Keying Set FK")
 	keying_set_IK = bpy.props.StringProperty(name="Keying Set IK")
@@ -152,6 +149,7 @@ class JuAS_Interaction(bpy.types.PropertyGroup):
 	autodisplay_data     = bpy.props.PointerProperty(type=JuAS_autodisplay_data)
 	autokeyframe         = bpy.props.BoolProperty(name="Auto Keyframe Chain", default=False)
 	autokeyframe_data    = bpy.props.PointerProperty(type=JuAS_autokeyframe_data)
+	bone_store           = bpy.props.StringProperty(name="Display Bone to store data")
 
 class JuAS_Generation(bpy.types.PropertyGroup):
 	view_location = bpy.props.EnumProperty(name="View location", items=view_location_items, default="TOOLS")

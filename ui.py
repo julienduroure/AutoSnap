@@ -25,7 +25,7 @@ import bpy
 
 from .globals import *
 
-class POSE_UL_SideList(bpy.types.UIList):
+class POSE_UL_JuAS_SideList(bpy.types.UIList):
 	def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
 		
 		if self.layout_type in {'DEFAULT', 'COMPACT'}:
@@ -35,7 +35,7 @@ class POSE_UL_SideList(bpy.types.UIList):
 		elif self.layout_type in {'GRID'}:
 			layout.alignment = 'CENTER'		
 		
-class POSE_UL_LimbList(bpy.types.UIList):
+class POSE_UL_JuAS_LimbList(bpy.types.UIList):
 	def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
 		
 		if self.layout_type in {'DEFAULT', 'COMPACT'}:
@@ -44,7 +44,7 @@ class POSE_UL_LimbList(bpy.types.UIList):
 		elif self.layout_type in {'GRID'}:
 			layout.alignment = 'CENTER'
 			
-class POSE_UL_ReInitBoneList(bpy.types.UIList):
+class POSE_UL_JuAS_ReInitBoneList(bpy.types.UIList):
 	def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
 		
 		if self.layout_type in {'DEFAULT', 'COMPACT'}:
@@ -53,7 +53,7 @@ class POSE_UL_ReInitBoneList(bpy.types.UIList):
 		elif self.layout_type in {'GRID'}:
 			layout.alignment = 'CENTER'
 			
-class POSE_UL_SelectBoneList(bpy.types.UIList):
+class POSE_UL_JuAS_SelectBoneList(bpy.types.UIList):
 	def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
 		
 		if self.layout_type in {'DEFAULT', 'COMPACT'}:
@@ -62,7 +62,7 @@ class POSE_UL_SelectBoneList(bpy.types.UIList):
 		elif self.layout_type in {'GRID'}:
 			layout.alignment = 'CENTER'
 			
-class POSE_UL_AddBoneList(bpy.types.UIList):
+class POSE_UL_JuAS_AddBoneList(bpy.types.UIList):
 	def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
 		
 		if self.layout_type in {'DEFAULT', 'COMPACT'}:
@@ -72,18 +72,18 @@ class POSE_UL_AddBoneList(bpy.types.UIList):
 		elif self.layout_type in {'GRID'}:
 			layout.alignment = 'CENTER'
 			
-class POSE_MT_limb_specials(bpy.types.Menu):
+class POSE_MT_JuAS_limb_specials(bpy.types.Menu):
 	bl_label = "Limb Specials"
 
 	def draw(self, context):
 		layout = self.layout
 	
-		op = layout.operator("pose.limb_copy", icon='COPY_ID', text="Copy Limb")
+		op = layout.operator("pose.juas_limb_copy", icon='COPY_ID', text="Copy Limb")
 		op.mirror = False
-		op = layout.operator("pose.limb_copy", icon='ARROW_LEFTRIGHT', text="Mirror Copy Limb")
+		op = layout.operator("pose.juas_limb_copy", icon='ARROW_LEFTRIGHT', text="Mirror Copy Limb")
 		op.mirror = True
 	
-class POSE_PT_Limb_livesnap(bpy.types.Panel):
+class POSE_PT_JuAS_Limb_livesnap(bpy.types.Panel):
 	bl_label = "Live Snapping"
 	bl_space_type = 'VIEW_3D'
 	bl_region_type = 'TOOLS'
@@ -91,148 +91,148 @@ class POSE_PT_Limb_livesnap(bpy.types.Panel):
 	
 	@classmethod
 	def poll(self, context):
-		return context.active_object and context.active_object.type == "ARMATURE" and len(context.active_object.limbs) > 0 and context.mode == 'POSE'
+		return context.active_object and context.active_object.type == "ARMATURE" and len(context.active_object.juas_limbs) > 0 and context.mode == 'POSE'
 		
 	def populate_ops_param(self, context, op):
 		armature = context.object
 	
-		op.root = armature.limbs[armature.active_limb].root
+		op.root = armature.juas_limbs[armature.juas_active_limb].root
 		
-		op.global_scale = armature.limbs[armature.active_limb].global_scale
-		op.ik_type = armature.limbs[armature.active_limb].ik_type
-		op.ik_scale_type = armature.limbs[armature.active_limb].ik_scale_type
-		op.fk_scale_type = armature.limbs[armature.active_limb].fk_scale_type
-		op.ik_location_type = armature.limbs[armature.active_limb].ik_location_type
-		op.fk_location_type = armature.limbs[armature.active_limb].fk_location_type
-		op.with_limb_end_fk	= armature.limbs[armature.active_limb].with_limb_end_fk
-		op.with_limb_end_ik	= armature.limbs[armature.active_limb].with_limb_end_ik
-		op.with_reinit_bones   = armature.limbs[armature.active_limb].with_reinit_bones
-		op.with_add_bones      = armature.limbs[armature.active_limb].with_add_bones
+		op.global_scale = armature.juas_limbs[armature.juas_active_limb].global_scale
+		op.ik_type = armature.juas_limbs[armature.juas_active_limb].ik_type
+		op.ik_scale_type = armature.juas_limbs[armature.juas_active_limb].ik_scale_type
+		op.fk_scale_type = armature.juas_limbs[armature.juas_active_limb].fk_scale_type
+		op.ik_location_type = armature.juas_limbs[armature.juas_active_limb].ik_location_type
+		op.fk_location_type = armature.juas_limbs[armature.juas_active_limb].fk_location_type
+		op.with_limb_end_fk	= armature.juas_limbs[armature.juas_active_limb].with_limb_end_fk
+		op.with_limb_end_ik	= armature.juas_limbs[armature.juas_active_limb].with_limb_end_ik
+		op.with_reinit_bones   = armature.juas_limbs[armature.juas_active_limb].with_reinit_bones
+		op.with_add_bones      = armature.juas_limbs[armature.juas_active_limb].with_add_bones
 		
-		op.ik1 = armature.limbs[armature.active_limb].ik1
-		op.ik2 = armature.limbs[armature.active_limb].ik2
-		op.ik3 = armature.limbs[armature.active_limb].ik3
-		op.ik4 = armature.limbs[armature.active_limb].ik4
-		op.ik5 = armature.limbs[armature.active_limb].ik5
+		op.ik1 = armature.juas_limbs[armature.juas_active_limb].ik1
+		op.ik2 = armature.juas_limbs[armature.juas_active_limb].ik2
+		op.ik3 = armature.juas_limbs[armature.juas_active_limb].ik3
+		op.ik4 = armature.juas_limbs[armature.juas_active_limb].ik4
+		op.ik5 = armature.juas_limbs[armature.juas_active_limb].ik5
 		
-		op.fk1 = armature.limbs[armature.active_limb].fk1
-		op.fk2 = armature.limbs[armature.active_limb].fk2
-		op.fk3 = armature.limbs[armature.active_limb].fk3
-		op.fk4 = armature.limbs[armature.active_limb].fk4
+		op.fk1 = armature.juas_limbs[armature.juas_active_limb].fk1
+		op.fk2 = armature.juas_limbs[armature.juas_active_limb].fk2
+		op.fk3 = armature.juas_limbs[armature.juas_active_limb].fk3
+		op.fk4 = armature.juas_limbs[armature.juas_active_limb].fk4
 		
-		op.ik_scale = armature.limbs[armature.active_limb].ik_scale
-		op.fk_scale = armature.limbs[armature.active_limb].fk_scale
-		op.ik_location = armature.limbs[armature.active_limb].ik_location
-		op.fk_location = armature.limbs[armature.active_limb].fk_location
+		op.ik_scale = armature.juas_limbs[armature.juas_active_limb].ik_scale
+		op.fk_scale = armature.juas_limbs[armature.juas_active_limb].fk_scale
+		op.ik_location = armature.juas_limbs[armature.juas_active_limb].ik_location
+		op.fk_location = armature.juas_limbs[armature.juas_active_limb].fk_location
 		
-		for item_src in armature.limbs[armature.active_limb].reinit_bones:
+		for item_src in armature.juas_limbs[armature.juas_active_limb].reinit_bones:
 			item_dst = op.reinit_bones.add()
 			item_dst.name = item_src.name
-		if len(armature.limbs[armature.active_limb].reinit_bones) == 0:
+		if len(armature.juas_limbs[armature.juas_active_limb].reinit_bones) == 0:
 			op.with_reinit_bones = False
 			
-		for item_src in armature.limbs[armature.active_limb].add_bones:
+		for item_src in armature.juas_limbs[armature.juas_active_limb].add_bones:
 			item_dst = op.add_bones.add()
 			item_dst.name_FK = item_src.name_FK
 			item_dst.name_IK = item_src.name_IK
-		if len(armature.limbs[armature.active_limb].add_bones) == 0:
+		if len(armature.juas_limbs[armature.juas_active_limb].add_bones) == 0:
 			op.with_add_bones = False
 		
 	def draw(self, context):
 		layout = self.layout
 		armature = context.object
 		
-		if armature.limbs[armature.active_limb].layout.basic == True:
+		if armature.juas_limbs[armature.juas_active_limb].layout.basic == True:
 			row = layout.row()
 			box = row.box()
-			if armature.limbs[armature.active_limb].layout.on_select == True:
-				if context.active_pose_bone.name not in [bone.name for bone in armature.limbs[armature.active_limb].select_bones]:
+			if armature.juas_limbs[armature.juas_active_limb].layout.on_select == True:
+				if context.active_pose_bone.name not in [bone.name for bone in armature.juas_limbs[armature.juas_active_limb].select_bones]:
 					row_ = box.row()
 					row_.label("Preview Only : Bone is not in selected list", icon='ERROR')
-			if armature.limbs[armature.active_limb].layout.display_name == True:
+			if armature.juas_limbs[armature.juas_active_limb].layout.display_name == True:
 				row_ = box.row()
-				row_.label(armature.limbs[armature.active_limb].name)
+				row_.label(armature.juas_limbs[armature.juas_active_limb].name)
 			row_ = box.row()
-			op = row_.operator("pose.limb_switch_ikfk", text=armature.limbs[armature.active_limb].layout.fk2ik_label)
-			op.layout_basic = armature.limbs[armature.active_limb].layout.basic
+			op = row_.operator("pose.juas_limb_switch_ikfk", text=armature.juas_limbs[armature.juas_active_limb].layout.fk2ik_label)
+			op.layout_basic = armature.juas_limbs[armature.juas_active_limb].layout.basic
 			op.switch_way = "FK2IK"
-			op.autoswitch =  armature.limbs[armature.active_limb].interaction.autoswitch
-			if armature.limbs[armature.active_limb].interaction.autoswitch == True:
-				op.autoswitch_data_bone = armature.limbs[armature.active_limb].interaction.autoswitch_data.bone
-				op.autoswitch_data_property = armature.limbs[armature.active_limb].interaction.autoswitch_data.property
+			op.autoswitch =  armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch
+			if armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch == True:
+				op.autoswitch_data_bone = armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch_data.bone
+				op.autoswitch_data_property = armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch_data.property
 			self.populate_ops_param(context, op)
 			
 			row_ = box.row()
-			op = row_.operator("pose.limb_switch_ikfk", text=armature.limbs[armature.active_limb].layout.ik2fk_label)
-			op.layout_basic = armature.limbs[armature.active_limb].layout.basic
+			op = row_.operator("pose.juas_limb_switch_ikfk", text=armature.juas_limbs[armature.juas_active_limb].layout.ik2fk_label)
+			op.layout_basic = armature.juas_limbs[armature.juas_active_limb].layout.basic
 			op.switch_way = "IK2FK"
 			self.populate_ops_param(context, op)
 			
 		else:
 			label = ""
 			try:
-				if int(armature.pose.bones[armature.limbs[armature.active_limb].layout.switch_bone].get(armature.limbs[armature.active_limb].layout.switch_property)) == 1.0 and armature.limbs[armature.active_limb].layout.switch_invert == "IKIS0":
-					label = armature.limbs[armature.active_limb].layout.ik2fk_label
-				elif int(armature.pose.bones[armature.limbs[armature.active_limb].layout.switch_bone].get(armature.limbs[armature.active_limb].layout.switch_property)) == 1.0 and armature.limbs[armature.active_limb].layout.switch_invert == "FKIS0":
-					label = armature.limbs[armature.active_limb].layout.fk2ik_label
-				if int(armature.pose.bones[armature.limbs[armature.active_limb].layout.switch_bone].get(armature.limbs[armature.active_limb].layout.switch_property)) == 0.0 and armature.limbs[armature.active_limb].layout.switch_invert == "IKIS0":
-					label = armature.limbs[armature.active_limb].layout.fk2ik_label
-				elif int(armature.pose.bones[armature.limbs[armature.active_limb].layout.switch_bone].get(armature.limbs[armature.active_limb].layout.switch_property)) == 0.0 and armature.limbs[armature.active_limb].layout.switch_invert == "FKIS0":
-					label = armature.limbs[armature.active_limb].layout.ik2fk_label
+				if int(armature.pose.bones[armature.juas_limbs[armature.juas_active_limb].layout.switch_bone].get(armature.juas_limbs[armature.juas_active_limb].layout.switch_property)) == 1.0 and armature.juas_limbs[armature.juas_active_limb].layout.switch_invert == "IKIS0":
+					label = armature.juas_limbs[armature.juas_active_limb].layout.ik2fk_label
+				elif int(armature.pose.bones[armature.juas_limbs[armature.juas_active_limb].layout.switch_bone].get(armature.juas_limbs[armature.juas_active_limb].layout.switch_property)) == 1.0 and armature.juas_limbs[armature.juas_active_limb].layout.switch_invert == "FKIS0":
+					label = armature.juas_limbs[armature.juas_active_limb].layout.fk2ik_label
+				if int(armature.pose.bones[armature.juas_limbs[armature.juas_active_limb].layout.switch_bone].get(armature.juas_limbs[armature.juas_active_limb].layout.switch_property)) == 0.0 and armature.juas_limbs[armature.juas_active_limb].layout.switch_invert == "IKIS0":
+					label = armature.juas_limbs[armature.juas_active_limb].layout.fk2ik_label
+				elif int(armature.pose.bones[armature.juas_limbs[armature.juas_active_limb].layout.switch_bone].get(armature.juas_limbs[armature.juas_active_limb].layout.switch_property)) == 0.0 and armature.juas_limbs[armature.juas_active_limb].layout.switch_invert == "FKIS0":
+					label = armature.juas_limbs[armature.juas_active_limb].layout.ik2fk_label
 			except:
 				label = ""
 			row = layout.row()
 			box = row.box()
-			if armature.limbs[armature.active_limb].layout.on_select == True and addonpref().generated_enable == True:
-				if context.active_pose_bone.name not in [bone.name for bone in armature.limbs[armature.active_limb].select_bones]:
+			if armature.juas_limbs[armature.juas_active_limb].layout.on_select == True and addonpref().generated_enable == True:
+				if context.active_pose_bone.name not in [bone.name for bone in armature.juas_limbs[armature.juas_active_limb].select_bones]:
 					row_ = box.row()
 					row_.label("Preview Only : Bone is not in selected list", icon='ERROR')
-			if armature.limbs[armature.active_limb].layout.display_name == True:
+			if armature.juas_limbs[armature.juas_active_limb].layout.display_name == True:
 				row_ = box.row()
-				row_.label(armature.limbs[armature.active_limb].name)
+				row_.label(armature.juas_limbs[armature.juas_active_limb].name)
 			row_ = box.row()
-			op = row_.operator("pose.limb_switch_ikfk", text=label)
-			op.layout_basic = armature.limbs[armature.active_limb].layout.basic
-			op.switch_bone = armature.limbs[armature.active_limb].layout.switch_bone
-			op.switch_property = armature.limbs[armature.active_limb].layout.switch_property
-			op.switch_invert   = armature.limbs[armature.active_limb].layout.switch_invert
-			op.autoswitch =  armature.limbs[armature.active_limb].interaction.autoswitch
-			op.autoswitch_keyframe = armature.limbs[armature.active_limb].interaction.autoswitch_keyframe
-			if armature.limbs[armature.active_limb].interaction.autoswitch == True:
-				op.autoswitch_data_bone = armature.limbs[armature.active_limb].interaction.autoswitch_data.bone
-				op.autoswitch_data_property = armature.limbs[armature.active_limb].interaction.autoswitch_data.property
-			op.autodisplay =  armature.limbs[armature.active_limb].interaction.autodisplay
-			if armature.limbs[armature.active_limb].interaction.autodisplay == True:
-				op.autodisplay_data_type = armature.limbs[armature.active_limb].interaction.autodisplay_data.type
-				if armature.limbs[armature.active_limb].interaction.autodisplay_data.type == "LAYER":
-					op.autodisplay_data_layer_ik = armature.limbs[armature.active_limb].interaction.autodisplay_data.layer_ik
-					op.autodisplay_data_layer_fk = armature.limbs[armature.active_limb].interaction.autodisplay_data.layer_fk
-				elif armature.limbs[armature.active_limb].interaction.autodisplay_data.type == "HIDE":
-					op.autodisplay_data_bone = armature.limbs[armature.active_limb].interaction.autodisplay_data.bone
-					op.autodisplay_data_property = armature.limbs[armature.active_limb].interaction.autodisplay_data.property
-					op.autodisplay_data_invert = armature.limbs[armature.active_limb].interaction.autodisplay_data.invert
-			op.autokeyframe =  armature.limbs[armature.active_limb].interaction.autokeyframe
-			if armature.limbs[armature.active_limb].interaction.autokeyframe == True:
-				op.autokeyframe_data_type          = armature.limbs[armature.active_limb].interaction.autokeyframe_data.type
-				op.autokeyframe_data_keying_set_FK = armature.limbs[armature.active_limb].interaction.autokeyframe_data.keying_set_FK
-				op.autokeyframe_data_keying_set_IK = armature.limbs[armature.active_limb].interaction.autokeyframe_data.keying_set_IK
+			op = row_.operator("pose.juas_limb_switch_ikfk", text=label)
+			op.layout_basic = armature.juas_limbs[armature.juas_active_limb].layout.basic
+			op.switch_bone = armature.juas_limbs[armature.juas_active_limb].layout.switch_bone
+			op.switch_property = armature.juas_limbs[armature.juas_active_limb].layout.switch_property
+			op.switch_invert   = armature.juas_limbs[armature.juas_active_limb].layout.switch_invert
+			op.autoswitch =  armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch
+			op.autoswitch_keyframe = armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch_keyframe
+			if armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch == True:
+				op.autoswitch_data_bone = armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch_data.bone
+				op.autoswitch_data_property = armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch_data.property
+			op.autodisplay =  armature.juas_limbs[armature.juas_active_limb].interaction.autodisplay
+			if armature.juas_limbs[armature.juas_active_limb].interaction.autodisplay == True:
+				op.autodisplay_data_type = armature.juas_limbs[armature.juas_active_limb].interaction.autodisplay_data.type
+				if armature.juas_limbs[armature.juas_active_limb].interaction.autodisplay_data.type == "LAYER":
+					op.autodisplay_data_layer_ik = armature.juas_limbs[armature.juas_active_limb].interaction.autodisplay_data.layer_ik
+					op.autodisplay_data_layer_fk = armature.juas_limbs[armature.juas_active_limb].interaction.autodisplay_data.layer_fk
+				elif armature.juas_limbs[armature.juas_active_limb].interaction.autodisplay_data.type == "HIDE":
+					op.autodisplay_data_bone = armature.juas_limbs[armature.juas_active_limb].interaction.autodisplay_data.bone
+					op.autodisplay_data_property = armature.juas_limbs[armature.juas_active_limb].interaction.autodisplay_data.property
+					op.autodisplay_data_invert = armature.juas_limbs[armature.juas_active_limb].interaction.autodisplay_data.invert
+			op.autokeyframe =  armature.juas_limbs[armature.juas_active_limb].interaction.autokeyframe
+			if armature.juas_limbs[armature.juas_active_limb].interaction.autokeyframe == True:
+				op.autokeyframe_data_type          = armature.juas_limbs[armature.juas_active_limb].interaction.autokeyframe_data.type
+				op.autokeyframe_data_keying_set_FK = armature.juas_limbs[armature.juas_active_limb].interaction.autokeyframe_data.keying_set_FK
+				op.autokeyframe_data_keying_set_IK = armature.juas_limbs[armature.juas_active_limb].interaction.autokeyframe_data.keying_set_IK
 			self.populate_ops_param(context, op)
 			row_ = box.row()
 			if label == "":
 				row_.label("Wrong layout data", icon="ERROR")
-			if armature.limbs[armature.active_limb].interaction.autoswitch == True:
+			if armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch == True:
 				try:
-					int(armature.pose.bones[armature.limbs[armature.active_limb].interaction.autoswitch_data.bone].get(armature.limbs[armature.active_limb].interaction.autoswitch_data.property))
+					int(armature.pose.bones[armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch_data.bone].get(armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch_data.property))
 					row_ = box.row()
-					row_.prop(armature.limbs[armature.active_limb].interaction, "autoswitch", text="AutoSwitch")
-					if armature.limbs[armature.active_limb].interaction.autoswitch_keyframe == True:
-						row_.prop(armature.limbs[armature.active_limb].interaction, "autoswitch_keyframe", text="Keyframe")
+					row_.prop(armature.juas_limbs[armature.juas_active_limb].interaction, "autoswitch", text="AutoSwitch")
+					if armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch_keyframe == True:
+						row_.prop(armature.juas_limbs[armature.juas_active_limb].interaction, "autoswitch_keyframe", text="Keyframe")
 					row_.enabled = False
 					
 					#check if multiple limb use same bone for storing data
 					if addonpref().generated_enable == True:
 						bones = []
-						for limb in armature.limbs:
+						for limb in armature.juas_limbs:
 							if limb.interaction.autoswitch == True:
 								if limb.interaction.autoswitch_data.bone_store in bones:
 									row_ = box.row()
@@ -243,22 +243,22 @@ class POSE_PT_Limb_livesnap(bpy.types.Panel):
 					row_ = box.row()
 					row_.label("Wrong Autoswitch Data", icon="ERROR")
 					
-			if armature.limbs[armature.active_limb].interaction.autodisplay == True:
-				if armature.limbs[armature.active_limb].interaction.autodisplay_data.bone_store not in context.active_object.data.bones.keys() and addonpref().generated_enable == True:
+			if armature.juas_limbs[armature.juas_active_limb].interaction.autodisplay == True:
+				if armature.juas_limbs[armature.juas_active_limb].interaction.autodisplay_data.bone_store not in context.active_object.data.bones.keys() and addonpref().generated_enable == True:
 						row_ = box.row()
 						row_.label("Wrong AutoDisplay data", icon="ERROR")
 				else:
-					if armature.limbs[armature.active_limb].interaction.autodisplay_data.type == "HIDE":
+					if armature.juas_limbs[armature.juas_active_limb].interaction.autodisplay_data.type == "HIDE":
 						try:
-							int(armature.pose.bones[armature.limbs[armature.active_limb].interaction.autodisplay_data.bone].get(armature.limbs[armature.active_limb].interaction.autodisplay_data.property))
+							int(armature.pose.bones[armature.juas_limbs[armature.juas_active_limb].interaction.autodisplay_data.bone].get(armature.juas_limbs[armature.juas_active_limb].interaction.autodisplay_data.property))
 							row_ = box.row()
-							row_.prop(armature.limbs[armature.active_limb].interaction, "autodisplay", text="AutoDisplay")
+							row_.prop(armature.juas_limbs[armature.juas_active_limb].interaction, "autodisplay", text="AutoDisplay")
 							row_.enabled = False
 							
 							if addonpref().generated_enable == True:
 							#check if multiple limb use same bone for storing data
 								bones = []
-								for limb in armature.limbs:
+								for limb in armature.juas_limbs:
 									if limb.interaction.autodisplay == True:
 										if limb.interaction.autodisplay_data.bone_store in bones:
 											row_ = box.row()
@@ -270,13 +270,13 @@ class POSE_PT_Limb_livesnap(bpy.types.Panel):
 							row_.label("Wrong AutoDisplay Data", icon="ERROR")
 					else: #Layer
 						row_ = box.row()
-						row_.prop(armature.limbs[armature.active_limb].interaction, "autodisplay", text="AutoDisplay")
+						row_.prop(armature.juas_limbs[armature.juas_active_limb].interaction, "autodisplay", text="AutoDisplay")
 						row_.enabled = False
 						
 						if addonpref().generated_enable == True:
 							#check if multiple limb use same bone for storing data
 							bones = []
-							for limb in armature.limbs:
+							for limb in armature.juas_limbs:
 								if limb.interaction.autodisplay == True:
 									if limb.interaction.autodisplay_data.bone_store in bones:
 										row_ = box.row()
@@ -284,20 +284,20 @@ class POSE_PT_Limb_livesnap(bpy.types.Panel):
 										break
 									bones.append(limb.interaction.autodisplay_data.bone_store)						
 							
-			if armature.limbs[armature.active_limb].interaction.autokeyframe == True:
-				if armature.limbs[armature.active_limb].interaction.autokeyframe_data.bone_store not in context.active_object.data.bones.keys() and addonpref().generated_enable == True:
+			if armature.juas_limbs[armature.juas_active_limb].interaction.autokeyframe == True:
+				if armature.juas_limbs[armature.juas_active_limb].interaction.autokeyframe_data.bone_store not in context.active_object.data.bones.keys() and addonpref().generated_enable == True:
 						row_ = box.row()
 						row_.label("Wrong AutoKeyframe data", icon="ERROR")
 						#TODO : add check keying sets ?
 				else:
 					row_ = box.row()
-					row_.prop(armature.limbs[armature.active_limb].interaction, "autokeyframe", text="AutoKeyframe")
+					row_.prop(armature.juas_limbs[armature.juas_active_limb].interaction, "autokeyframe", text="AutoKeyframe")
 					row_.enabled = False
 					
 					if addonpref().generated_enable == True:
 						#check if multiple limb use same bone for storing data
 						bones = []
-						for limb in armature.limbs:
+						for limb in armature.juas_limbs:
 							if limb.interaction.autokeyframe == True:
 								if limb.interaction.autokeyframe_data.bone_store in bones:
 									row_ = box.row()
@@ -306,7 +306,7 @@ class POSE_PT_Limb_livesnap(bpy.types.Panel):
 								bones.append(limb.interaction.autokeyframe_data.bone_store)
 							
 							
-class POSE_PT_Snap_Generate(bpy.types.Panel):
+class POSE_PT_JuAS_Snap_Generate(bpy.types.Panel):
 	bl_label = "Generate"
 	bl_space_type = 'VIEW_3D'
 	bl_region_type = 'TOOLS'
@@ -314,22 +314,22 @@ class POSE_PT_Snap_Generate(bpy.types.Panel):
 	
 	@classmethod
 	def poll(self, context):
-		return context.active_object and context.active_object.type == "ARMATURE" and len(context.active_object.limbs) > 0 and context.mode == 'POSE' and addonpref().generated_enable == True
+		return context.active_object and context.active_object.type == "ARMATURE" and len(context.active_object.juas_limbs) > 0 and context.mode == 'POSE' and addonpref().generated_enable == True
 		
 	def draw(self, context):
 		layout = self.layout
 		armature = context.object
 		row = layout.row()
-		row.prop(armature.generation, "view_location")
+		row.prop(armature.juas_generation, "view_location")
 		row = layout.row()
-		row.prop(armature.generation, "panel_name")
-		if armature.generation.view_location == "TOOLS":
+		row.prop(armature.juas_generation, "panel_name")
+		if armature.juas_generation.view_location == "TOOLS":
 			row = layout.row()
-			row.prop(armature.generation, "tab_tool")
+			row.prop(armature.juas_generation, "tab_tool")
 		row = layout.row()
 		row.operator("pose.generate_snapping", text="Generate")
 		
-class POSE_PT_Limbs(bpy.types.Panel):
+class POSE_PT_JuAS_Limbs(bpy.types.Panel):
 	bl_label = "Limbs"
 	bl_space_type = 'VIEW_3D'
 	bl_region_type = 'TOOLS'
@@ -344,21 +344,21 @@ class POSE_PT_Limbs(bpy.types.Panel):
 		armature = context.object
 		
 		row = layout.row()
-		row.template_list("POSE_UL_LimbList", "", armature, "limbs", armature, "active_limb")
+		row.template_list("POSE_UL_JuAS_LimbList", "", armature, "juas_limbs", armature, "juas_active_limb")
 		
 		col = row.column()
 		row = col.column(align=True)
-		row.operator("pose.limb_add", icon="ZOOMIN", text="")
-		row.operator("pose.limb_remove", icon="ZOOMOUT", text="")
-		row.menu("POSE_MT_limb_specials", icon='DOWNARROW_HLT', text="")
+		row.operator("pose.juas_limb_add", icon="ZOOMIN", text="")
+		row.operator("pose.juas_limb_remove", icon="ZOOMOUT", text="")
+		row.menu("POSE_MT_JuAS_limb_specials", icon='DOWNARROW_HLT', text="")
 			
-		if len(context.active_object.limbs) > 0:
+		if len(context.active_object.juas_limbs) > 0:
 			row = col.column(align=True)
 			row.separator()
-			row.operator("pose.limb_move", icon='TRIA_UP', text="").direction = 'UP'
-			row.operator("pose.limb_move", icon='TRIA_DOWN', text="").direction = 'DOWN'
+			row.operator("pose.juas_limb_move", icon='TRIA_UP', text="").direction = 'UP'
+			row.operator("pose.juas_limb_move", icon='TRIA_DOWN', text="").direction = 'DOWN'
 		
-class POSE_PT_LimbDetailBones(bpy.types.Panel):
+class POSE_PT_JuAS_LimbDetailBones(bpy.types.Panel):
 	bl_label = "Limb Detail -  Bones"
 	bl_space_type = 'VIEW_3D'
 	bl_region_type = 'TOOLS'
@@ -367,12 +367,12 @@ class POSE_PT_LimbDetailBones(bpy.types.Panel):
 	@classmethod
 	def poll(self, context):
 		armature = context.active_object
-		return armature and armature.type == "ARMATURE" and len(armature.limbs) > 0 and context.mode == 'POSE' and armature.limbs[armature.active_limb].display.bone == True
+		return armature and armature.type == "ARMATURE" and len(armature.juas_limbs) > 0 and context.mode == 'POSE' and armature.juas_limbs[armature.juas_active_limb].display.bone == True
 		
 	def draw(self, context):
 		layout = self.layout
 		armature = context.object
-		limb = armature.limbs[armature.active_limb]
+		limb = armature.juas_limbs[armature.juas_active_limb]
 		
 		row_ = layout.row()
 		box = row_.box()
@@ -385,7 +385,7 @@ class POSE_PT_LimbDetailBones(bpy.types.Panel):
 			row.prop_search(limb, "root", armature.data, "bones", text="Root")
 			col = row__.column()
 			row = col.column(align=True)
-			op = row.operator("pose.limb_select_bone", icon="BONE_DATA", text="")
+			op = row.operator("pose.juas_limb_select_bone", icon="BONE_DATA", text="")
 			op.bone = "root"
 			op.level = 0
 
@@ -402,7 +402,7 @@ class POSE_PT_LimbDetailBones(bpy.types.Panel):
 		row.prop_search(limb, "ik1", armature.data, "bones", text="IK1")
 		col = row__.column()
 		row = col.column(align=True)
-		op = row.operator("pose.limb_select_bone", icon="BONE_DATA", text="")
+		op = row.operator("pose.juas_limb_select_bone", icon="BONE_DATA", text="")
 		op.bone = "ik1"
 		op.level = 0
 		
@@ -412,7 +412,7 @@ class POSE_PT_LimbDetailBones(bpy.types.Panel):
 		row.prop_search(limb, "ik2", armature.data, "bones", text="IK2")
 		col = row__.column()
 		row = col.column(align=True)
-		op = row.operator("pose.limb_select_bone", icon="BONE_DATA", text="")
+		op = row.operator("pose.juas_limb_select_bone", icon="BONE_DATA", text="")
 		op.bone = "ik2"
 		op.level = 0
 		
@@ -422,7 +422,7 @@ class POSE_PT_LimbDetailBones(bpy.types.Panel):
 		row.prop_search(limb, "ik3", armature.data, "bones", text="IK Target")
 		col = row__.column()
 		row = col.column(align=True)
-		op = row.operator("pose.limb_select_bone", icon="BONE_DATA", text="")
+		op = row.operator("pose.juas_limb_select_bone", icon="BONE_DATA", text="")
 		op.bone = "ik3"
 		op.level = 0
 
@@ -438,7 +438,7 @@ class POSE_PT_LimbDetailBones(bpy.types.Panel):
 			row.prop_search(limb, "ik4", armature.data, "bones", text="IK Pole")
 			col = row_.column()
 			row = col.column(align=True)
-			op = row.operator("pose.limb_select_bone", icon="BONE_DATA", text="")
+			op = row.operator("pose.juas_limb_select_bone", icon="BONE_DATA", text="")
 			op.bone = "ik4"	
 			op.level = 0
 		
@@ -454,7 +454,7 @@ class POSE_PT_LimbDetailBones(bpy.types.Panel):
 			row.prop_search(limb, "ik5", armature.data, "bones", text="IK toe")
 			col = row_.column()
 			row = col.column(align=True)
-			op = row.operator("pose.limb_select_bone", icon="BONE_DATA", text="") 
+			op = row.operator("pose.juas_limb_select_bone", icon="BONE_DATA", text="") 
 			op.bone = "ik5" 
 			op.level = 0
 
@@ -470,7 +470,7 @@ class POSE_PT_LimbDetailBones(bpy.types.Panel):
 			row.prop_search(limb, "ik_scale", armature.data, "bones", text="IK Scale")
 			col = row_.column()
 			row = col.column(align=True)
-			op = row.operator("pose.limb_select_bone", icon="BONE_DATA", text="")
+			op = row.operator("pose.juas_limb_select_bone", icon="BONE_DATA", text="")
 			op.bone = "ik_scale"
 			op.level = 0
 
@@ -486,7 +486,7 @@ class POSE_PT_LimbDetailBones(bpy.types.Panel):
 			row.prop_search(limb, "ik_location", armature.data, "bones", text="IK Location")
 			col = row_.column()
 			row = col.column(align=True)
-			op = row.operator("pose.limb_select_bone", icon="BONE_DATA", text="")
+			op = row.operator("pose.juas_limb_select_bone", icon="BONE_DATA", text="")
 			op.bone = "ik_location"
 			op.level = 0
 			
@@ -497,29 +497,29 @@ class POSE_PT_LimbDetailBones(bpy.types.Panel):
 		row__.prop(limb, "with_reinit_bones", text="Roll/Rock bones to reinit")
 		if limb.with_reinit_bones == True:
 			row__ = box.row()
-			op = row__.operator("pose.limb_selected_bones_select", text="Fill from selection")
+			op = row__.operator("pose.juas_limb_selected_bones_select", text="Fill from selection")
 			op.bone = "reinit_bones"
 			row__= box.row()
-			row__.template_list("POSE_UL_ReInitBoneList", "", armature.limbs[armature.active_limb], "reinit_bones", armature.limbs[armature.active_limb], "active_reinit_bone")
+			row__.template_list("POSE_UL_JuAS_ReInitBoneList", "", armature.juas_limbs[armature.juas_active_limb], "reinit_bones", armature.juas_limbs[armature.juas_active_limb], "active_reinit_bone")
 			
 			col = row__.column()
 			row = col.column(align=True)
-			row.operator("pose.reinit_bone_add", icon="ZOOMIN", text="")
-			row.operator("pose.reinit_bone_remove", icon="ZOOMOUT", text="")
+			row.operator("pose.juas_reinit_bone_add", icon="ZOOMIN", text="")
+			row.operator("pose.juas_reinit_bone_remove", icon="ZOOMOUT", text="")
 				
 			row = col.column(align=True)
 			row.separator()
-			row.operator("pose.reinit_bone_move", icon='TRIA_UP', text="").direction = 'UP'
-			row.operator("pose.reinit_bone_move", icon='TRIA_DOWN', text="").direction = 'DOWN'
+			row.operator("pose.juas_reinit_bone_move", icon='TRIA_UP', text="").direction = 'UP'
+			row.operator("pose.juas_reinit_bone_move", icon='TRIA_DOWN', text="").direction = 'DOWN'
 			
-			if len(armature.limbs[armature.active_limb].reinit_bones) > 0:
+			if len(armature.juas_limbs[armature.juas_active_limb].reinit_bones) > 0:
 				row_ = box.row()
 				col = row_.column()
 				row = col.column(align=True)
-				row.prop_search(armature.limbs[armature.active_limb].reinit_bones[armature.limbs[armature.active_limb].active_reinit_bone], "name", armature.data, "bones", text="Bone")
+				row.prop_search(armature.juas_limbs[armature.juas_active_limb].reinit_bones[armature.juas_limbs[armature.juas_active_limb].active_reinit_bone], "name", armature.data, "bones", text="Bone")
 				col = row_.column()
 				row = col.column(align=True)
-				op = row.operator("pose.limb_select_bone", icon="BONE_DATA", text="")
+				op = row.operator("pose.juas_limb_select_bone", icon="BONE_DATA", text="")
 				op.bone = "reinit_bone"
 				op.level = 0
 
@@ -537,7 +537,7 @@ class POSE_PT_LimbDetailBones(bpy.types.Panel):
 		row.prop_search(limb, "fk1", armature.data, "bones", text="FK1")
 		col = row__.column()
 		row = col.column(align=True)
-		op = row.operator("pose.limb_select_bone", icon="BONE_DATA", text="")
+		op = row.operator("pose.juas_limb_select_bone", icon="BONE_DATA", text="")
 		op.bone = "fk1"
 		op.level = 0
 		
@@ -547,7 +547,7 @@ class POSE_PT_LimbDetailBones(bpy.types.Panel):
 		row.prop_search(limb, "fk2", armature.data, "bones", text="FK2")
 		col = row__.column()
 		row = col.column(align=True)
-		op = row.operator("pose.limb_select_bone", icon="BONE_DATA", text="")
+		op = row.operator("pose.juas_limb_select_bone", icon="BONE_DATA", text="")
 		op.bone = "fk2"
 		op.level = 0
 		
@@ -557,7 +557,7 @@ class POSE_PT_LimbDetailBones(bpy.types.Panel):
 		row.prop_search(limb, "fk3", armature.data, "bones", text="FK3")
 		col = row__.column()
 		row = col.column(align=True)
-		op = row.operator("pose.limb_select_bone", icon="BONE_DATA", text="")
+		op = row.operator("pose.juas_limb_select_bone", icon="BONE_DATA", text="")
 		op.bone = "fk3"
 		op.level = 0
 
@@ -574,7 +574,7 @@ class POSE_PT_LimbDetailBones(bpy.types.Panel):
 			row.prop_search(limb, "fk4", armature.data, "bones", text="FK toe")
 			col = row_.column()
 			row = col.column(align=True)
-			op = row.operator("pose.limb_select_bone", icon="BONE_DATA", text="") 
+			op = row.operator("pose.juas_limb_select_bone", icon="BONE_DATA", text="") 
 			op.bone = "fk4"  
 			op.level = 0
 			
@@ -590,7 +590,7 @@ class POSE_PT_LimbDetailBones(bpy.types.Panel):
 			row.prop_search(limb, "fk_scale", armature.data, "bones", text="FK Scale")
 			col = row_.column()
 			row = col.column(align=True)
-			op = row.operator("pose.limb_select_bone", icon="BONE_DATA", text="")
+			op = row.operator("pose.juas_limb_select_bone", icon="BONE_DATA", text="")
 			op.bone = "fk_scale"
 			op.level = 0
 
@@ -606,7 +606,7 @@ class POSE_PT_LimbDetailBones(bpy.types.Panel):
 			row.prop_search(limb, "fk_location", armature.data, "bones", text="FK Location")
 			col = row_.column()
 			row = col.column(align=True)
-			op = row.operator("pose.limb_select_bone", icon="BONE_DATA", text="")	
+			op = row.operator("pose.juas_limb_select_bone", icon="BONE_DATA", text="")	
 			op.bone = "fk_location"
 			op.level = 0
 			
@@ -617,41 +617,41 @@ class POSE_PT_LimbDetailBones(bpy.types.Panel):
 
 			box  = row_.box()
 			row__= box.row()
-			row__.template_list("POSE_UL_AddBoneList", "", armature.limbs[armature.active_limb], "add_bones", armature.limbs[armature.active_limb], "active_add_bone")
+			row__.template_list("POSE_UL_JuAS_AddBoneList", "", armature.juas_limbs[armature.juas_active_limb], "add_bones", armature.juas_limbs[armature.juas_active_limb], "active_add_bone")
 			
 			col = row__.column()
 			row = col.column(align=True)
-			row.operator("pose.add_bone_add", icon="ZOOMIN", text="")
-			row.operator("pose.add_bone_remove", icon="ZOOMOUT", text="")
+			row.operator("pose.juas_add_bone_add", icon="ZOOMIN", text="")
+			row.operator("pose.juas_add_bone_remove", icon="ZOOMOUT", text="")
 				
 			row = col.column(align=True)
 			row.separator()
-			row.operator("pose.add_bone_move", icon='TRIA_UP', text="").direction = 'UP'
-			row.operator("pose.add_bone_move", icon='TRIA_DOWN', text="").direction = 'DOWN'
+			row.operator("pose.juas_add_bone_move", icon='TRIA_UP', text="").direction = 'UP'
+			row.operator("pose.juas_add_bone_move", icon='TRIA_DOWN', text="").direction = 'DOWN'
 			
-			if len(armature.limbs[armature.active_limb].add_bones) > 0:
+			if len(armature.juas_limbs[armature.juas_active_limb].add_bones) > 0:
 				row_ = box.row()
 				col = row_.column()
 				row = col.column(align=True)
-				row.prop_search(armature.limbs[armature.active_limb].add_bones[armature.limbs[armature.active_limb].active_add_bone], "name_FK", armature.data, "bones", text="Bone FK")
+				row.prop_search(armature.juas_limbs[armature.juas_active_limb].add_bones[armature.juas_limbs[armature.juas_active_limb].active_add_bone], "name_FK", armature.data, "bones", text="Bone FK")
 				col = row_.column()
 				row = col.column(align=True)
-				op = row.operator("pose.limb_select_bone", icon="BONE_DATA", text="")
+				op = row.operator("pose.juas_limb_select_bone", icon="BONE_DATA", text="")
 				op.bone = "add_bone"
 				op.level = 0
 				op.bone_side = 'FK'
 				row_ = box.row()
 				col = row_.column()
 				row = col.column(align=True)
-				row.prop_search(armature.limbs[armature.active_limb].add_bones[armature.limbs[armature.active_limb].active_add_bone], "name_IK", armature.data, "bones", text="Bone IK")
+				row.prop_search(armature.juas_limbs[armature.juas_active_limb].add_bones[armature.juas_limbs[armature.juas_active_limb].active_add_bone], "name_IK", armature.data, "bones", text="Bone IK")
 				col = row_.column()
 				row = col.column(align=True)
-				op = row.operator("pose.limb_select_bone", icon="BONE_DATA", text="")
+				op = row.operator("pose.juas_limb_select_bone", icon="BONE_DATA", text="")
 				op.bone = "add_bone"
 				op.level = 0
 				op.bone_side = 'IK'
 		
-class POSE_PT_LimbDetail(bpy.types.Panel):
+class POSE_PT_JuAS_LimbDetail(bpy.types.Panel):
 	bl_label = "Limb Detail"
 	bl_space_type = 'VIEW_3D'
 	bl_region_type = 'TOOLS'
@@ -659,12 +659,12 @@ class POSE_PT_LimbDetail(bpy.types.Panel):
 	
 	@classmethod
 	def poll(self, context):
-		return context.active_object and context.active_object.type == "ARMATURE" and len(context.active_object.limbs) > 0 and context.mode == 'POSE'
+		return context.active_object and context.active_object.type == "ARMATURE" and len(context.active_object.juas_limbs) > 0 and context.mode == 'POSE'
 		
 	def draw(self, context):
 		layout = self.layout
 		armature = context.object
-		limb = armature.limbs[armature.active_limb]
+		limb = armature.juas_limbs[armature.juas_active_limb]
 	
 		row = layout.row()
 		row.prop(limb, "name", text="name")
@@ -678,7 +678,7 @@ class POSE_PT_LimbDetail(bpy.types.Panel):
 		if limb.layout.basic == True:
 			row.enabled = False
 			
-class POSE_PT_LimbDetailLayout(bpy.types.Panel):
+class POSE_PT_JuAS_LimbDetailLayout(bpy.types.Panel):
 	bl_label = "Limb Detail - Layout"
 	bl_space_type = 'VIEW_3D'
 	bl_region_type = 'TOOLS'
@@ -687,12 +687,12 @@ class POSE_PT_LimbDetailLayout(bpy.types.Panel):
 	@classmethod
 	def poll(self, context):
 		armature = context.active_object
-		return armature and armature.type == "ARMATURE" and len(armature.limbs) > 0 and context.mode == 'POSE' and armature.limbs[armature.active_limb].display.layout == True
+		return armature and armature.type == "ARMATURE" and len(armature.juas_limbs) > 0 and context.mode == 'POSE' and armature.juas_limbs[armature.juas_active_limb].display.layout == True
 		
 	def draw(self, context):
 		layout = self.layout
 		armature = context.active_object
-		limb = armature.limbs[armature.active_limb]
+		limb = armature.juas_limbs[armature.juas_active_limb]
 		
 		row = layout.row()
 		box = row.box()
@@ -713,7 +713,7 @@ class POSE_PT_LimbDetailLayout(bpy.types.Panel):
 			row__.prop_search(limb.layout, "switch_bone", armature.data, "bones", text="Switch Bone")
 			col = row_.column()
 			row__ = col.row()
-			op = row__.operator("pose.limb_select_bone", icon="BONE_DATA", text="")	
+			op = row__.operator("pose.juas_limb_select_bone", icon="BONE_DATA", text="")	
 			op.bone = "switch_bone"
 			op.level = 2
 			op.level_1 = "layout"
@@ -734,33 +734,33 @@ class POSE_PT_LimbDetailLayout(bpy.types.Panel):
 			row_.prop(limb.layout, "on_select", text="Display On Select")
 			if limb.layout.on_select == True:
 				row = layout.row()
-				op = row.operator("pose.limb_selected_bones_select", text="Fill from selection")
+				op = row.operator("pose.juas_limb_selected_bones_select", text="Fill from selection")
 				op.bone = "select_bones"
 				row = layout.row()
-				row.template_list("POSE_UL_SelectBoneList", "", armature.limbs[armature.active_limb], "select_bones", armature.limbs[armature.active_limb], "active_select_bone")
+				row.template_list("POSE_UL_JuAS_SelectBoneList", "", armature.juas_limbs[armature.juas_active_limb], "select_bones", armature.juas_limbs[armature.juas_active_limb], "active_select_bone")
 				
 				col = row.column()
 				row_ = col.column(align=True)
-				row_.operator("pose.select_bone_add", icon="ZOOMIN", text="")
-				row_.operator("pose.select_bone_remove", icon="ZOOMOUT", text="")
+				row_.operator("pose.juas_select_bone_add", icon="ZOOMIN", text="")
+				row_.operator("pose.juas_select_bone_remove", icon="ZOOMOUT", text="")
 					
 				row_ = col.column(align=True)
 				row_.separator()
-				row_.operator("pose.select_bone_move", icon='TRIA_UP', text="").direction = 'UP'
-				row_.operator("pose.select_bone_move", icon='TRIA_DOWN', text="").direction = 'DOWN'
+				row_.operator("pose.juas_select_bone_move", icon='TRIA_UP', text="").direction = 'UP'
+				row_.operator("pose.juas_select_bone_move", icon='TRIA_DOWN', text="").direction = 'DOWN'
 				
-				if len(armature.limbs[armature.active_limb].select_bones) > 0:
+				if len(armature.juas_limbs[armature.juas_active_limb].select_bones) > 0:
 					row = layout.row()
 					col = row.column()
 					row_ = col.column(align=True)
-					row_.prop_search(armature.limbs[armature.active_limb].select_bones[armature.limbs[armature.active_limb].active_select_bone], "name", armature.data, "bones", text="Bone")
+					row_.prop_search(armature.juas_limbs[armature.juas_active_limb].select_bones[armature.juas_limbs[armature.juas_active_limb].active_select_bone], "name", armature.data, "bones", text="Bone")
 					col = row.column()
 					row_ = col.column(align=True)
-					op = row_.operator("pose.limb_select_bone", icon="BONE_DATA", text="")
+					op = row_.operator("pose.juas_limb_select_bone", icon="BONE_DATA", text="")
 					op.bone = "select_bone"
 					op.level = 0
 			
-class POSE_PT_LimbDetailInteraction(bpy.types.Panel):
+class POSE_PT_JuAS_LimbDetailInteraction(bpy.types.Panel):
 	bl_label = "Limb Detail - Interaction"
 	bl_space_type = 'VIEW_3D'
 	bl_region_type = 'TOOLS'
@@ -769,12 +769,12 @@ class POSE_PT_LimbDetailInteraction(bpy.types.Panel):
 	@classmethod
 	def poll(self, context):
 		armature = context.active_object
-		return armature and armature.type == "ARMATURE" and len(armature.limbs) > 0 and context.mode == 'POSE' and armature.limbs[armature.active_limb].display.interaction == True
+		return armature and armature.type == "ARMATURE" and len(armature.juas_limbs) > 0 and context.mode == 'POSE' and armature.juas_limbs[armature.juas_active_limb].display.interaction == True
 		
 	def draw(self, context):
 		layout = self.layout
 		armature = context.active_object
-		limb = armature.limbs[armature.active_limb]
+		limb = armature.juas_limbs[armature.juas_active_limb]
 		
 		row = layout.row()
 		row.prop(limb.interaction, "autoswitch", text="Auto Switch")
@@ -787,7 +787,7 @@ class POSE_PT_LimbDetailInteraction(bpy.types.Panel):
 			row__.prop_search(limb.interaction.autoswitch_data, "bone", armature.data, "bones", text="Bone")
 			col = row_.column()
 			row__ = col.row()
-			op = row__.operator("pose.limb_select_bone", icon="BONE_DATA", text="")
+			op = row__.operator("pose.juas_limb_select_bone", icon="BONE_DATA", text="")
 			op.level = 3
 			op.level_1 = "interaction"
 			op.level_2 = "autoswitch_data"
@@ -799,7 +799,7 @@ class POSE_PT_LimbDetailInteraction(bpy.types.Panel):
 				row__.prop_search(limb.interaction.autoswitch_data, "bone_store", armature.data, "bones", text="Bone (to store data)")
 				col = row_.column()
 				row__ = col.row()
-				op = row__.operator("pose.limb_select_bone", icon="BONE_DATA", text="")
+				op = row__.operator("pose.juas_limb_select_bone", icon="BONE_DATA", text="")
 				op.level = 3
 				op.level_1 = "interaction"
 				op.level_2 = "autoswitch_data"
@@ -821,7 +821,7 @@ class POSE_PT_LimbDetailInteraction(bpy.types.Panel):
 				row__.prop_search(limb.interaction.autodisplay_data, "bone_store", armature.data, "bones", text="Bone (to store data)")
 				col = row_.column()
 				row__ = col.row()
-				op = row__.operator("pose.limb_select_bone", icon="BONE_DATA", text="")
+				op = row__.operator("pose.juas_limb_select_bone", icon="BONE_DATA", text="")
 				op.level = 3
 				op.level_1 = "interaction"
 				op.level_2 = "autodisplay_data"
@@ -835,7 +835,7 @@ class POSE_PT_LimbDetailInteraction(bpy.types.Panel):
 				row__.prop(limb.interaction.autodisplay_data, "layer_ik", text="Layer IK")
 				col = row_.column()
 				row__ = col.row()
-				op = row__.operator("pose.limb_select_layer", icon="BONE_DATA", text="")
+				op = row__.operator("pose.juas_limb_select_layer", icon="BONE_DATA", text="")
 				op.layer = "layer_ik"
 				row_ = box.row()
 				col = row_.column()
@@ -843,7 +843,7 @@ class POSE_PT_LimbDetailInteraction(bpy.types.Panel):
 				row__.prop(limb.interaction.autodisplay_data, "layer_fk", text="Layer FK")
 				col = row_.column()
 				row__ = col.row()
-				op = row__.operator("pose.limb_select_layer", icon="BONE_DATA", text="")
+				op = row__.operator("pose.juas_limb_select_layer", icon="BONE_DATA", text="")
 				op.layer = "layer_fk"
 			elif limb.interaction.autodisplay_data.type == "HIDE":
 				col = row_.column()
@@ -851,7 +851,7 @@ class POSE_PT_LimbDetailInteraction(bpy.types.Panel):
 				row__.prop_search(limb.interaction.autodisplay_data, "bone", armature.data, "bones", text="Bone")
 				col = row_.column()
 				row__ = col.row()
-				op = row__.operator("pose.limb_select_bone", icon="BONE_DATA", text="")
+				op = row__.operator("pose.juas_limb_select_bone", icon="BONE_DATA", text="")
 				op.level = 3
 				op.level_1 = "interaction"
 				op.level_2 = "autodisplay_data"
@@ -874,7 +874,7 @@ class POSE_PT_LimbDetailInteraction(bpy.types.Panel):
 				row__.prop_search(limb.interaction.autokeyframe_data, "bone_store", armature.data, "bones", text="Bone (to store data)")
 				col = row_.column()
 				row__ = col.row()
-				op = row__.operator("pose.limb_select_bone", icon="BONE_DATA", text="")
+				op = row__.operator("pose.juas_limb_select_bone", icon="BONE_DATA", text="")
 				op.level = 3
 				op.level_1 = "interaction"
 				op.level_2 = "autokeyframe_data"
@@ -886,35 +886,35 @@ class POSE_PT_LimbDetailInteraction(bpy.types.Panel):
 				row_.prop_search(limb.interaction.autokeyframe_data, "keying_set_IK", context.scene, "keying_sets", text="Keying Set IK")
 			
 def register():
-	bpy.utils.register_class(POSE_UL_SideList)
-	bpy.utils.register_class(POSE_UL_LimbList)
-	bpy.utils.register_class(POSE_UL_ReInitBoneList)
-	bpy.utils.register_class(POSE_UL_AddBoneList)
-	bpy.utils.register_class(POSE_UL_SelectBoneList)
+	bpy.utils.register_class(POSE_UL_JuAS_SideList)
+	bpy.utils.register_class(POSE_UL_JuAS_LimbList)
+	bpy.utils.register_class(POSE_UL_JuAS_ReInitBoneList)
+	bpy.utils.register_class(POSE_UL_JuAS_AddBoneList)
+	bpy.utils.register_class(POSE_UL_JuAS_SelectBoneList)
 	
-	bpy.utils.register_class(POSE_MT_limb_specials)
+	bpy.utils.register_class(POSE_MT_JuAS_limb_specials)
 	
-	bpy.utils.register_class(POSE_PT_Limbs)
-	bpy.utils.register_class(POSE_PT_LimbDetail)
-	bpy.utils.register_class(POSE_PT_LimbDetailBones)
-	bpy.utils.register_class(POSE_PT_LimbDetailLayout)
-	bpy.utils.register_class(POSE_PT_LimbDetailInteraction)
-	bpy.utils.register_class(POSE_PT_Limb_livesnap)
-	bpy.utils.register_class(POSE_PT_Snap_Generate)
+	bpy.utils.register_class(POSE_PT_JuAS_Limbs)
+	bpy.utils.register_class(POSE_PT_JuAS_LimbDetail)
+	bpy.utils.register_class(POSE_PT_JuAS_LimbDetailBones)
+	bpy.utils.register_class(POSE_PT_JuAS_LimbDetailLayout)
+	bpy.utils.register_class(POSE_PT_JuAS_LimbDetailInteraction)
+	bpy.utils.register_class(POSE_PT_JuAS_Limb_livesnap)
+	bpy.utils.register_class(POSE_PT_JuAS_Snap_Generate)
 
 def unregister():
-	bpy.utils.unregister_class(POSE_UL_SideList)
-	bpy.utils.unregister_class(POSE_UL_LimbList)
-	bpy.utils.unregister_class(POSE_UL_ReInitBoneList)
-	bpy.utils.unregister_class(POSE_UL_AddBoneList)
-	bpy.utils.unregister_class(POSE_UL_SelectBoneList)
+	bpy.utils.unregister_class(POSE_UL_JuAS_SideList)
+	bpy.utils.unregister_class(POSE_UL_JuAS_LimbList)
+	bpy.utils.unregister_class(POSE_UL_JuAS_ReInitBoneList)
+	bpy.utils.unregister_class(POSE_UL_JuAS_AddBoneList)
+	bpy.utils.unregister_class(POSE_UL_JuAS_SelectBoneList)
 	
-	bpy.utils.unregister_class(POSE_MT_limb_specials)
+	bpy.utils.unregister_class(POSE_MT_JuAS_limb_specials)
 	
-	bpy.utils.unregister_class(POSE_PT_Limbs) 
-	bpy.utils.unregister_class(POSE_PT_LimbDetail)
-	bpy.utils.unregister_class(POSE_PT_LimbDetailBones)
-	bpy.utils.unregister_class(POSE_PT_LimbDetailLayout)
-	bpy.utils.unregister_class(POSE_PT_LimbDetailInteraction)
-	bpy.utils.unregister_class(POSE_PT_Limb_livesnap)
-	bpy.utils.unregister_class(POSE_PT_Snap_Generate)
+	bpy.utils.unregister_class(POSE_PT_JuAS_Limbs) 
+	bpy.utils.unregister_class(POSE_PT_JuAS_LimbDetail)
+	bpy.utils.unregister_class(POSE_PT_JuAS_LimbDetailBones)
+	bpy.utils.unregister_class(POSE_PT_JuAS_LimbDetailLayout)
+	bpy.utils.unregister_class(POSE_PT_JuAS_LimbDetailInteraction)
+	bpy.utils.unregister_class(POSE_PT_JuAS_Limb_livesnap)
+	bpy.utils.unregister_class(POSE_PT_JuAS_Snap_Generate)

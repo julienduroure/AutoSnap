@@ -25,10 +25,10 @@ import bpy
 
 from .globals import *
 
-class AutoSnapPreferences(bpy.types.AddonPreferences):
+class JuAS_Preferences(bpy.types.AddonPreferences):
 	bl_idname = __package__
 
-	sides = bpy.props.CollectionProperty(type=SideItem) 
+	sides = bpy.props.CollectionProperty(type=JuAS_SideItem) 
 	active_side = bpy.props.IntProperty()   
 	
 	basic = bpy.props.BoolProperty(name="Default Basic On", default=False)
@@ -79,25 +79,25 @@ class AutoSnapPreferences(bpy.types.AddonPreferences):
 		col = row_global.column(align=True)
 		row = col.row()
 		if len(addonpref().sides) > 0:
-			row.template_list("POSE_UL_SideList", "", addonpref(), "sides", addonpref(), "active_side")
+			row.template_list("POSE_UL_JuAS_SideList", "", addonpref(), "sides", addonpref(), "active_side")
 		
 			col_ = row.column()
 			row_ = col_.column(align=True)
-			row_.operator("pose.side_add", icon="ZOOMIN", text="")
-			row_.operator("pose.side_remove", icon="ZOOMOUT", text="")
+			row_.operator("pose.juas_side_add", icon="ZOOMIN", text="")
+			row_.operator("pose.juas_side_remove", icon="ZOOMOUT", text="")
 			
 			row_ = col_.column(align=True)
 			row_.separator()
-			row_.operator("pose.side_move", icon='TRIA_UP', text="").direction = 'UP'
-			row_.operator("pose.side_move", icon='TRIA_DOWN', text="").direction = 'DOWN'
+			row_.operator("pose.juas_side_move", icon='TRIA_UP', text="").direction = 'UP'
+			row_.operator("pose.juas_side_move", icon='TRIA_DOWN', text="").direction = 'DOWN'
 
 		else:
-			row.operator("pose.side_init", text="Init sides, for mirror")
+			row.operator("pose.juas_side_init", text="Init sides, for mirror")
 
 def register():
-	bpy.utils.register_class(SideItem)
-	bpy.utils.register_class(AutoSnapPreferences)
+	bpy.utils.register_class(JuAS_SideItem)
+	bpy.utils.register_class(JuAS_Preferences)
 
 def unregister():
-	bpy.utils.unregister_class(SideItem)
-	bpy.utils.unregister_class(AutoSnapPreferences)
+	bpy.utils.unregister_class(JuAS_SideItem)
+	bpy.utils.unregister_class(JuAS_Preferences)

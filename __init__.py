@@ -61,9 +61,9 @@ def register():
 	ui_ops.register()
 	ui.register()
 	
-	bpy.types.Object.generation = bpy.props.PointerProperty(type=AutoSnap_Generation)
-	bpy.types.Object.limbs = bpy.props.CollectionProperty(type=LimbItem)
-	bpy.types.Object.active_limb = bpy.props.IntProperty()
+	bpy.types.Object.juas_generation = bpy.props.PointerProperty(type=JuAS_Generation)
+	bpy.types.Object.juas_limbs = bpy.props.CollectionProperty(type=JuAS_LimbItem)
+	bpy.types.Object.juas_active_limb = bpy.props.IntProperty()
 	
 	
 def unregister():
@@ -73,9 +73,9 @@ def unregister():
 	ui_ops.unregister()
 	ui.unregister()
 
-	del bpy.types.Object.generation
-	del bpy.types.Object.limbs
-	del bpy.types.Object.active_limb	
+	del bpy.types.Object.juas_generation
+	del bpy.types.Object.juas_limbs
+	del bpy.types.Object.juas_active_limb	
 
 if __name__ == "__main__":
 	register()

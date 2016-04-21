@@ -97,11 +97,11 @@ switch_invert_items = [
 ]
 
 ### Warning : any modification on this PorpertyGroup must be reported on live source code
-class BoneItem(bpy.types.PropertyGroup):
+class JuAS_BoneItem(bpy.types.PropertyGroup):
 	name = bpy.props.StringProperty(name="Bone name")
 	
 ### Warning : any modification on this PorpertyGroup must be reported on live source code
-class BonePairItem(bpy.types.PropertyGroup):
+class JuAS_BonePairItem(bpy.types.PropertyGroup):
 	name_FK = bpy.props.StringProperty(name="Bone name FK")
 	name_IK = bpy.props.StringProperty(name="Bone name IK")
 
@@ -112,13 +112,13 @@ def get_poll_snapping_op(context):
 
 
 def register():
-	bpy.utils.register_class(BoneItem)
-	bpy.utils.register_class(BonePairItem)
+	bpy.utils.register_class(JuAS_BoneItem)
+	bpy.utils.register_class(JuAS_BonePairItem)
 	bpy.utils.register_class(###CLASS_switch_FKIK_name###)
 	
 def unregister():
-	bpy.utils.unregister_class(BoneItem)
-	bpy.utils.unregister_class(BonePairItem)
+	bpy.utils.unregister_class(JuAS_BoneItem)
+	bpy.utils.unregister_class(JuAS_BonePairItem)
 	bpy.utils.unregister_class(###CLASS_switch_FKIK_name###)
 
 register()
@@ -169,12 +169,12 @@ ui_layout_basic ='''###ON_SELECT###
 ###tab###box = row.box()
 ###LIMB_NAME###
 ###tab###row_ = box.row()
-###tab###op = row_.operator("pose.limb_switch_ikfk_###rig_id###", text="###FK2IK_LABEL###")
+###tab###op = row_.operator("pose.juas_limb_switch_ikfk_###rig_id###", text="###FK2IK_LABEL###")
 ###tab###op.layout_basic = True
 ###tab###op.switch_way = "FK2IK"
 ###GENERATED_bone_PARAM###
 ###tab###row_ = box.row()
-###tab###op = row_.operator("pose.limb_switch_ikfk_###rig_id###", text="###IK2FK_LABEL###")
+###tab###op = row_.operator("pose.juas_limb_switch_ikfk_###rig_id###", text="###IK2FK_LABEL###")
 ###tab###op.layout_basic = True
 ###tab###op.switch_way = "IK2FK"
 ###GENERATED_bone_PARAM###
@@ -256,7 +256,7 @@ ui_layout_non_basic ='''###ON_SELECT###
 ###tab###box = row.box()
 ###LIMB_NAME###
 ###tab###row_ = box.row()
-###tab###op = row_.operator("pose.limb_switch_ikfk_###rig_id###", text=label)
+###tab###op = row_.operator("pose.juas_limb_switch_ikfk_###rig_id###", text=label)
 ###tab###op.layout_basic = False
 ###tab###op.switch_bone = "###SWITCH_BONE###"
 ###tab###op.switch_property = "###SWITCH_PROPERTY###"
@@ -310,7 +310,7 @@ def populate_add_bones(op, list_):
 		item_dst.name_FK = bone[0]
 		item_dst.name_IK = bone[1]
 
-class POSE_PT_BeSpanned_Snap_###rig_id###(bpy.types.Panel):
+class POSE_PT_JuAS_BeSpanned_Snap_###rig_id###(bpy.types.Panel):
 	bl_label = "###LABEL###"
 	bl_space_type = 'VIEW_3D'
 	bl_region_type = '###REGION_TYPE###'
@@ -328,10 +328,10 @@ class POSE_PT_BeSpanned_Snap_###rig_id###(bpy.types.Panel):
 ###LAYOUT###
 
 def register():
-	bpy.utils.register_class(POSE_PT_BeSpanned_Snap_###rig_id###)
+	bpy.utils.register_class(POSE_PT_JuAS_BeSpanned_Snap_###rig_id###)
 	
 def unregister():
-	bpy.utils.unregister_class(POSE_PT_BeSpanned_Snap_###rig_id###)
+	bpy.utils.unregister_class(POSE_PT_JuAS_BeSpanned_Snap_###rig_id###)
 
 register()
 '''

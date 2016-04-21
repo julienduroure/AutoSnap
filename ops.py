@@ -32,12 +32,12 @@ from .utils import *
 from .ui_texts import *
 
 def get_poll_snapping_op(context):
-	return context.active_object and context.active_object.type == "ARMATURE" and len(context.active_object.limbs) > 0 and context.mode == 'POSE'
+	return context.active_object and context.active_object.type == "ARMATURE" and len(context.active_object.juas_limbs) > 0 and context.mode == 'POSE'
 
 
-class POSE_OT_limb_copy(bpy.types.Operator):
+class POSE_OT_juas_limb_copy(bpy.types.Operator):
 	"""Copy active limb, with mirror option"""
-	bl_idname = "pose.limb_copy"
+	bl_idname = "pose.juas_limb_copy"
 	bl_label = "Copy Limb"
 	bl_options = {'REGISTER'}
 	
@@ -45,7 +45,7 @@ class POSE_OT_limb_copy(bpy.types.Operator):
 	
 	@classmethod
 	def poll(self, context):
-		return context.active_object and context.active_object.type == "ARMATURE" and len(context.active_object.limbs) > 0
+		return context.active_object and context.active_object.type == "ARMATURE" and len(context.active_object.juas_limbs) > 0
 				
 	def execute(self, context):
 	
@@ -58,97 +58,97 @@ class POSE_OT_limb_copy(bpy.types.Operator):
 			init_sides(context)	
 
 		armature = context.object
-		src_limb_index = armature.active_limb
-		dst_limb = armature.limbs.add()
+		src_limb_index = armature.juas_active_limb
+		dst_limb = armature.juas_limbs.add()
 		
-		dst_limb.name = fct(armature.limbs[src_limb_index].name)
+		dst_limb.name = fct(armature.juas_limbs[src_limb_index].name)
 		
-		dst_limb.display.bone   = armature.limbs[src_limb_index].display.bone
-		dst_limb.display.layout = armature.limbs[src_limb_index].display.layout
-		dst_limb.display.interaction = armature.limbs[src_limb_index].display.interaction
+		dst_limb.display.bone   = armature.juas_limbs[src_limb_index].display.bone
+		dst_limb.display.layout = armature.juas_limbs[src_limb_index].display.layout
+		dst_limb.display.interaction = armature.juas_limbs[src_limb_index].display.interaction
 		
-		dst_limb.interaction.autoswitch = armature.limbs[src_limb_index].interaction.autoswitch
-		dst_limb.interaction.autoswitch_data.bone = fct(armature.limbs[src_limb_index].interaction.autoswitch_data.bone)
-		dst_limb.interaction.autoswitch_data.bone_store = fct(armature.limbs[src_limb_index].interaction.autoswitch_data.bone_store)
-		dst_limb.interaction.autoswitch_data.property = armature.limbs[src_limb_index].interaction.autoswitch_data.property
-		dst_limb.interaction.autoswitch_keyframe = armature.limbs[src_limb_index].interaction.autoswitch_keyframe
+		dst_limb.interaction.autoswitch = armature.juas_limbs[src_limb_index].interaction.autoswitch
+		dst_limb.interaction.autoswitch_data.bone = fct(armature.juas_limbs[src_limb_index].interaction.autoswitch_data.bone)
+		dst_limb.interaction.autoswitch_data.bone_store = fct(armature.juas_limbs[src_limb_index].interaction.autoswitch_data.bone_store)
+		dst_limb.interaction.autoswitch_data.property = armature.juas_limbs[src_limb_index].interaction.autoswitch_data.property
+		dst_limb.interaction.autoswitch_keyframe = armature.juas_limbs[src_limb_index].interaction.autoswitch_keyframe
 		
-		dst_limb.interaction.autodisplay = armature.limbs[src_limb_index].interaction.autodisplay
-		dst_limb.interaction.autodisplay_data.bone_store = fct(armature.limbs[src_limb_index].interaction.autodisplay_data.bone_store)
-		dst_limb.interaction.autodisplay_data.type = armature.limbs[src_limb_index].interaction.autodisplay_data.type
-		dst_limb.interaction.autodisplay_data.layer_ik = armature.limbs[src_limb_index].interaction.autodisplay_data.layer_ik
-		dst_limb.interaction.autodisplay_data.layer_fk = armature.limbs[src_limb_index].interaction.autodisplay_data.layer_fk
-		dst_limb.interaction.autodisplay_data.bone = fct(armature.limbs[src_limb_index].interaction.autodisplay_data.bone)
-		dst_limb.interaction.autodisplay_data.property = armature.limbs[src_limb_index].interaction.autodisplay_data.property
-		dst_limb.interaction.autodisplay_data.invert = armature.limbs[src_limb_index].interaction.autodisplay_data.invert
+		dst_limb.interaction.autodisplay = armature.juas_limbs[src_limb_index].interaction.autodisplay
+		dst_limb.interaction.autodisplay_data.bone_store = fct(armature.juas_limbs[src_limb_index].interaction.autodisplay_data.bone_store)
+		dst_limb.interaction.autodisplay_data.type = armature.juas_limbs[src_limb_index].interaction.autodisplay_data.type
+		dst_limb.interaction.autodisplay_data.layer_ik = armature.juas_limbs[src_limb_index].interaction.autodisplay_data.layer_ik
+		dst_limb.interaction.autodisplay_data.layer_fk = armature.juas_limbs[src_limb_index].interaction.autodisplay_data.layer_fk
+		dst_limb.interaction.autodisplay_data.bone = fct(armature.juas_limbs[src_limb_index].interaction.autodisplay_data.bone)
+		dst_limb.interaction.autodisplay_data.property = armature.juas_limbs[src_limb_index].interaction.autodisplay_data.property
+		dst_limb.interaction.autodisplay_data.invert = armature.juas_limbs[src_limb_index].interaction.autodisplay_data.invert
 		
-		dst_limb.interaction.autokeyframe = armature.limbs[src_limb_index].interaction.autokeyframe
-		dst_limb.interaction.autokeyframe_data.bone_store = fct(armature.limbs[src_limb_index].interaction.autokeyframe_data.bone_store)
-		dst_limb.interaction.autokeyframe_data.type = armature.limbs[src_limb_index].interaction.autokeyframe_data.type
-		dst_limb.interaction.autokeyframe_data.keying_set_FK = armature.limbs[src_limb_index].interaction.autokeyframe_data.keying_set_FK
-		dst_limb.interaction.autokeyframe_data.keying_set_IK = armature.limbs[src_limb_index].interaction.autokeyframe_data.keying_set_IK
+		dst_limb.interaction.autokeyframe = armature.juas_limbs[src_limb_index].interaction.autokeyframe
+		dst_limb.interaction.autokeyframe_data.bone_store = fct(armature.juas_limbs[src_limb_index].interaction.autokeyframe_data.bone_store)
+		dst_limb.interaction.autokeyframe_data.type = armature.juas_limbs[src_limb_index].interaction.autokeyframe_data.type
+		dst_limb.interaction.autokeyframe_data.keying_set_FK = armature.juas_limbs[src_limb_index].interaction.autokeyframe_data.keying_set_FK
+		dst_limb.interaction.autokeyframe_data.keying_set_IK = armature.juas_limbs[src_limb_index].interaction.autokeyframe_data.keying_set_IK
 		
 		
-		dst_limb.layout.fk2ik_label = armature.limbs[src_limb_index].layout.fk2ik_label
-		dst_limb.layout.ik2fk_label = armature.limbs[src_limb_index].layout.ik2fk_label		
-		dst_limb.layout.switch_bone = fct(armature.limbs[src_limb_index].layout.switch_bone)
-		dst_limb.layout.switch_property = armature.limbs[src_limb_index].layout.switch_property
-		dst_limb.layout.switch_invert = armature.limbs[src_limb_index].layout.switch_invert
-		dst_limb.layout.display_name = armature.limbs[src_limb_index].layout.display_name
-		dst_limb.layout.on_select = armature.limbs[src_limb_index].layout.on_select
+		dst_limb.layout.fk2ik_label = armature.juas_limbs[src_limb_index].layout.fk2ik_label
+		dst_limb.layout.ik2fk_label = armature.juas_limbs[src_limb_index].layout.ik2fk_label		
+		dst_limb.layout.switch_bone = fct(armature.juas_limbs[src_limb_index].layout.switch_bone)
+		dst_limb.layout.switch_property = armature.juas_limbs[src_limb_index].layout.switch_property
+		dst_limb.layout.switch_invert = armature.juas_limbs[src_limb_index].layout.switch_invert
+		dst_limb.layout.display_name = armature.juas_limbs[src_limb_index].layout.display_name
+		dst_limb.layout.on_select = armature.juas_limbs[src_limb_index].layout.on_select
 		
-		dst_limb.ik_type = armature.limbs[src_limb_index].ik_type
-		dst_limb.ik_scale_type = armature.limbs[src_limb_index].ik_scale_type
-		dst_limb.fk_scale_type = armature.limbs[src_limb_index].fk_scale_type
-		dst_limb.ik_location_type = armature.limbs[src_limb_index].ik_location_type
-		dst_limb.fk_location_type = armature.limbs[src_limb_index].fk_location_type
-		dst_limb.global_scale = armature.limbs[src_limb_index].global_scale
-		dst_limb.with_limb_end_fk = armature.limbs[src_limb_index].with_limb_end_fk
-		dst_limb.with_limb_end_ik = armature.limbs[src_limb_index].with_limb_end_ik
-		dst_limb.with_reinit_bones = armature.limbs[src_limb_index].with_reinit_bones
-		dst_limb.with_add_bones = armature.limbs[src_limb_index].with_add_bones
+		dst_limb.ik_type = armature.juas_limbs[src_limb_index].ik_type
+		dst_limb.ik_scale_type = armature.juas_limbs[src_limb_index].ik_scale_type
+		dst_limb.fk_scale_type = armature.juas_limbs[src_limb_index].fk_scale_type
+		dst_limb.ik_location_type = armature.juas_limbs[src_limb_index].ik_location_type
+		dst_limb.fk_location_type = armature.juas_limbs[src_limb_index].fk_location_type
+		dst_limb.global_scale = armature.juas_limbs[src_limb_index].global_scale
+		dst_limb.with_limb_end_fk = armature.juas_limbs[src_limb_index].with_limb_end_fk
+		dst_limb.with_limb_end_ik = armature.juas_limbs[src_limb_index].with_limb_end_ik
+		dst_limb.with_reinit_bones = armature.juas_limbs[src_limb_index].with_reinit_bones
+		dst_limb.with_add_bones = armature.juas_limbs[src_limb_index].with_add_bones
 		
-		dst_limb.root = fct(armature.limbs[src_limb_index].root)
+		dst_limb.root = fct(armature.juas_limbs[src_limb_index].root)
 		
-		dst_limb.ik1 = fct(armature.limbs[src_limb_index].ik1)
-		dst_limb.ik2 = fct(armature.limbs[src_limb_index].ik2)
-		dst_limb.ik3 = fct(armature.limbs[src_limb_index].ik3)
-		dst_limb.ik4 = fct(armature.limbs[src_limb_index].ik4)
-		dst_limb.ik5 = fct(armature.limbs[src_limb_index].ik5)
-		dst_limb.ik_scale = fct(armature.limbs[src_limb_index].ik_scale)
-		dst_limb.ik_location = fct(armature.limbs[src_limb_index].ik_location)
+		dst_limb.ik1 = fct(armature.juas_limbs[src_limb_index].ik1)
+		dst_limb.ik2 = fct(armature.juas_limbs[src_limb_index].ik2)
+		dst_limb.ik3 = fct(armature.juas_limbs[src_limb_index].ik3)
+		dst_limb.ik4 = fct(armature.juas_limbs[src_limb_index].ik4)
+		dst_limb.ik5 = fct(armature.juas_limbs[src_limb_index].ik5)
+		dst_limb.ik_scale = fct(armature.juas_limbs[src_limb_index].ik_scale)
+		dst_limb.ik_location = fct(armature.juas_limbs[src_limb_index].ik_location)
 		
-		dst_limb.fk1 = fct(armature.limbs[src_limb_index].fk1)
-		dst_limb.fk2 = fct(armature.limbs[src_limb_index].fk2)
-		dst_limb.fk3 = fct(armature.limbs[src_limb_index].fk3)
-		dst_limb.fk4 = fct(armature.limbs[src_limb_index].fk4)
-		dst_limb.fk_scale = fct(armature.limbs[src_limb_index].fk_scale)
-		dst_limb.fk_location = fct(armature.limbs[src_limb_index].fk_location)
+		dst_limb.fk1 = fct(armature.juas_limbs[src_limb_index].fk1)
+		dst_limb.fk2 = fct(armature.juas_limbs[src_limb_index].fk2)
+		dst_limb.fk3 = fct(armature.juas_limbs[src_limb_index].fk3)
+		dst_limb.fk4 = fct(armature.juas_limbs[src_limb_index].fk4)
+		dst_limb.fk_scale = fct(armature.juas_limbs[src_limb_index].fk_scale)
+		dst_limb.fk_location = fct(armature.juas_limbs[src_limb_index].fk_location)
 
 
-		for src_bone in armature.limbs[src_limb_index].reinit_bones:
+		for src_bone in armature.juas_limbs[src_limb_index].reinit_bones:
 			dst_bone = dst_limb.reinit_bones.add()
 			dst_bone.name = fct(src_bone.name)
-		dst_limb.active_reinit_bone = armature.limbs[src_limb_index].active_reinit_bone
+		dst_limb.active_reinit_bone = armature.juas_limbs[src_limb_index].active_reinit_bone
 		
-		for src_bone in armature.limbs[src_limb_index].add_bones:
+		for src_bone in armature.juas_limbs[src_limb_index].add_bones:
 			dst_bone = dst_limb.add_bones.add()
 			dst_bone.name_FK = fct(src_bone.name_FK)
 			dst_bone.name_IK = fct(src_bone.name_IK)
-		dst_limb.active_add_bone = armature.limbs[src_limb_index].active_add_bone
+		dst_limb.active_add_bone = armature.juas_limbs[src_limb_index].active_add_bone
 		
-		for src_bone in armature.limbs[src_limb_index].select_bones:
+		for src_bone in armature.juas_limbs[src_limb_index].select_bones:
 			dst_bone = dst_limb.select_bones.add()
 			dst_bone.name = fct(src_bone.name)
-		dst_limb.active_select_bone = armature.limbs[src_limb_index].active_select_bone		
+		dst_limb.active_select_bone = armature.juas_limbs[src_limb_index].active_select_bone		
 		
-		armature.active_limb = len(armature.limbs) - 1
+		armature.juas_active_limb = len(armature.juas_limbs) - 1
 			
 		return {'FINISHED'}   
 		
-class POSE_OT_limb_switch_ikfk(bpy.types.Operator):
+class POSE_OT_juas_limb_switch_ikfk(bpy.types.Operator):
 	"""Switch between IK / FK"""
-	bl_idname = "pose.limb_switch_ikfk"
+	bl_idname = "pose.juas_limb_switch_ikfk"
 	bl_label = "Switch IK/FK"
 	bl_options = {'REGISTER'}	
 	
@@ -204,8 +204,8 @@ class POSE_OT_limb_switch_ikfk(bpy.types.Operator):
 	fk4 = bpy.props.StringProperty()
 	fk_scale = bpy.props.StringProperty()
 	fk_location = bpy.props.StringProperty()
-	reinit_bones = bpy.props.CollectionProperty(type=BoneItem)
-	add_bones    = bpy.props.CollectionProperty(type=BonePairItem)
+	reinit_bones = bpy.props.CollectionProperty(type=JuAS_BoneItem)
+	add_bones    = bpy.props.CollectionProperty(type=JuAS_BonePairItem)
 	
 	@classmethod
 	def poll(self, context):
@@ -853,25 +853,25 @@ class POSE_OT_limb_switch_ikfk(bpy.types.Operator):
 		bpy.ops.object.mode_set(mode='OBJECT')
 		bpy.ops.object.mode_set(mode='POSE')
 		
-class POSE_OT_generate_snapping(bpy.types.Operator):
+class POSE_OT_juas_generate_snapping(bpy.types.Operator):
 	"""Generate snapping"""
-	bl_idname = "pose.generate_snapping"
+	bl_idname = "pose.juas_generate_snapping"
 	bl_label = "Generate Snapping"
 	bl_options = {'REGISTER'}
 	
 	
 	@classmethod
 	def poll(self, context):
-		return context.active_object and context.active_object.type == "ARMATURE" and len(context.active_object.limbs) > 0 and context.mode == 'POSE'
+		return context.active_object and context.active_object.type == "ARMATURE" and len(context.active_object.juas_limbs) > 0 and context.mode == 'POSE'
 		
 	def execute(self, context):
 		panel_name    = bpy.props.StringProperty(name="Panel name")
 		tab_tool      = bpy.props.StringProperty(name="Tab")
 		
-		if context.active_object.generation.panel_name == "":
-			context.active_object.generation.panel_name = addonpref().panel_name
-		if context.active_object.generation.tab_tool == "":
-			context.active_object.generation.tab_tool = addonpref().tab_tool
+		if context.active_object.juas_generation.panel_name == "":
+			context.active_object.juas_generation.panel_name = addonpref().panel_name
+		if context.active_object.juas_generation.tab_tool == "":
+			context.active_object.juas_generation.tab_tool = addonpref().tab_tool
 		
 		#Add rig_id custom prop if not exists, and assign a random value
 		if context.active_object.data.get('autosnap_rig_id') is None:
@@ -879,14 +879,14 @@ class POSE_OT_generate_snapping(bpy.types.Operator):
 		rig_id = context.active_object.data.get('autosnap_rig_id')
 		
 		#retrieve FK/IK switch source code
-		source, lines = inspect.getsourcelines(getattr(bpy.types, bpy.ops.pose.limb_switch_ikfk.idname()))
-		source[0] = source[0].replace(bpy.ops.pose.limb_switch_ikfk.idname(), bpy.ops.pose.limb_switch_ikfk.idname() + "_" + rig_id)
-		source[2] = source[2].replace("pose.limb_switch_ikfk", "pose.limb_switch_ikfk_" + rig_id)
+		source, lines = inspect.getsourcelines(getattr(bpy.types, bpy.ops.pose.juas_limb_switch_ikfk.idname()))
+		source[0] = source[0].replace(bpy.ops.pose.juas_limb_switch_ikfk.idname(), bpy.ops.pose.juas_limb_switch_ikfk.idname() + "_" + rig_id)
+		source[2] = source[2].replace("pose.juas_limb_switch_ikfk", "pose.juas_limb_switch_ikfk_" + rig_id)
 		
 		generated_text_ops_ = generated_text_ops
 		generated_text_ops_ = generated_text_ops_.replace("###rig_id###", rig_id )
 		generated_text_ops_ = generated_text_ops_.replace("###CLASS_switch_FKIK###", "".join(source))
-		generated_text_ops_ = generated_text_ops_.replace("###CLASS_switch_FKIK_name###", bpy.ops.pose.limb_switch_ikfk.idname() + "_" + rig_id)
+		generated_text_ops_ = generated_text_ops_.replace("###CLASS_switch_FKIK_name###", bpy.ops.pose.juas_limb_switch_ikfk.idname() + "_" + rig_id)
 			
 		if context.active_object.data["autosnap_rig_id"] + "_autosnap_ops.py" in bpy.data.texts.keys():
 			bpy.data.texts.remove(bpy.data.texts[context.active_object.data["autosnap_rig_id"] + "_autosnap_ops.py"])
@@ -897,13 +897,13 @@ class POSE_OT_generate_snapping(bpy.types.Operator):
 		
 		#Generate ui text
 		ui_generated_text_ = ui_generated_text
-		ui_generated_text_ = ui_generated_text_.replace("###LABEL###", context.active_object.generation.panel_name) 
-		ui_generated_text_ = ui_generated_text_.replace("###REGION_TYPE###", context.active_object.generation.view_location) 
-		ui_generated_text_ = ui_generated_text_.replace("###CATEGORY###", context.active_object.generation.tab_tool)
+		ui_generated_text_ = ui_generated_text_.replace("###LABEL###", context.active_object.juas_generation.panel_name) 
+		ui_generated_text_ = ui_generated_text_.replace("###REGION_TYPE###", context.active_object.juas_generation.view_location) 
+		ui_generated_text_ = ui_generated_text_.replace("###CATEGORY###", context.active_object.juas_generation.tab_tool)
 		ui_generated_text_ = ui_generated_text_.replace("###rig_id###", rig_id )
 		
 		total_layout_ = ""
-		for limb in context.active_object.limbs:
+		for limb in context.active_object.juas_limbs:
 			if limb.layout.on_select == True:
 				tabs = "\t\t\t"
 				ui_layout_on_select_ = ui_layout_on_select.replace("###ON_SELECT_TAB###", str([bone.name for bone in limb.select_bones]))
@@ -1132,15 +1132,11 @@ class POSE_OT_generate_snapping(bpy.types.Operator):
 		
 
 def register():
-	bpy.utils.register_class(POSE_OT_limb_switch_ikfk)
-
-	bpy.utils.register_class(POSE_OT_limb_copy)
-	
-	bpy.utils.register_class(POSE_OT_generate_snapping)
+	bpy.utils.register_class(POSE_OT_juas_limb_switch_ikfk)
+	bpy.utils.register_class(POSE_OT_juas_limb_copy)
+	bpy.utils.register_class(POSE_OT_juas_generate_snapping)
 
 def unregister():
-	bpy.utils.unregister_class(POSE_OT_limb_switch_ikfk)
-
-	bpy.utils.unregister_class(POSE_OT_limb_copy)
-	
-	bpy.utils.unregister_class(POSE_OT_generate_snapping)
+	bpy.utils.unregister_class(POSE_OT_juas_limb_switch_ikfk)
+	bpy.utils.unregister_class(POSE_OT_juas_limb_copy)
+	bpy.utils.unregister_class(POSE_OT_juas_generate_snapping)

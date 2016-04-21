@@ -71,40 +71,40 @@ autokeyframe_items = [
 ]
 
 ### Warning : report new attribute to copy ops
-class AutoSnap_DisplayPanel(bpy.types.PropertyGroup):
+class JuAS_DisplayPanel(bpy.types.PropertyGroup):
 	bone   = bpy.props.BoolProperty(name="Display Bones Settings", default=False)
 	layout = bpy.props.BoolProperty(name="Display Layout Settings", default=False)
 	interaction = bpy.props.BoolProperty(name="Display Interaction Settings", default=False)
 	
 def fct_upd_autoswitch_data_bone(self, context):
 	armature = bpy.context.active_object
-	armature.limbs[armature.active_limb].layout.switch_bone = armature.limbs[armature.active_limb].interaction.autoswitch_data.bone
+	armature.juas_limbs[armature.juas_active_limb].layout.switch_bone = armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch_data.bone
 	
 def fct_upd_autoswitch_data_property(self, context):
 	armature = bpy.context.active_object
-	armature.limbs[armature.active_limb].layout.switch_property = armature.limbs[armature.active_limb].interaction.autoswitch_data.property
+	armature.juas_limbs[armature.juas_active_limb].layout.switch_property = armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch_data.property
 	
 def fct_upd_switch_bone(self, context):
 	armature = bpy.context.active_object
-	armature.limbs[armature.active_limb].interaction.autoswitch_data.bone = armature.limbs[armature.active_limb].layout.switch_bone
+	armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch_data.bone = armature.juas_limbs[armature.juas_active_limb].layout.switch_bone
 	
 def fct_upd_switch_property(self, contex):
 	armature = bpy.context.active_object
-	armature.limbs[armature.active_limb].interaction.autoswitch_data.property = armature.limbs[armature.active_limb].layout.switch_property
+	armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch_data.property = armature.juas_limbs[armature.juas_active_limb].layout.switch_property
 	
 def fct_upd_basic_layout(self, context):
 	armature = bpy.context.active_object
-	if armature.limbs[armature.active_limb].layout.basic == True:
+	if armature.juas_limbs[armature.juas_active_limb].layout.basic == True:
 		#uncheck interaction
-		armature.limbs[armature.active_limb].interaction.autodisplay = False
-		armature.limbs[armature.active_limb].interaction.autoswitch = False
-		armature.limbs[armature.active_limb].interaction.autoswitch_keyframe = False
-		armature.limbs[armature.active_limb].interaction.autokeyframe = False
-		armature.limbs[armature.active_limb].display.interaction = False
+		armature.juas_limbs[armature.juas_active_limb].interaction.autodisplay = False
+		armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch = False
+		armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch_keyframe = False
+		armature.juas_limbs[armature.juas_active_limb].interaction.autokeyframe = False
+		armature.juas_limbs[armature.juas_active_limb].display.interaction = False
 		
 	
 ### Warning : report new attribute to copy ops
-class AutoSnap_Layout_data(bpy.types.PropertyGroup):
+class JuAS_Layout_data(bpy.types.PropertyGroup):
 
 	basic = bpy.props.BoolProperty(name="Basic layout", default=True, update=fct_upd_basic_layout)
 	
@@ -121,13 +121,13 @@ class AutoSnap_Layout_data(bpy.types.PropertyGroup):
 	switch_invert = bpy.props.EnumProperty(items=switch_invert_items,name="Way", default = "IKIS0")
 	
 ### Warning : report new attribute to copy ops
-class AutoSnap_autoswitch_data(bpy.types.PropertyGroup):
+class JuAS_autoswitch_data(bpy.types.PropertyGroup):
 	bone = bpy.props.StringProperty(name="Switch Bone", update=fct_upd_autoswitch_data_bone)
 	bone_store = bpy.props.StringProperty(name="Switch Bone to store data")
 	property = bpy.props.StringProperty(name="Switch Property", update=fct_upd_autoswitch_data_property)
 	
 ### Warning : report new attribute to copy ops
-class AutoSnap_autodisplay_data(bpy.types.PropertyGroup):
+class JuAS_autodisplay_data(bpy.types.PropertyGroup):
 	bone_store = bpy.props.StringProperty(name="Display Bone to store data")
 	type = bpy.props.EnumProperty(name="AutoDisplay type", items=autodisplay_items, default="LAYER")
 	layer_ik = bpy.props.BoolVectorProperty(name="Layer IK", subtype='LAYER', size = 32)
@@ -137,48 +137,48 @@ class AutoSnap_autodisplay_data(bpy.types.PropertyGroup):
 	invert = bpy.props.BoolProperty(name="Invert Property", default=False)
 	
 ### Warning : report new attribute to copy ops
-class AutoSnap_autokeyframe_data(bpy.types.PropertyGroup):
+class JuAS_autokeyframe_data(bpy.types.PropertyGroup):
 	bone_store = bpy.props.StringProperty(name="Display Bone to store data")
 	type = bpy.props.EnumProperty(name="AutoKeyframe type", items=autokeyframe_items, default="AVAILABLE")
 	keying_set_FK = bpy.props.StringProperty(name="Keying Set FK")
 	keying_set_IK = bpy.props.StringProperty(name="Keying Set IK")
 	
 ### Warning : report new attribute to copy ops
-class AutoSnap_Interaction(bpy.types.PropertyGroup):
+class JuAS_Interaction(bpy.types.PropertyGroup):
 	autoswitch           = bpy.props.BoolProperty(name="Switch FK/IK property", default=False)
-	autoswitch_data      = bpy.props.PointerProperty(type=AutoSnap_autoswitch_data)
+	autoswitch_data      = bpy.props.PointerProperty(type=JuAS_autoswitch_data)
 	autoswitch_keyframe  = bpy.props.BoolProperty(name="Switch FK/IK property, and keyframe it", default=False)
 	autodisplay          = bpy.props.BoolProperty(name="Auto display", default=False)
-	autodisplay_data     = bpy.props.PointerProperty(type=AutoSnap_autodisplay_data)
+	autodisplay_data     = bpy.props.PointerProperty(type=JuAS_autodisplay_data)
 	autokeyframe         = bpy.props.BoolProperty(name="Auto Keyframe Chain", default=False)
-	autokeyframe_data    = bpy.props.PointerProperty(type=AutoSnap_autokeyframe_data)
+	autokeyframe_data    = bpy.props.PointerProperty(type=JuAS_autokeyframe_data)
 
-class AutoSnap_Generation(bpy.types.PropertyGroup):
+class JuAS_Generation(bpy.types.PropertyGroup):
 	view_location = bpy.props.EnumProperty(name="View location", items=view_location_items, default="TOOLS")
 	panel_name    = bpy.props.StringProperty(name="Panel name")
 	tab_tool      = bpy.props.StringProperty(name="Tab")
 
-class SideItem(bpy.types.PropertyGroup):
+class JuAS_SideItem(bpy.types.PropertyGroup):
 	name_R = bpy.props.StringProperty(name="Side name R")
 	name_L = bpy.props.StringProperty(name="Side name L")
 
 ### Warning : any modification on this PorpertyGroup must be reported on generated source code
-class BoneItem(bpy.types.PropertyGroup):
+class JuAS_BoneItem(bpy.types.PropertyGroup):
 	name = bpy.props.StringProperty(name="Bone name")
 	
 ### Warning : any modification on this PorpertyGroup must be reported on generated source code
-class BonePairItem(bpy.types.PropertyGroup):
+class JuAS_BonePairItem(bpy.types.PropertyGroup):
 	name_FK = bpy.props.StringProperty(name="Bone name FK")
 	name_IK = bpy.props.StringProperty(name="Bone name IK")
 	
 ### Warning : report new attribute to copy mirror ops
-class LimbItem(bpy.types.PropertyGroup):
+class JuAS_LimbItem(bpy.types.PropertyGroup):
 
-	layout  = bpy.props.PointerProperty(type=AutoSnap_Layout_data)
+	layout  = bpy.props.PointerProperty(type=JuAS_Layout_data)
 	
-	display = bpy.props.PointerProperty(type=AutoSnap_DisplayPanel)
+	display = bpy.props.PointerProperty(type=JuAS_DisplayPanel)
 	
-	interaction = bpy.props.PointerProperty(type=AutoSnap_Interaction)
+	interaction = bpy.props.PointerProperty(type=JuAS_Interaction)
 
 	ik_type = bpy.props.EnumProperty(name="IK type", items=IK_type_items, default="POLE")
 	ik_scale_type   = bpy.props.EnumProperty(name="IK scale type", items=scale_type_items, default="NONE")
@@ -208,13 +208,13 @@ class LimbItem(bpy.types.PropertyGroup):
 	fk_scale = bpy.props.StringProperty(name="FK Scale")
 	fk_location = bpy.props.StringProperty(name="FK location")
 	
-	reinit_bones = bpy.props.CollectionProperty(type=BoneItem)
+	reinit_bones = bpy.props.CollectionProperty(type=JuAS_BoneItem)
 	active_reinit_bone = bpy.props.IntProperty()
 	
-	add_bones = bpy.props.CollectionProperty(type=BonePairItem)
+	add_bones = bpy.props.CollectionProperty(type=JuAS_BonePairItem)
 	active_add_bone = bpy.props.IntProperty()
 	
-	select_bones = bpy.props.CollectionProperty(type=BoneItem)
+	select_bones = bpy.props.CollectionProperty(type=JuAS_BoneItem)
 	active_select_bone = bpy.props.IntProperty()
 
 #shortcut to prefs
@@ -223,25 +223,25 @@ def addonpref():
 	return user_preferences.addons[__package__].preferences
 
 def register():
-	bpy.utils.register_class(BoneItem)
-	bpy.utils.register_class(BonePairItem)
-	bpy.utils.register_class(AutoSnap_Layout_data)
-	bpy.utils.register_class(AutoSnap_DisplayPanel)
-	bpy.utils.register_class(AutoSnap_autoswitch_data)
-	bpy.utils.register_class(AutoSnap_autodisplay_data)
-	bpy.utils.register_class(AutoSnap_autokeyframe_data)
-	bpy.utils.register_class(AutoSnap_Interaction)
-	bpy.utils.register_class(LimbItem)
-	bpy.utils.register_class(AutoSnap_Generation)
+	bpy.utils.register_class(JuAS_BoneItem)
+	bpy.utils.register_class(JuAS_BonePairItem)
+	bpy.utils.register_class(JuAS_Layout_data)
+	bpy.utils.register_class(JuAS_DisplayPanel)
+	bpy.utils.register_class(JuAS_autoswitch_data)
+	bpy.utils.register_class(JuAS_autodisplay_data)
+	bpy.utils.register_class(JuAS_autokeyframe_data)
+	bpy.utils.register_class(JuAS_Interaction)
+	bpy.utils.register_class(JuAS_LimbItem)
+	bpy.utils.register_class(JuAS_Generation)
 
 def unregister():
-	bpy.utils.unregister_class(LimbItem)
-	bpy.utils.unregister_class(AutoSnap_Layout_data)
-	bpy.utils.unregister_class(AutoSnap_DisplayPanel)
-	bpy.utils.unregister_class(AutoSnap_autoswitch_data)
-	bpy.utils.unregister_class(AutoSnap_autodisplay_data)
-	bpy.utils.unregister_class(AutoSnap_autokeyframe_data)
-	bpy.utils.unregister_class(AutoSnap_Interaction)
-	bpy.utils.unregister_class(BoneItem)
-	bpy.utils.unregister_class(BonePairItem)
-	bpy.utils.unregister_class(AutoSnap_Generation)
+	bpy.utils.unregister_class(JuAS_LimbItem)
+	bpy.utils.unregister_class(JuAS_Layout_data)
+	bpy.utils.unregister_class(JuAS_DisplayPanel)
+	bpy.utils.unregister_class(JuAS_autoswitch_data)
+	bpy.utils.unregister_class(JuAS_autodisplay_data)
+	bpy.utils.unregister_class(JuAS_autokeyframe_data)
+	bpy.utils.unregister_class(JuAS_Interaction)
+	bpy.utils.unregister_class(JuAS_BoneItem)
+	bpy.utils.unregister_class(JuAS_BonePairItem)
+	bpy.utils.unregister_class(JuAS_Generation)

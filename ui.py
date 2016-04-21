@@ -288,11 +288,21 @@ class POSE_PT_JuAS_Limb_livesnap(bpy.types.Panel):
 				if armature.juas_limbs[armature.juas_active_limb].interaction.autokeyframe_data.bone_store not in context.active_object.data.bones.keys() and addonpref().generated_enable == True:
 						row_ = box.row()
 						row_.label("Wrong AutoKeyframe data", icon="ERROR")
-						#TODO : add check keying sets ?
 				else:
-					row_ = box.row()
-					row_.prop(armature.juas_limbs[armature.juas_active_limb].interaction, "autokeyframe", text="AutoKeyframe")
-					row_.enabled = False
+					error = False
+					if armature.juas_limbs[armature.juas_active_limb].interaction.autokeyframe_data.type == "KEYING_SET":
+						if bpy.context.scene.keying_sets.get(armature.juas_limbs[armature.juas_active_limb].interaction.autokeyframe_data.keying_set_FK) is None:
+							row_ = box.row()
+							row_.label("Wrong AutoKeyframe Keying Set FK", icon="ERROR")
+							error = True
+						if bpy.context.scene.keying_sets.get(armature.juas_limbs[armature.juas_active_limb].interaction.autokeyframe_data.keying_set_IK) is None:
+							row_ = box.row()
+							row_.label("Wrong AutoKeyframe Keying Set IK", icon="ERROR")
+							error = True
+					if error == False:
+						row_ = box.row()
+						row_.prop(armature.juas_limbs[armature.juas_active_limb].interaction, "autokeyframe", text="AutoKeyframe")
+						row_.enabled = False
 					
 					if addonpref().generated_enable == True:
 						#check if multiple limb use same bone for storing data

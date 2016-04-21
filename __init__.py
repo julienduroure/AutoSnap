@@ -24,14 +24,14 @@
 bl_info = {
 	"name": "AutoSnap",
 	"author": "Julien Duroure",
-	"version": (0, 0, 1),
+	"version": (0, 1, 0),
 	"blender": (2,77, 0),
 	"description": "Add snapping FK/IK automatically",
 	"location": "View 3D tools, tab 'AutoSnap'",
 	"wiki_url": "http://julienduroure.com/AutoSnap",
 	"tracker_url": "https://github.com/julienduroure/AutoSnap",
 	"category": "Rigging",   
-	"warning": "Alpha Version. Please report bugs :)",
+	"warning": "This is a Beta Version. Please report bugs :)",
 }
 
 if "bpy" in locals():

@@ -186,6 +186,7 @@ class JuAS_LimbItem(bpy.types.PropertyGroup):
 	global_scale	 = bpy.props.BoolProperty(name="Global scale", default=False)
 	with_limb_end_fk	= bpy.props.BoolProperty(name="Limb End FK", default=False)
 	with_limb_end_ik	= bpy.props.BoolProperty(name="Limb End IK", default=False)
+	with_stay_bones   = bpy.props.BoolProperty(name="Limb Staying bones", default=False)
 	with_roll_bones   = bpy.props.BoolProperty(name="Limb Roll bones", default=False)
 	with_add_bones      = bpy.props.BoolProperty(name="Limb Additional bones", default=False)
 
@@ -215,6 +216,9 @@ class JuAS_LimbItem(bpy.types.PropertyGroup):
 	
 	select_bones = bpy.props.CollectionProperty(type=JuAS_BoneItem)
 	active_select_bone = bpy.props.IntProperty()
+
+	stay_bones = bpy.props.CollectionProperty(type=JuAS_BoneItem)
+	active_stay_bone = bpy.props.IntProperty()
 
 #shortcut to prefs
 def addonpref():

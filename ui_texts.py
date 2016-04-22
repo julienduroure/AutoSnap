@@ -153,8 +153,10 @@ ui_generated_switch_param = '''###tab###op.root = "###root###"
 
 ###tab###op.with_roll_bones = ###WITH_ROLL_BONES###
 ###tab###op.with_add_bones = ###WITH_ADD_BONES###
+###tab###op.with_stay_bones = ###WITH_STAY_BONES###
 
 ###tab###populate_roll_bones(op, ###limb_roll_bones###)
+###tab###populate_stay_bones(op, ###limb_stay_bones###)
 ###tab###populate_add_bones(op, ###limb_add_bones###)
 '''
 
@@ -303,6 +305,11 @@ autosnap_rig_id = "###rig_id###"
 def populate_roll_bones(op, list_):
 	for bone in list_:
 		item_dst = op.roll_bones.add()
+		item_dst.name = bone
+
+def populate_stay_bones(op, list_):
+	for bone in list_:
+		item_dst = op.stay_bones.add()
 		item_dst.name = bone
 		
 def populate_add_bones(op, list_):

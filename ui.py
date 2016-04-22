@@ -52,6 +52,15 @@ class POSE_UL_JuAS_RollBoneList(bpy.types.UIList):
 			
 		elif self.layout_type in {'GRID'}:
 			layout.alignment = 'CENTER'
+
+class POSE_UL_JuAS_StayBoneList(bpy.types.UIList):
+	def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
+		
+		if self.layout_type in {'DEFAULT', 'COMPACT'}:
+			layout.prop(item, "name", text="", emboss=False)
+			
+		elif self.layout_type in {'GRID'}:
+			layout.alignment = 'CENTER'
 			
 class POSE_UL_JuAS_SelectBoneList(bpy.types.UIList):
 	def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
@@ -108,6 +117,7 @@ class POSE_PT_JuAS_Limb_livesnap(bpy.types.Panel):
 		op.with_limb_end_ik	= armature.juas_limbs[armature.juas_active_limb].with_limb_end_ik
 		op.with_roll_bones   = armature.juas_limbs[armature.juas_active_limb].with_roll_bones
 		op.with_add_bones      = armature.juas_limbs[armature.juas_active_limb].with_add_bones
+		op.with_stay_bones = armature.juas_limbs[armature.juas_active_limb].with_stay_bones
 		
 		op.ik1 = armature.juas_limbs[armature.juas_active_limb].ik1
 		op.ik2 = armature.juas_limbs[armature.juas_active_limb].ik2
@@ -131,6 +141,12 @@ class POSE_PT_JuAS_Limb_livesnap(bpy.types.Panel):
 			item_dst.name = item_src.name
 		if len(armature.juas_limbs[armature.juas_active_limb].roll_bones) == 0:
 			op.with_roll_bones = False
+
+		for item_src in armature.juas_limbs[armature.juas_active_limb].stay_bones:
+			item_dst = op.stay_bones.add()
+			item_dst.name = item_src.name
+		if len(armature.juas_limbs[armature.juas_active_limb].stay_bones) == 0:
+			op.with_stay_bones = False
 			
 		for item_src in armature.juas_limbs[armature.juas_active_limb].add_bones:
 			item_dst = op.add_bones.add()
@@ -507,7 +523,36 @@ class POSE_PT_JuAS_LimbDetailBones(bpy.types.Panel):
 				op = row.operator("pose.juas_limb_select_bone", icon="BONE_DATA", text="")
 				op.bone = "roll_bone"
 				op.level = 0
-
+				
+		row__ = box.row()
+		row__.prop(limb, "with_stay_bones", text="Non moving Bones")
+		if limb.with_stay_bones == True:
+			row__= box.row()
+			op = row__.operator("pose.juas_limb_selected_bones_select", text="Fill from selection")
+			op.bone = "stay_bones"
+			row__= box.row()
+			row__.template_list("POSE_UL_JuAS_StayBoneList", "", armature.juas_limbs[armature.juas_active_limb], "stay_bones", armature.juas_limbs[armature.juas_active_limb], "active_stay_bone")
+			
+			col = row__.column()
+			row = col.column(align=True)
+			row.operator("pose.juas_stay_bone_add", icon="ZOOMIN", text="")
+			row.operator("pose.juas_stay_bone_remove", icon="ZOOMOUT", text="")
+				
+			row = col.column(align=True)
+			row.separator()
+			row.operator("pose.juas_stay_bone_move", icon='TRIA_UP', text="").direction = 'UP'
+			row.operator("pose.juas_stay_bone_move", icon='TRIA_DOWN', text="").direction = 'DOWN'
+			
+			if len(armature.juas_limbs[armature.juas_active_limb].stay_bones) > 0:
+				row_ = box.row()
+				col = row_.column()
+				row = col.column(align=True)
+				row.prop_search(armature.juas_limbs[armature.juas_active_limb].stay_bones[armature.juas_limbs[armature.juas_active_limb].active_stay_bone], "name", armature.data, "bones", text="Bone")
+				col = row_.column()
+				row = col.column(align=True)
+				op = row.operator("pose.juas_limb_select_bone", icon="BONE_DATA", text="")
+				op.bone = "stay_bone"
+				op.level = 0
 			
 		row_ = layout.row()
 		box_ = row_.box()
@@ -853,6 +898,7 @@ def register():
 	bpy.utils.register_class(POSE_UL_JuAS_SideList)
 	bpy.utils.register_class(POSE_UL_JuAS_LimbList)
 	bpy.utils.register_class(POSE_UL_JuAS_RollBoneList)
+	bpy.utils.register_class(POSE_UL_JuAS_StayBoneList)
 	bpy.utils.register_class(POSE_UL_JuAS_AddBoneList)
 	bpy.utils.register_class(POSE_UL_JuAS_SelectBoneList)
 	
@@ -870,6 +916,7 @@ def unregister():
 	bpy.utils.unregister_class(POSE_UL_JuAS_SideList)
 	bpy.utils.unregister_class(POSE_UL_JuAS_LimbList)
 	bpy.utils.unregister_class(POSE_UL_JuAS_RollBoneList)
+	bpy.utils.unregister_class(POSE_UL_JuAS_StayBoneList)
 	bpy.utils.unregister_class(POSE_UL_JuAS_AddBoneList)
 	bpy.utils.unregister_class(POSE_UL_JuAS_SelectBoneList)
 	

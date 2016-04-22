@@ -435,7 +435,87 @@ class POSE_OT_juas_limb_select_bone_from_selection(bpy.types.Operator):
 					new_bone = armature.juas_limbs[armature.juas_active_limb].select_bones.add()
 					new_bone.name = bone.name
 					armature.juas_limbs[armature.juas_active_limb].active_select_bone = len(armature.juas_limbs[armature.juas_active_limb].select_bones) - 1
+		elif self.bone == "stay_bones":
+			for bone in selected:
+				if bone.name not in [stay.name for stay in armature.juas_limbs[armature.juas_active_limb].stay_bones]:
+					new_bone = armature.juas_limbs[armature.juas_active_limb].stay_bones.add()
+					new_bone.name = bone.name
+					armature.juas_limbs[armature.juas_active_limb].active_stay_bone = len(armature.juas_limbs[armature.juas_active_limb].stay_bones) - 1
 		return {'FINISHED'}  
+
+class POSE_OT_juas_stay_bone_move(bpy.types.Operator):
+	"""Move Limb up or down in the list"""
+	bl_idname = "pose.juas_stay_bone_move"
+	bl_label = "Move Bone"
+	bl_options = {'REGISTER'}
+	
+	direction = bpy.props.StringProperty()
+
+	@classmethod
+	def poll(self, context):
+		return context.active_object and context.active_object.type == "ARMATURE" and len(context.active_object.juas_limbs) > 0 and len(context.object.juas_limbs[context.object.juas_active_limb].stay_bones) > 0
+		
+	def execute(self, context):
+		armature = context.object
+		index_limb  = armature.juas_active_limb
+		index_bone  = armature.juas_limbs[index_limb].active_stay_bone
+		
+		if self.direction == "UP":
+			new_index = index_bone - 1
+		elif self.direction == "DOWN":
+			new_index = index_bone + 1
+		else:
+			new_index = index_bone
+			
+		if new_index < len(armature.juas_limbs[index_limb].stay_bones) and new_index >= 0:
+			armature.juas_limbs[index_limb].stay_bones.move(index_bone, new_index)
+			armature.juas_limbs[index_limb].active_stay_bone = new_index
+		
+		return {'FINISHED'}
+		
+class POSE_OT_juas_stay_bone_add(bpy.types.Operator):
+	"""Add a new Bone"""
+	bl_idname = "pose.juas_stay_bone_add"
+	bl_label = "Add Bone"
+	bl_options = {'REGISTER'}
+	
+	@classmethod
+	def poll(self, context):
+		return context.active_object and context.active_object.type == "ARMATURE" and len(context.active_object.juas_limbs) > 0
+				
+	def execute(self, context):
+		armature = context.object
+		index_limb = armature.juas_active_limb
+
+		bone = armature.juas_limbs[index_limb].stay_bones.add()
+		if context.active_pose_bone:
+			bone.name = context.active_pose_bone.name
+		armature.juas_limbs[index_limb].active_stay_bone = len(armature.juas_limbs[index_limb].stay_bones) - 1
+		
+		return {'FINISHED'}
+		
+class POSE_OT_juas_stay_bone_remove(bpy.types.Operator):
+
+	"""Remove the current Bone"""
+	bl_idname = "pose.juas_stay_bone_remove"
+	bl_label = "Remove Bone"
+	bl_options = {'REGISTER'}
+	
+	@classmethod
+	def poll(self, context):
+		return context.active_object and context.active_object.type == "ARMATURE" and len(context.active_object.juas_limbs) > 0 and len(context.object.juas_limbs[context.object.juas_active_limb].stay_bones) > 0
+				
+	def execute(self, context):
+		armature = context.object   
+		index_limb = armature.juas_active_limb
+		index_bone = armature.juas_limbs[index_limb].active_stay_bone
+		
+		armature.juas_limbs[index_limb].stay_bones.remove(armature.juas_limbs[index_limb].active_stay_bone)
+		len_ = len(armature.juas_limbs[index_limb].stay_bones)
+		if (armature.juas_limbs[index_limb].active_stay_bone > (len_ - 1) and len_ > 0):
+			armature.juas_limbs[index_limb].active_stay_bone = len(armature.juas_limbs[index_limb].stay_bones) - 1
+			
+		return {'FINISHED'}
 		
 class POSE_OT_juas_limb_select_bone(bpy.types.Operator):
 	"""Set active bone to limb bone"""
@@ -462,6 +542,8 @@ class POSE_OT_juas_limb_select_bone(bpy.types.Operator):
 		if self.level == 0:
 			if self.bone == "roll_bone":
 				armature.juas_limbs[armature.juas_active_limb].roll_bones[armature.juas_limbs[armature.juas_active_limb].active_roll_bone].name = bone_name
+			elif self.bone == "stay_bone":
+				armature.juas_limbs[armature.juas_active_limb].stay_bones[armature.juas_limbs[armature.juas_active_limb].active_stay_bone].name = bone_name
 			elif self.bone == "add_bone":
 				if self.bone_side == "FK":
 					armature.juas_limbs[armature.juas_active_limb].add_bones[armature.juas_limbs[armature.juas_active_limb].active_add_bone].name_FK = bone_name
@@ -521,6 +603,10 @@ def register():
 	bpy.utils.register_class(POSE_OT_juas_roll_bone_move)
 	bpy.utils.register_class(POSE_OT_juas_roll_bone_add)
 	bpy.utils.register_class(POSE_OT_juas_roll_bone_remove)
+
+	bpy.utils.register_class(POSE_OT_juas_stay_bone_move)
+	bpy.utils.register_class(POSE_OT_juas_stay_bone_add)
+	bpy.utils.register_class(POSE_OT_juas_stay_bone_remove)
 	
 	bpy.utils.register_class(POSE_OT_juas_select_bone_move)
 	bpy.utils.register_class(POSE_OT_juas_select_bone_add)
@@ -547,6 +633,10 @@ def unregister():
 	bpy.utils.unregister_class(POSE_OT_juas_roll_bone_move)
 	bpy.utils.unregister_class(POSE_OT_juas_roll_bone_add)
 	bpy.utils.unregister_class(POSE_OT_juas_roll_bone_remove)
+
+	bpy.utils.unregister_class(POSE_OT_juas_stay_bone_move)
+	bpy.utils.unregister_class(POSE_OT_juas_stay_bone_add)
+	bpy.utils.unregister_class(POSE_OT_juas_stay_bone_remove)
 	
 	bpy.utils.unregister_class(POSE_OT_juas_select_bone_move)
 	bpy.utils.unregister_class(POSE_OT_juas_select_bone_add)

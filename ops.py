@@ -706,7 +706,7 @@ class POSE_OT_juas_limb_switch_ikfk(bpy.types.Operator):
 		bpy.ops.object.mode_set(mode='OBJECT')
 		bpy.ops.object.mode_set(mode='POSE')
 		
-		ik3.matrix = obj.convert_space(ik3, obj.convert_space(fk3, fk3.matrix,'POSE','WORLD'), 'WORLD','POSE')
+		ik3.matrix = obj.convert_space(ik3, obj.convert_space(fk3, fk3.matrix,'POSE','WORLD'), 'WORLD','POSE') * ( fk3.bone.matrix_local.inverted() * ik3.bone.matrix_local )
 		bpy.ops.object.mode_set(mode='OBJECT')
 		bpy.ops.object.mode_set(mode='POSE')
 		
@@ -863,7 +863,7 @@ class POSE_OT_juas_limb_switch_ikfk(bpy.types.Operator):
 		ik3_current_rotation_mode = ik3.rotation_mode
 		fk3.rotation_mode = 'QUATERNION'
 		ik3.rotation_mode = 'QUATERNION'
-		fk3.matrix = obj.convert_space(fk3, obj.convert_space(ik_mech_foot, ik_mech_foot.matrix,'POSE','WORLD'), 'WORLD','POSE') * ( ik_mech_foot.bone.matrix_local.inverted() * ik3.bone.matrix_local)
+		fk3.matrix = obj.convert_space(fk3, obj.convert_space(ik_mech_foot, ik_mech_foot.matrix,'POSE','WORLD'), 'WORLD','POSE') * ( ik_mech_foot.bone.matrix_local.inverted() * ik3.bone.matrix_local) * ( ik3.bone.matrix_local.inverted() * fk3.bone.matrix_local )
 		fk3.rotation_mode = fk3_current_rotation_mode
 		ik3.rotation_mode = ik3_current_rotation_mode
 		bpy.ops.object.mode_set(mode='OBJECT')

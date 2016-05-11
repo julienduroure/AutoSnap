@@ -923,8 +923,6 @@ class POSE_OT_juas_generate_snapping(bpy.types.Operator):
 		return context.active_object and context.active_object.type == "ARMATURE" and len(context.active_object.juas_limbs) > 0 and context.mode == 'POSE'
 		
 	def execute(self, context):
-		panel_name    = bpy.props.StringProperty(name="Panel name")
-		tab_tool      = bpy.props.StringProperty(name="Tab")
 		
 		if context.active_object.juas_generation.panel_name == "":
 			context.active_object.juas_generation.panel_name = addonpref().panel_name

@@ -239,6 +239,22 @@ class POSE_OT_juas_limb_switch_ikfk(bpy.types.Operator):
 
 		return True, True
 		
+	def check_available_curve(self, bone_list):
+		try:
+			curves = bpy.context.active_object.animation_data.action.fcurves
+		except:
+			return False
+			
+		for c in curves:
+			try:
+				tab_ = c.data_path.split("[")
+				if tab_[0] == "pose.bones" and tab_[1].split("]")[0][1:len(tab_[1].split("]")[0])-1] in [bone.name for bone in bone_list]:
+					return True
+			except:
+				pass
+				
+		return False
+		
 	def layout_check(self, context, layout_basic):
 		if layout_basic == True:
 			return self.layout_check_basic(context)
@@ -419,7 +435,11 @@ class POSE_OT_juas_limb_switch_ikfk(bpy.types.Operator):
 				return False, {'CANCELLED'}		
 			if self.autokeyframe_data_keying_set_IK == "":
 				self.report({'ERROR'}, "IK Keying Set must be filled")
-				return False, {'CANCELLED'}		
+				return False, {'CANCELLED'}
+		if self.autokeyframe == True and self.autokeyframe_data_type == "AVAILABLE":
+			if self.check_available_curve(self.get_list_bones(context)) == False:
+				self.report({'ERROR'}, "No Available Keyframes")
+				return False, {'CANCELLED'}
 
 		return True, True
 		
@@ -828,7 +848,7 @@ class POSE_OT_juas_limb_switch_ikfk(bpy.types.Operator):
 			ik_location = obj.pose.bones[ik_location_]	
 		if fk_location_ != "":
 			fk_location = obj.pose.bones[fk_location_]
-			
+				
 		if ik_location_ != "" and fk_location_ != "":
 			fk_location.location = obj.convert_space(fk_location, obj.convert_space(ik_location, ik_location.matrix_basis,'POSE','WORLD'), 'WORLD','POSE').to_translation()
 			bpy.ops.object.mode_set(mode='OBJECT')
@@ -838,7 +858,7 @@ class POSE_OT_juas_limb_switch_ikfk(bpy.types.Operator):
 			fk_location.location = mathutils.Vector((0.0,0.0,0.0))
 			bpy.ops.object.mode_set(mode='OBJECT')
 			bpy.ops.object.mode_set(mode='POSE')
-		
+
 		fk1_current_rotation_mode = fk1.rotation_mode
 		ik1_current_rotation_mode = ik1.rotation_mode
 		fk1.rotation_mode = 'QUATERNION'
@@ -879,12 +899,12 @@ class POSE_OT_juas_limb_switch_ikfk(bpy.types.Operator):
 			ik5.rotation_mode = ik5_current_rotation_mode
 			bpy.ops.object.mode_set(mode='OBJECT')
 			bpy.ops.object.mode_set(mode='POSE')
-			
+
 		for b_FK, b_IK in [[bone.name_FK, bone.name_IK] for bone in add_bones]:
 			obj.pose.bones[b_FK].matrix = obj.pose.bones[b_IK].matrix
 		bpy.ops.object.mode_set(mode='OBJECT')
 		bpy.ops.object.mode_set(mode='POSE')
-	
+
 		
 class POSE_OT_juas_generate_snapping(bpy.types.Operator):
 	"""Generate snapping"""

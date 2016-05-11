@@ -361,7 +361,7 @@ class POSE_OT_juas_limb_switch_ikfk(bpy.types.Operator):
 				return False, {'CANCELLED'}
 			if bone.name_IK not in context.active_object.data.bones.keys():
 				self.report({'ERROR'}, "Bone " + bone.name_IK + " doesn't exist")
-				return False, {'CANCELLED'}			
+				return False, {'CANCELLED'}		
 
 		return True, True
 		
@@ -375,6 +375,15 @@ class POSE_OT_juas_limb_switch_ikfk(bpy.types.Operator):
 			if bone.name not in context.active_object.data.bones.keys():
 				self.report({'ERROR'}, "Bone " + bone.name + " doesn't exist")
 				return False, {'CANCELLED'}
+				
+		if self.with_roll_bones == True:
+			if self.ik_mech_foot == "":
+				self.report({'ERROR'}, "Mech foot must be filled")
+				return False, {'CANCELLED'}
+			else:
+				if self.ik_mech_foot not in context.active_object.data.bones.keys():
+					self.report({'ERROR'}, "Bone " + self.ik_mech_foot + " doesn't exist")
+					return False, {'CANCELLED'}
 
 		return True, True
 		
@@ -408,7 +417,6 @@ class POSE_OT_juas_limb_switch_ikfk(bpy.types.Operator):
 			if bone.name not in context.active_object.data.bones.keys():
 				self.report({'ERROR'}, "Bone " + bone.name + " doesn't exist")
 				return False, {'CANCELLED'}
-
 						
 		return True, True
 		
@@ -483,11 +491,10 @@ class POSE_OT_juas_limb_switch_ikfk(bpy.types.Operator):
 				return error			
 		
 		if way == "IK2FK":
-			self.ik2fk(context.active_object, self.root, self.ik1, self.ik2, self.ik3, self.ik4, self.ik5, self.fk1, self.fk2, self.fk3, self.fk4, self.ik_scale, self.fk_scale, self.ik_location, self.fk_location, self.roll_bones, self.ik_mech_foot, self.add_bones)
+			self.ik2fk(context.active_object, self.root, self.ik1, self.ik2, self.ik3, self.ik4, self.ik5, self.fk1, self.fk2, self.fk3, self.fk4, self.ik_scale, self.fk_scale, self.ik_location, self.fk_location, self.roll_bones, self.add_bones)
 		elif way == "FK2IK":
 			self.fk2ik(context.active_object, self.root, self.ik1, self.ik2, self.ik3, self.ik5, self.ik_scale, self.ik_location,  self.fk1, self.fk2, self.fk3, self.fk4, self.fk_scale, self.fk_location, self.add_bones, self.ik_mech_foot, self.stay_bones)
 		
-
 		if self.layout_basic == False: #No interaction for basic layout
 			#AutoSwitch
 			if self.layout_basic == False and self.autoswitch == True:
@@ -652,7 +659,7 @@ class POSE_OT_juas_limb_switch_ikfk(bpy.types.Operator):
 			angle = -angle + 2*math.pi
 		return angle
 			
-	def ik2fk(self, obj, root_, ik1_, ik2_, ik3_, ik4_, ik5_, fk1_, fk2_, fk3_, fk4_, ik_scale_, fk_scale_, ik_location_, fk_location_, roll_bones, ik_mech_foot_, add_bones):
+	def ik2fk(self, obj, root_, ik1_, ik2_, ik3_, ik4_, ik5_, fk1_, fk2_, fk3_, fk4_, ik_scale_, fk_scale_, ik_location_, fk_location_, roll_bones, add_bones):
 		ik1 = obj.pose.bones[ik1_]
 		ik2 = obj.pose.bones[ik2_]
 		ik3 = obj.pose.bones[ik3_]
@@ -660,8 +667,6 @@ class POSE_OT_juas_limb_switch_ikfk(bpy.types.Operator):
 			ik4 = obj.pose.bones[ik4_]
 		if ik5_ != "":
 			ik5 = obj.pose.bones[ik5_]
-		if ik_mech_foot_ != "":
-			ik_mech_foot = obj.pose.bones[ik_mech_foot_]
 		fk1 = obj.pose.bones[fk1_]
 		fk2 = obj.pose.bones[fk2_]
 		fk3 = obj.pose.bones[fk3_]

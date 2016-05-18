@@ -884,6 +884,11 @@ class POSE_OT_juas_limb_switch_ikfk(bpy.types.Operator):
 		bpy.ops.object.mode_set(mode='OBJECT')
 		bpy.ops.object.mode_set(mode='POSE')
 		
+		for bone in stay_bones:
+			obj.pose.bones[bone.name].matrix = obj.pose.bones[bone.name].matrix.inverted() * (obj.convert_space(fk3, obj.convert_space(ik_mech_foot, ik_mech_foot.matrix,'POSE','WORLD'), 'WORLD','POSE') * ( ik_mech_foot.bone.matrix_local.inverted() * ik3.bone.matrix_local) * ( ik3.bone.matrix_local.inverted() * fk3.bone.matrix_local ) * (ik3.matrix.inverted() * fk3.matrix)).inverted() * fk3.matrix
+		bpy.ops.object.mode_set(mode='OBJECT')
+		bpy.ops.object.mode_set(mode='POSE')
+		
 		fk3_current_rotation_mode = fk3.rotation_mode
 		ik3_current_rotation_mode = ik3.rotation_mode
 		fk3.rotation_mode = 'QUATERNION'

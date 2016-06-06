@@ -28,9 +28,9 @@ bl_info = {
 	"blender": (2,77, 0),
 	"description": "Add snapping FK/IK automatically",
 	"location": "View 3D tools, tab 'AutoSnap'",
-	"wiki_url": "http://julienduroure.com/AutoSnap",
-	"tracker_url": "https://github.com/julienduroure/AutoSnap",
-	"category": "Rigging",   
+	"wiki_url": "http://blerifa.com/AutoSnap",
+	"tracker_url": "https://github.com/julienduroure/AutoSnap/issues/",
+	"category": "Rigging",
 	"warning": "This is a Beta Version. Please report bugs :)",
 }
 
@@ -60,12 +60,12 @@ def register():
 	ops.register()
 	ui_ops.register()
 	ui.register()
-	
+
 	bpy.types.Object.juas_generation = bpy.props.PointerProperty(type=JuAS_Generation)
 	bpy.types.Object.juas_limbs = bpy.props.CollectionProperty(type=JuAS_LimbItem)
 	bpy.types.Object.juas_active_limb = bpy.props.IntProperty()
-	
-	
+
+
 def unregister():
 	addon_prefs.unregister()
 	globals.unregister()
@@ -75,7 +75,7 @@ def unregister():
 
 	del bpy.types.Object.juas_generation
 	del bpy.types.Object.juas_limbs
-	del bpy.types.Object.juas_active_limb	
+	del bpy.types.Object.juas_active_limb
 
 if __name__ == "__main__":
 	register()

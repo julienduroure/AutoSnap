@@ -28,31 +28,32 @@ from .globals import *
 class JuAS_Preferences(bpy.types.AddonPreferences):
 	bl_idname = __package__
 
-	sides = bpy.props.CollectionProperty(type=JuAS_SideItem) 
-	active_side = bpy.props.IntProperty()   
-	
+	sides = bpy.props.CollectionProperty(type=JuAS_SideItem)
+	active_side = bpy.props.IntProperty()
+
 	basic = bpy.props.BoolProperty(name="Default Basic On", default=False)
-	
+
 	autoswitch = bpy.props.BoolProperty(name="Default AutoSwitch On", default=True)
 	autoswitch_keyframe = bpy.props.BoolProperty(name="Default AutoSwitch Keyframe On", default=True)
 	autodisplay = bpy.props.BoolProperty(name="Default AutoDisplay On", default=True)
 	autokeyframe = bpy.props.BoolProperty(name="Default AutoKeyframe On", default=True)
-	
-	autodisplay_type  = bpy.props.EnumProperty(name="AutoDisplay Default", items=autodisplay_items, default="LAYER")	
+
+	autodisplay_type  = bpy.props.EnumProperty(name="AutoDisplay Default", items=autodisplay_items, default="LAYER")
 	autokeyframe_type = bpy.props.EnumProperty(name="AutoKeyframe Default", items=autokeyframe_items, default="AVAILABLE")
-	
+
 	generated_enable = bpy.props.BoolProperty(name="Generation enabled", default=False)
-	
+
 	panel_name = bpy.props.StringProperty(name="Default Panel name", default="Snapping")
 	tab_tool = bpy.props.StringProperty(name="Default Tab name", default="Snapping")
-	
+
+	category = bpy.props.StringProperty(name="Category", default="AutoSnap", update=update_panel)
 
 	def draw(self, context):
 		layout = self.layout
-		
+
 		row_global    = layout.row()
 		col = row_global.column()
-		
+
 		box = col.box()
 		row = box.row()
 		row.prop(self, "basic")
@@ -66,7 +67,7 @@ class JuAS_Preferences(bpy.types.AddonPreferences):
 		row = box.row()
 		row.prop(self, "autokeyframe")
 		row.prop(self, "autokeyframe_type")
-		
+
 		box = col.box()
 		row = box.row()
 		row.prop(self, "generated_enable")
@@ -75,17 +76,21 @@ class JuAS_Preferences(bpy.types.AddonPreferences):
 			row.prop(self, "panel_name", text="Panel Name")
 			row = box.row()
 			row.prop(self, "tab_tool", text="Tab Name")
-		
+
+		box = col.box()
+		row = box.row()
+		row.prop(self, "category")
+
 		col = row_global.column(align=True)
 		row = col.row()
 		if len(addonpref().sides) > 0:
 			row.template_list("POSE_UL_JuAS_SideList", "", addonpref(), "sides", addonpref(), "active_side")
-		
+
 			col_ = row.column()
 			row_ = col_.column(align=True)
 			row_.operator("pose.juas_side_add", icon="ZOOMIN", text="")
 			row_.operator("pose.juas_side_remove", icon="ZOOMOUT", text="")
-			
+
 			row_ = col_.column(align=True)
 			row_.separator()
 			row_.operator("pose.juas_side_move", icon='TRIA_UP', text="").direction = 'UP'

@@ -23,7 +23,7 @@
 
 import bpy
 
-from .globals import *
+from .globs import *
 
 class JuAS_Preferences(bpy.types.AddonPreferences):
 	bl_idname = __package__

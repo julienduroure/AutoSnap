@@ -23,11 +23,16 @@
 
 import bpy
 
-from .globals import *
+from .globs import *
+
+#shortcut to prefs
+def addonpref():
+	user_preferences = bpy.context.user_preferences
+	return user_preferences.addons[__package__].preferences
 
 def get_name(bone):
 	return bone
-	
+
 def get_symm_name(bone):
 	#first check if last digit are .xxx with [dot] and then xxx is integer
 	end_name = ""
@@ -36,8 +41,8 @@ def get_symm_name(bone):
 		end_name = bone[len(bone)-4:]
 	else:
 		end_pos = len(bone)
-		
-		
+
+
 	#construct dict for each length of potential side
 	side_len = {}
 	for side in addonpref().sides:
@@ -51,7 +56,7 @@ def get_symm_name(bone):
 		else:
 			side_len[len(side.name_L)] = []
 			side_len[len(side.name_L)].append((side.name_L, side.name_R))
-			
+
 	for side_l in side_len.keys():
 		if bone[end_pos-side_l:end_pos] in [name[0] for name in side_len[side_l]]:
 			return bone[:end_pos-side_l] + side_len[side_l][[name[0] for name in side_len[side_l]].index(bone[end_pos-side_l:end_pos])][1] + end_name
@@ -70,5 +75,3 @@ def init_sides(context):
 	side.name_R = "right"
 	side.name_L = "left"
 	addonpref().active_side = 2
-
-

@@ -38,7 +38,7 @@ if "bpy" in locals():
 	import imp
 	imp.reload(addon_prefs)
 	imp.reload(ui_texts)
-	imp.reload(globals)
+	imp.reload()
 	imp.reload(utils)
 	imp.reload(ui)
 	imp.reload(ui_ops)
@@ -46,7 +46,7 @@ if "bpy" in locals():
 else:
 	from .addon_prefs import *
 	from .ui_texts import *
-	from .globals import *
+	from .globs import *
 	from .utils import *
 	from . import ui
 	from . import ui_ops
@@ -56,7 +56,7 @@ import bpy
 
 def register():
 	addon_prefs.register()
-	globals.register()
+	globs.register()
 	ops.register()
 	ui_ops.register()
 	ui.register()
@@ -68,7 +68,7 @@ def register():
 
 def unregister():
 	addon_prefs.unregister()
-	globals.unregister()
+	globs.unregister()
 	ops.unregister()
 	ui_ops.unregister()
 	ui.unregister()

@@ -246,11 +246,6 @@ class JuAS_LimbItem(bpy.types.PropertyGroup):
 	stay_bones = bpy.props.CollectionProperty(type=JuAS_BoneItem)
 	active_stay_bone = bpy.props.IntProperty()
 
-#shortcut to prefs
-def addonpref():
-	user_preferences = bpy.context.user_preferences
-	return user_preferences.addons[__package__].preferences
-
 def register():
 	bpy.utils.register_class(JuAS_BoneItem)
 	bpy.utils.register_class(JuAS_BonePairItem)

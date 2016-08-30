@@ -70,6 +70,7 @@ class POSE_OT_juas_limb_copy(bpy.types.Operator):
 		dst_limb.interaction.bone_store = fct(armature.juas_limbs[src_limb_index].interaction.bone_store)
 
 		dst_limb.interaction.autoswitch = armature.juas_limbs[src_limb_index].interaction.autoswitch
+		dst_limb.interaction.autoswitch_data.switch_type = fct(armature.juas_limbs[src_limb_index].interaction.autoswitch_data.switch_type)
 		dst_limb.interaction.autoswitch_data.bone = fct(armature.juas_limbs[src_limb_index].interaction.autoswitch_data.bone)
 		dst_limb.interaction.autoswitch_data.property = armature.juas_limbs[src_limb_index].interaction.autoswitch_data.property
 		dst_limb.interaction.autoswitch_keyframe = armature.juas_limbs[src_limb_index].interaction.autoswitch_keyframe
@@ -91,6 +92,7 @@ class POSE_OT_juas_limb_copy(bpy.types.Operator):
 		dst_limb.layout.fk2ik_label = armature.juas_limbs[src_limb_index].layout.fk2ik_label
 		dst_limb.layout.ik2fk_label = armature.juas_limbs[src_limb_index].layout.ik2fk_label
 		dst_limb.layout.switch_bone = fct(armature.juas_limbs[src_limb_index].layout.switch_bone)
+		dst_limb.layout.switch_type = fct(armature.juas_limbs[src_limb_index].layout.switch_type)
 		dst_limb.layout.switch_property = armature.juas_limbs[src_limb_index].layout.switch_property
 		dst_limb.layout.switch_invert = armature.juas_limbs[src_limb_index].layout.switch_invert
 		dst_limb.layout.display_name = armature.juas_limbs[src_limb_index].layout.display_name
@@ -167,6 +169,7 @@ class POSE_OT_juas_limb_switch_ikfk(bpy.types.Operator):
 	switch_invert   = bpy.props.EnumProperty(items=switch_invert_items)
 
 	autoswitch = bpy.props.BoolProperty()
+	autoswitch_data_switch_type = bpy.props.StringProperty()
 	autoswitch_data_bone = bpy.props.StringProperty()
 	autoswitch_data_property = bpy.props.StringProperty()
 	autoswitch_keyframe = bpy.props.BoolProperty()
@@ -421,13 +424,14 @@ class POSE_OT_juas_limb_switch_ikfk(bpy.types.Operator):
 		return True, True
 
 	def interaction_check(self, context):
-		if self.autoswitch == True:
-			try:
-				int(context.active_object.pose.bones[self.autoswitch_data_bone].get(self.autoswitch_data_property))
-				return True, True
-			except:
-				self.report({'ERROR'}, "Wrong Bone property (AutoSwitch)")
-				return False, {'CANCELLED'}
+		if self.autoswitch_data_switch_type == "PROPERTY":
+			if self.autoswitch == True:
+				try:
+					int(context.active_object.pose.bones[self.autoswitch_data_bone].get(self.autoswitch_data_property))
+					return True, True
+				except:
+					self.report({'ERROR'}, "Wrong Bone property (AutoSwitch)")
+					return False, {'CANCELLED'}
 
 		if self.autodisplay == True and self.autodisplay_data_type == "HIDE":
 			try:
@@ -498,29 +502,32 @@ class POSE_OT_juas_limb_switch_ikfk(bpy.types.Operator):
 		if self.layout_basic == False: #No interaction for basic layout
 			#AutoSwitch
 			if self.layout_basic == False and self.autoswitch == True:
-				if int(context.active_object.pose.bones[self.autoswitch_data_bone].get(self.autoswitch_data_property)) == 0:
-					context.active_object.pose.bones[self.autoswitch_data_bone][self.autoswitch_data_property] = 1.0
+				if self.autoswitch_data_switch_type == "PROPERTY":
+					if int(context.active_object.pose.bones[self.autoswitch_data_bone].get(self.autoswitch_data_property)) == 0:
+						context.active_object.pose.bones[self.autoswitch_data_bone][self.autoswitch_data_property] = 1.0
+					else:
+						context.active_object.pose.bones[self.autoswitch_data_bone][self.autoswitch_data_property] = 0.0
+					#AutoSwitch Keyframe
+					if self.autoswitch_keyframe == True:
+						context.active_object.pose.bones[self.autoswitch_data_bone].keyframe_insert("[\"" + self.autoswitch_data_property + "\"]")
+						#change interpolation
+						curves = context.active_object.animation_data.action.fcurves
+						for c in curves:
+							if c.data_path == 'pose.bones["' + self.autoswitch_data_bone + '"][\"' + self.autoswitch_data_property + '\"]':
+								curve = c
+								break
+						current_frame = bpy.context.scene.frame_current
+						cpt = 0
+						for point in curve.keyframe_points:
+							if point.co[0] == current_frame:
+								if cpt != 0:
+									curve.keyframe_points[cpt-1].interpolation = 'CONSTANT'
+									break
+								else:
+									break
+							cpt = cpt + 1
 				else:
-					context.active_object.pose.bones[self.autoswitch_data_bone][self.autoswitch_data_property] = 0.0
-				#AutoSwitch Keyframe
-				if self.autoswitch_keyframe == True:
-					context.active_object.pose.bones[self.autoswitch_data_bone].keyframe_insert("[\"" + self.autoswitch_data_property + "\"]")
-					#change interpolation
-					curves = context.active_object.animation_data.action.fcurves
-					for c in curves:
-						if c.data_path == 'pose.bones["' + self.autoswitch_data_bone + '"][\"' + self.autoswitch_data_property + '\"]':
-							curve = c
-							break
-					current_frame = bpy.context.scene.frame_current
-					cpt = 0
-					for point in curve.keyframe_points:
-						if point.co[0] == current_frame:
-							if cpt != 0:
-								curve.keyframe_points[cpt-1].interpolation = 'CONSTANT'
-								break
-							else:
-								break
-						cpt = cpt + 1
+					pass #TODO
 
 			#AutoDisplay
 			if self.autodisplay == True:
@@ -1097,6 +1104,7 @@ class POSE_OT_juas_generate_snapping(bpy.types.Operator):
 
 				#AutoSwitch : Param
 				if limb.interaction.autoswitch_data.bone != "" and limb.interaction.bone_store != "":
+					ui_autoswitch_param_ = ui_autoswitch_param.replace("###AUTOSWITCH_SWITCH_TYPE###", limb.interaction.autoswitch_data.switch_type)
 					ui_autoswitch_param_ = ui_autoswitch_param.replace("###AUTOSWITCH_BONE###", limb.interaction.autoswitch_data.bone)
 					ui_autoswitch_param_ = ui_autoswitch_param_.replace("###AUTOSWITCH_BONE_STORE###", limb.interaction.bone_store)
 					ui_autoswitch_param_ = ui_autoswitch_param_.replace("###AUTOSWITCH_PROPERTY###", limb.interaction.autoswitch_data.property)

@@ -96,10 +96,16 @@ switch_invert_items = [
 	("FKIS0", "FK is 0", "", 2),
 ]
 
+### Warning : any modification on this enum must be reported on live source code
+switch_type_items = [
+    ("PROPERTY", "Property", "", 1),
+    ("BONE_TRANSFORMATION", "Bone Transformation", "", 2),
+]
+
 ### Warning : any modification on this PorpertyGroup must be reported on live source code
 class JuAS_BoneItem(bpy.types.PropertyGroup):
 	name = bpy.props.StringProperty(name="Bone name")
-	
+
 ### Warning : any modification on this PorpertyGroup must be reported on live source code
 class JuAS_BonePairItem(bpy.types.PropertyGroup):
 	name_FK = bpy.props.StringProperty(name="Bone name FK")
@@ -115,14 +121,14 @@ def register():
 	bpy.utils.register_class(JuAS_BoneItem)
 	bpy.utils.register_class(JuAS_BonePairItem)
 	bpy.utils.register_class(###CLASS_switch_FKIK_name###)
-	
+
 def unregister():
 	bpy.utils.unregister_class(JuAS_BoneItem)
 	bpy.utils.unregister_class(JuAS_BonePairItem)
 	bpy.utils.unregister_class(###CLASS_switch_FKIK_name###)
 
 register()
-'''		
+'''
 
 ui_generated_switch_param = '''###tab###op.root = "###root###"
 ###tab###op.ik_type = "###ik_type###"
@@ -140,12 +146,12 @@ ui_generated_switch_param = '''###tab###op.root = "###root###"
 ###tab###op.ik4 = "###ik4###"
 ###tab###op.ik5 = "###ik5###"
 ###tab###op.ik_mech_foot = "###ik_mech_foot###"
-		
+
 ###tab###op.fk1 = "###fk1###"
 ###tab###op.fk2 = "###fk2###"
 ###tab###op.fk3 = "###fk3###"
 ###tab###op.fk4 = "###fk4###"
-		
+
 ###tab###op.ik_scale = "###ik_scale###"
 ###tab###op.fk_scale = "###fk_scale###"
 ###tab###op.ik_location = "###ik_location###"
@@ -183,6 +189,7 @@ ui_layout_basic ='''###ON_SELECT###
 ###GENERATED_bone_PARAM###
 '''
 ui_autoswitch_param='''###tab###op.autoswitch = bpy.context.active_object.pose.bones["###AUTOSWITCH_BONE_STORE###"].autosnap_autoswitch
+###tab###op.autoswitch_data_switch_type = "###AUTOSWITCH_SWITCH###"
 ###tab###op.autoswitch_data_bone = "###AUTOSWITCH_BONE###"
 ###tab###op.autoswitch_data_property = "###AUTOSWITCH_PROPERTY###"
 ###tab###op.autoswitch_keyframe = bpy.context.active_object.pose.bones["###AUTOSWITCH_BONE_STORE###"].autosnap_autoswitch_keyframe
@@ -311,7 +318,7 @@ def populate_stay_bones(op, list_):
 	for bone in list_:
 		item_dst = op.stay_bones.add()
 		item_dst.name = bone
-		
+
 def populate_add_bones(op, list_):
 	for bone in list_:
 		item_dst = op.add_bones.add()
@@ -323,21 +330,21 @@ class POSE_PT_JuAS_BeSpanned_Snap_###rig_id###(bpy.types.Panel):
 	bl_space_type = 'VIEW_3D'
 	bl_region_type = '###REGION_TYPE###'
 	bl_category = "###CATEGORY###"
-	
+
 	@classmethod
 	def poll(self, context):
 		return context.active_object and context.active_object.type == "ARMATURE" and context.active_object.data.get("autosnap_rig_id") is not None and context.active_object.data.get("autosnap_rig_id") == autosnap_rig_id and context.mode == 'POSE'
-		
-			
+
+
 	def draw(self, context):
 		layout = self.layout
 		armature = context.object
-		
+
 ###LAYOUT###
 
 def register():
 	bpy.utils.register_class(POSE_PT_JuAS_BeSpanned_Snap_###rig_id###)
-	
+
 def unregister():
 	bpy.utils.unregister_class(POSE_PT_JuAS_BeSpanned_Snap_###rig_id###)
 

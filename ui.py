@@ -176,6 +176,7 @@ class POSE_PT_JuAS_Limb_livesnap(bpy.types.Panel):
 			op.switch_way = "FK2IK"
 			op.autoswitch =  armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch
 			if armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch == True:
+				op.autoswitch_data_switch_type = armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch_data.switch_type
 				op.autoswitch_data_bone = armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch_data.bone
 				op.autoswitch_data_property = armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch_data.property
 			self.populate_ops_param(context, op)
@@ -217,6 +218,7 @@ class POSE_PT_JuAS_Limb_livesnap(bpy.types.Panel):
 			op.autoswitch =  armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch
 			op.autoswitch_keyframe = armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch_keyframe
 			if armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch == True:
+				op.autoswitch_data_switch_type = armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch_data.switch_type
 				op.autoswitch_data_bone = armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch_data.bone
 				op.autoswitch_data_property = armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch_data.property
 			op.autodisplay =  armature.juas_limbs[armature.juas_active_limb].interaction.autodisplay
@@ -750,8 +752,13 @@ class POSE_PT_JuAS_LimbDetailLayout(bpy.types.Panel):
 			op.level_1 = "layout"
 			op.level_2 = "switch_bone"
 			row_ = box.row()
-			row_.prop(limb.layout, "switch_property", text="Switch Property")
-			row_.prop(limb.layout, "switch_invert", text="way")
+			row_.prop(limb.layout, "switch_type")
+			row_ = box.row()
+			if limb.layout.switch_type == "PROPERTY":
+				row_.prop(limb.layout, "switch_property", text="Switch Property")
+				row_.prop(limb.layout, "switch_invert", text="way")
+			else:
+				pass #TODO
 
 		row = layout.row()
 		box = row.row()
@@ -838,9 +845,14 @@ class POSE_PT_JuAS_LimbDetailInteraction(bpy.types.Panel):
 			op.level_2 = "autoswitch_data"
 			op.level_3 = "bone"
 			row_ = box.row()
-			row_.prop(limb.interaction.autoswitch_data, "property", text="Property")
+			row_.prop(limb.interaction.autoswitch_data, "switch_type")
 			row_ = box.row()
-			row_.prop(limb.interaction, "autoswitch_keyframe", text="Keyframe")
+			if limb.interaction.autoswitch_data.switch_type == "PROPERTY":
+				row_.prop(limb.interaction.autoswitch_data, "property", text="Property")
+				row_ = box.row()
+				row_.prop(limb.interaction, "autoswitch_keyframe", text="Keyframe")
+			else:
+				pass #TODO
 
 		row = layout.row()
 		row.prop(limb.interaction, "autodisplay", text="Auto Display")

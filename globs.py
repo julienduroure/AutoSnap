@@ -71,6 +71,12 @@ autokeyframe_items = [
 	("KEYING_SET", "Keying Set", "", 2),
 ]
 
+### Warning : any modification on this enum must be reported on generated source code
+switch_type_items = [
+    ("PROPERTY", "Property", "", 1),
+    ("BONE_TRANSFORMATION", "Bone Transformation", "", 2),
+]
+
 ### Warning : report new attribute to copy ops
 class JuAS_DisplayPanel(bpy.types.PropertyGroup):
 	bone   = bpy.props.BoolProperty(name="Display Bones Settings", default=False)
@@ -92,6 +98,10 @@ def fct_upd_switch_bone(self, context):
 def fct_upd_switch_property(self, contex):
 	armature = bpy.context.active_object
 	armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch_data.property = armature.juas_limbs[armature.juas_active_limb].layout.switch_property
+
+def fct_upd_switch_type(self, contex):
+	armature = bpy.context.active_object
+	armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch_data.switch_type = armature.juas_limbs[armature.juas_active_limb].layout.switch_type
 
 def fct_upd_basic_layout(self, context):
 	armature = bpy.context.active_object
@@ -141,13 +151,22 @@ class JuAS_Layout_data(bpy.types.PropertyGroup):
 	fk2ik_label = bpy.props.StringProperty(name="fk2ik label", default="fk2ik")
 	ik2fk_label = bpy.props.StringProperty(name="ik2fk label", default="ik2fk")
 
+	#SWITCH TYPE
+	switch_type = bpy.props.EnumProperty(items=switch_type_items, name="Switch Type", default = "PROPERTY", update=fct_upd_switch_type)
+
 	#SWITCH
 	switch_bone = bpy.props.StringProperty(name="Switch Bone", update=fct_upd_switch_bone)
+
+	#SWITCH PROPERTY
 	switch_property = bpy.props.StringProperty(name="Switch Property",update=fct_upd_switch_property)
 	switch_invert = bpy.props.EnumProperty(items=switch_invert_items,name="Way", default = "IKIS0")
 
+    #SWITCH_BONE_TRANSFORMATION
+    #TODO
+
 ### Warning : report new attribute to copy ops
 class JuAS_autoswitch_data(bpy.types.PropertyGroup):
+	switch_type = bpy.props.EnumProperty(name="Switch Type", items=switch_type_items, default="PROPERTY")
 	bone = bpy.props.StringProperty(name="Switch Bone", update=fct_upd_autoswitch_data_bone)
 	property = bpy.props.StringProperty(name="Switch Property", update=fct_upd_autoswitch_data_property)
 

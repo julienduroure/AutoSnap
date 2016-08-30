@@ -497,7 +497,7 @@ class POSE_OT_juas_limb_switch_ikfk(bpy.types.Operator):
 		if way == "IK2FK":
 			self.ik2fk(context.active_object, self.root, self.ik1, self.ik2, self.ik3, self.ik4, self.ik5, self.fk1, self.fk2, self.fk3, self.fk4, self.ik_scale, self.fk_scale, self.ik_location, self.fk_location, self.roll_bones, self.add_bones)
 		elif way == "FK2IK":
-			self.fk2ik(context.active_object, self.root, self.ik1, self.ik2, self.ik3, self.ik5, self.ik_scale, self.ik_location,  self.fk1, self.fk2, self.fk3, self.fk4, self.fk_scale, self.fk_location, self.add_bones, self.ik_mech_foot, self.stay_bones)
+			self.fk2ik(context.active_object, self.root, self.ik1, self.ik2, self.ik3, self.ik5, self.ik_scale, self.ik_location,  self.fk1, self.fk2, self.fk3, self.fk4, self.fk_scale, self.fk_location, self.add_bones, self.with_roll_bones, self.ik_mech_foot, self.stay_bones)
 
 		if self.layout_basic == False: #No interaction for basic layout
 			#AutoSwitch
@@ -811,7 +811,7 @@ class POSE_OT_juas_limb_switch_ikfk(bpy.types.Operator):
 			bpy.ops.object.mode_set(mode='OBJECT')
 			bpy.ops.object.mode_set(mode='POSE')
 
-	def fk2ik(self, obj, root_, ik1_, ik2_, ik3_, ik5_, ik_scale_, ik_location_, fk1_, fk2_, fk3_, fk4_, fk_scale_, fk_location_, add_bones, ik_mech_foot_, stay_bones):
+	def fk2ik(self, obj, root_, ik1_, ik2_, ik3_, ik5_, ik_scale_, ik_location_, fk1_, fk2_, fk3_, fk4_, fk_scale_, fk_location_, add_bones, with_roll_bones, ik_mech_foot_, stay_bones):
 		ik1 = obj.pose.bones[ik1_]
 		ik2 = obj.pose.bones[ik2_]
 		ik3 = obj.pose.bones[ik3_]
@@ -900,7 +900,10 @@ class POSE_OT_juas_limb_switch_ikfk(bpy.types.Operator):
 		ik3_current_rotation_mode = ik3.rotation_mode
 		fk3.rotation_mode = 'QUATERNION'
 		ik3.rotation_mode = 'QUATERNION'
-		fk3.matrix = obj.convert_space(fk3, obj.convert_space(ik_mech_foot, ik_mech_foot.matrix,'POSE','WORLD'), 'WORLD','POSE') * ( ik_mech_foot.bone.matrix_local.inverted() * ik3.bone.matrix_local) * ( ik3.bone.matrix_local.inverted() * fk3.bone.matrix_local )
+		if with_roll_bones == True:
+			fk3.matrix = obj.convert_space(fk3, obj.convert_space(ik_mech_foot, ik_mech_foot.matrix,'POSE','WORLD'), 'WORLD','POSE') * ( ik_mech_foot.bone.matrix_local.inverted() * ik3.bone.matrix_local) * ( ik3.bone.matrix_local.inverted() * fk3.bone.matrix_local )
+		else:
+			fk3.matrix = obj.convert_space(fk3, obj.convert_space(ik3, ik3.matrix,'POSE','WORLD'), 'WORLD','POSE')
 		fk3.rotation_mode = fk3_current_rotation_mode
 		ik3.rotation_mode = ik3_current_rotation_mode
 		bpy.ops.object.mode_set(mode='OBJECT')

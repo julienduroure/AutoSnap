@@ -102,6 +102,26 @@ switch_type_items = [
     ("BONE_TRANSFORMATION", "Bone Transformation", "", 2),
 ]
 
+### Warning : any modification on this enum must be reported on live source code
+transform_type = [
+	("X_LOCATION", "X Location", "", 1),
+	("Y_LOCATION", "Y Location", "", 2),
+	("Z_LOCATION", "Z Location", "", 3),
+	("X_ROTATION", "X Rotation", "", 4),
+	("Y_ROTATION", "Y Rotation", "", 5),
+	("Z_ROTATION", "Z Rotation", "", 6),
+	("X_SCALE", "X Scale", "", 7),
+	("Y_SCALE", "Y Scale", "", 8),
+	("Z_SCALE", "Z Scale", "", 9),
+]
+
+### Warning : any modification on this enum must be reported on live source code
+transform_space = [
+	("WORLD_SPACE", "World Space", "", 1),
+	("LOCAL_SPACE", "Local Space", "", 2),
+	("TRANSFORM_SPACE", "Transform Space", "", 3),
+]
+
 ### Warning : any modification on this PorpertyGroup must be reported on live source code
 class JuAS_BoneItem(bpy.types.PropertyGroup):
 	name = bpy.props.StringProperty(name="Bone name")

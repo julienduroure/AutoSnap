@@ -209,9 +209,13 @@ ui_layout_basic ='''###ON_SELECT###
 ###GENERATED_bone_PARAM###
 '''
 ui_autoswitch_param='''###tab###op.autoswitch = bpy.context.active_object.pose.bones["###AUTOSWITCH_BONE_STORE###"].autosnap_autoswitch
-###tab###op.autoswitch_data_switch_type = "###AUTOSWITCH_SWITCH###"
+###tab###op.autoswitch_data_switch_type = "###AUTOSWITCH_SWITCH_TYPE###"
 ###tab###op.autoswitch_data_bone = "###AUTOSWITCH_BONE###"
 ###tab###op.autoswitch_data_property = "###AUTOSWITCH_PROPERTY###"
+###tab###op.autoswitch_data_switch_transformation = "###AUTOSWITCH_TRANSFORMATION###"
+###tab###op.autoswitch_data_switch_transform_space = "###AUTOSWITCH_TRANSFORM_SPACE###"
+###tab###op.autoswitch_data_switch_transform_fk = "###AUTOSWITCH_TRANSFORM_FK###"
+###tab###op.autoswitch_data_switch_transform_ik = "###AUTOSWITCH_TRANSFORM_IK###"
 ###tab###op.autoswitch_keyframe = bpy.context.active_object.pose.bones["###AUTOSWITCH_BONE_STORE###"].autosnap_autoswitch_keyframe
 '''
 

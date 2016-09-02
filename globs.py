@@ -78,7 +78,7 @@ switch_type_items = [
 ]
 
 ### Warning : any modification on this enum must be reported on generated source code
-transform_type = [
+transform_type_items = [
 	("X_LOCATION", "X Location", "", 1),
 	("Y_LOCATION", "Y Location", "", 2),
 	("Z_LOCATION", "Z Location", "", 3),
@@ -91,10 +91,9 @@ transform_type = [
 ]
 
 ### Warning : any modification on this enum must be reported on generated source code
-transform_space = [
+transform_space_items = [
 	("WORLD_SPACE", "World Space", "", 1),
 	("LOCAL_SPACE", "Local Space", "", 2),
-	("TRANSFORM_SPACE", "Transform Space", "", 3),
 ]
 
 ### Warning : report new attribute to copy ops
@@ -122,6 +121,22 @@ def fct_upd_switch_property(self, contex):
 def fct_upd_switch_type(self, contex):
 	armature = bpy.context.active_object
 	armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch_data.switch_type = armature.juas_limbs[armature.juas_active_limb].layout.switch_type
+
+def fct_upd_autoswitch_data_transformation(self, context):
+	armature = bpy.context.active_object
+	armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch_data.transformation = armature.juas_limbs[armature.juas_active_limb].layout.switch_transformation
+
+def fct_upd_autoswitch_data_transform_space(self, context):
+	armature = bpy.context.active_object
+	armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch_data.transform_space = armature.juas_limbs[armature.juas_active_limb].layout.switch_transform_space
+
+def fct_upd_autoswitch_data_transform_fk(self, context):
+	armature = bpy.context.active_object
+	armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch_data.transform_fk = armature.juas_limbs[armature.juas_active_limb].layout.switch_transform_fk
+
+def fct_upd_autoswitch_data_transform_ik(self, context):
+	armature = bpy.context.active_object
+	armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch_data.transform_ik = armature.juas_limbs[armature.juas_active_limb].layout.switch_transform_ik
 
 def fct_upd_basic_layout(self, context):
 	armature = bpy.context.active_object
@@ -181,14 +196,23 @@ class JuAS_Layout_data(bpy.types.PropertyGroup):
 	switch_property = bpy.props.StringProperty(name="Switch Property",update=fct_upd_switch_property)
 	switch_invert = bpy.props.EnumProperty(items=switch_invert_items,name="Way", default = "IKIS0")
 
-    #SWITCH_BONE_TRANSFORMATION
-    #TODO
+	#SWITCH_BONE_TRANSFORMATION
+	switch_transformation  = bpy.props.EnumProperty(items=transform_type_items,name="Transform", default="X_LOCATION")
+	switch_transform_space = bpy.props.EnumProperty(items=transform_space_items,name="Space", default="LOCAL_SPACE")
+
+	switch_transform_fk = bpy.props.FloatProperty(name="FK value", default=0.0)
+	switch_transform_ik = bpy.props.FloatProperty(name="IK value", default=1.0)
+
 
 ### Warning : report new attribute to copy ops
 class JuAS_autoswitch_data(bpy.types.PropertyGroup):
 	switch_type = bpy.props.EnumProperty(name="Switch Type", items=switch_type_items, default="PROPERTY")
 	bone = bpy.props.StringProperty(name="Switch Bone", update=fct_upd_autoswitch_data_bone)
 	property = bpy.props.StringProperty(name="Switch Property", update=fct_upd_autoswitch_data_property)
+	transformation  = bpy.props.EnumProperty(items=transform_type_items,name="Transform", update=fct_upd_autoswitch_data_transformation, default="X_LOCATION")
+	transform_space = bpy.props.EnumProperty(items=transform_space_items,name="Space", update=fct_upd_autoswitch_data_transform_space, default="LOCAL_SPACE")
+	transform_fk = bpy.props.FloatProperty(name="FK value", update=fct_upd_autoswitch_data_transform_fk, default=0.0)
+	transform_ik = bpy.props.FloatProperty(name="IK value", update=fct_upd_autoswitch_data_transform_ik, default=1.0)
 
 ### Warning : report new attribute to copy ops
 class JuAS_autodisplay_data(bpy.types.PropertyGroup):

@@ -22,6 +22,7 @@
 ##########################################################################################
 
 import bpy
+import mathutils
 
 from .globs import *
 from .utils import *
@@ -179,6 +180,10 @@ class POSE_PT_JuAS_Limb_livesnap(bpy.types.Panel):
 				op.autoswitch_data_switch_type = armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch_data.switch_type
 				op.autoswitch_data_bone = armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch_data.bone
 				op.autoswitch_data_property = armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch_data.property
+				op.autoswitch_data_switch_transformation = armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch_data.transformation
+				op.autoswitch_data_switch_transfor_space = armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch_data.transform_space
+				op.autoswitch_data_switch_transform_ik = armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch_data.transform_ik
+				op.autoswitch_data_switch_transform_fk = armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch_data.transformation_fk
 			self.populate_ops_param(context, op)
 
 			row_ = box.row()
@@ -189,17 +194,51 @@ class POSE_PT_JuAS_Limb_livesnap(bpy.types.Panel):
 
 		else:
 			label = ""
-			try:
-				if int(armature.pose.bones[armature.juas_limbs[armature.juas_active_limb].layout.switch_bone].get(armature.juas_limbs[armature.juas_active_limb].layout.switch_property)) == 1.0 and armature.juas_limbs[armature.juas_active_limb].layout.switch_invert == "IKIS0":
+			if armature.juas_limbs[armature.juas_active_limb].layout.switch_type == "PROPERTY":
+				try:
+					if int(armature.pose.bones[armature.juas_limbs[armature.juas_active_limb].layout.switch_bone].get(armature.juas_limbs[armature.juas_active_limb].layout.switch_property)) == 1.0 and armature.juas_limbs[armature.juas_active_limb].layout.switch_invert == "IKIS0":
+						label = armature.juas_limbs[armature.juas_active_limb].layout.ik2fk_label
+					elif int(armature.pose.bones[armature.juas_limbs[armature.juas_active_limb].layout.switch_bone].get(armature.juas_limbs[armature.juas_active_limb].layout.switch_property)) == 1.0 and armature.juas_limbs[armature.juas_active_limb].layout.switch_invert == "FKIS0":
+						label = armature.juas_limbs[armature.juas_active_limb].layout.fk2ik_label
+					if int(armature.pose.bones[armature.juas_limbs[armature.juas_active_limb].layout.switch_bone].get(armature.juas_limbs[armature.juas_active_limb].layout.switch_property)) == 0.0 and armature.juas_limbs[armature.juas_active_limb].layout.switch_invert == "IKIS0":
+						label = armature.juas_limbs[armature.juas_active_limb].layout.fk2ik_label
+					elif int(armature.pose.bones[armature.juas_limbs[armature.juas_active_limb].layout.switch_bone].get(armature.juas_limbs[armature.juas_active_limb].layout.switch_property)) == 0.0 and armature.juas_limbs[armature.juas_active_limb].layout.switch_invert == "FKIS0":
+						label = armature.juas_limbs[armature.juas_active_limb].layout.ik2fk_label
+				except:
+					label = ""
+			elif armature.juas_limbs[armature.juas_active_limb].layout.switch_type == "BONE_TRANSFORMATION":
+				mat = mathutils.Matrix()
+				bone = context.active_object.pose.bones[armature.juas_limbs[armature.juas_active_limb].layout.switch_bone]
+				if armature.juas_limbs[armature.juas_active_limb].layout.switch_transform_space == "WORLD_SPACE":
+					mat = context.active_object.convert_space(bone, bone.matrix, 'POSE', 'WORLD')
+				elif armature.juas_limbs[armature.juas_active_limb].layout.switch_transform_space == "LOCAL_SPACE":
+					mat = context.active_object.convert_space(bone, bone.matrix, 'POSE', 'LOCAL')
+
+				current_value = 0.0
+				if armature.juas_limbs[armature.juas_active_limb].layout.switch_transformation == "X_LOCATION":
+					current_value = mat.to_translation()[0]
+				elif armature.juas_limbs[armature.juas_active_limb].layout.switch_transformation == "Y_LOCATION":
+					current_value = mat.to_translation()[1]
+				elif armature.juas_limbs[armature.juas_active_limb].layout.switch_transformation == "Z_LOCATION":
+					current_value = mat.to_translation()[2]
+				elif armature.juas_limbs[armature.juas_active_limb].layout.switch_transformation == "X_ROTATION":
+					current_value = mat.to_euler()[0]
+				elif armature.juas_limbs[armature.juas_active_limb].layout.switch_transformation == "Y_ROTATION":
+					current_value = mat.to_euler()[1]
+				elif armature.juas_limbs[armature.juas_active_limb].layout.switch_transformation == "Z_ROTATION":
+					current_value = mat.to_euler()[2]
+				elif armature.juas_limbs[armature.juas_active_limb].layout.switch_transformation == "X_SCALE":
+					current_value = mat.to_scale()[0]
+				elif armature.juas_limbs[armature.juas_active_limb].layout.switch_transformation == "Y_SCALE":
+					current_value = mat.to_scale()[1]
+				elif armature.juas_limbs[armature.juas_active_limb].layout.switch_transformation == "Y_SCALE":
+					current_value = mat.to_scale()[2]
+
+				if abs(armature.juas_limbs[armature.juas_active_limb].layout.switch_transform_fk - current_value) < abs(armature.juas_limbs[armature.juas_active_limb].layout.switch_transform_ik - current_value):
 					label = armature.juas_limbs[armature.juas_active_limb].layout.ik2fk_label
-				elif int(armature.pose.bones[armature.juas_limbs[armature.juas_active_limb].layout.switch_bone].get(armature.juas_limbs[armature.juas_active_limb].layout.switch_property)) == 1.0 and armature.juas_limbs[armature.juas_active_limb].layout.switch_invert == "FKIS0":
+				else:
 					label = armature.juas_limbs[armature.juas_active_limb].layout.fk2ik_label
-				if int(armature.pose.bones[armature.juas_limbs[armature.juas_active_limb].layout.switch_bone].get(armature.juas_limbs[armature.juas_active_limb].layout.switch_property)) == 0.0 and armature.juas_limbs[armature.juas_active_limb].layout.switch_invert == "IKIS0":
-					label = armature.juas_limbs[armature.juas_active_limb].layout.fk2ik_label
-				elif int(armature.pose.bones[armature.juas_limbs[armature.juas_active_limb].layout.switch_bone].get(armature.juas_limbs[armature.juas_active_limb].layout.switch_property)) == 0.0 and armature.juas_limbs[armature.juas_active_limb].layout.switch_invert == "FKIS0":
-					label = armature.juas_limbs[armature.juas_active_limb].layout.ik2fk_label
-			except:
-				label = ""
+
 			row = layout.row()
 			box = row.box()
 			if armature.juas_limbs[armature.juas_active_limb].layout.on_select == True and addonpref().generated_enable == True:
@@ -215,12 +254,21 @@ class POSE_PT_JuAS_Limb_livesnap(bpy.types.Panel):
 			op.switch_bone = armature.juas_limbs[armature.juas_active_limb].layout.switch_bone
 			op.switch_property = armature.juas_limbs[armature.juas_active_limb].layout.switch_property
 			op.switch_invert   = armature.juas_limbs[armature.juas_active_limb].layout.switch_invert
+			op.switch_type = armature.juas_limbs[armature.juas_active_limb].layout.switch_type
+			op.switch_transformation = armature.juas_limbs[armature.juas_active_limb].layout.switch_transformation
+			op.switch_transform_space = armature.juas_limbs[armature.juas_active_limb].layout.switch_transform_space
+			op.switch_transform_fk = armature.juas_limbs[armature.juas_active_limb].layout.switch_transform_fk
+			op.switch_transform_ik = armature.juas_limbs[armature.juas_active_limb].layout.switch_transform_ik
 			op.autoswitch =  armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch
 			op.autoswitch_keyframe = armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch_keyframe
 			if armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch == True:
 				op.autoswitch_data_switch_type = armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch_data.switch_type
 				op.autoswitch_data_bone = armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch_data.bone
 				op.autoswitch_data_property = armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch_data.property
+				op.autoswitch_data_switch_transformation = armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch_data.transformation
+				op.autoswitch_data_switch_transform_space = armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch_data.transform_space
+				op.autoswitch_data_switch_transform_ik = armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch_data.transform_ik
+				op.autoswitch_data_switch_transform_fk = armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch_data.transform_fk
 			op.autodisplay =  armature.juas_limbs[armature.juas_active_limb].interaction.autodisplay
 			if armature.juas_limbs[armature.juas_active_limb].interaction.autodisplay == True:
 				op.autodisplay_data_type = armature.juas_limbs[armature.juas_active_limb].interaction.autodisplay_data.type
@@ -241,17 +289,24 @@ class POSE_PT_JuAS_Limb_livesnap(bpy.types.Panel):
 			if label == "":
 				row_.label("Wrong layout data", icon="ERROR")
 			if armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch == True:
-				try:
-					int(armature.pose.bones[armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch_data.bone].get(armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch_data.property))
+				if armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch_data.switch_type == "PROPERTY":
+					try:
+						int(armature.pose.bones[armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch_data.bone].get(armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch_data.property))
+						row_ = box.row()
+						row_.prop(armature.juas_limbs[armature.juas_active_limb].interaction, "autoswitch", text="AutoSwitch")
+						if armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch_keyframe == True:
+							row_.prop(armature.juas_limbs[armature.juas_active_limb].interaction, "autoswitch_keyframe", text="Keyframe")
+						row_.enabled = False
+
+					except:
+						row_ = box.row()
+						row_.label("Wrong Autoswitch Data", icon="ERROR")
+				else:
 					row_ = box.row()
 					row_.prop(armature.juas_limbs[armature.juas_active_limb].interaction, "autoswitch", text="AutoSwitch")
 					if armature.juas_limbs[armature.juas_active_limb].interaction.autoswitch_keyframe == True:
 						row_.prop(armature.juas_limbs[armature.juas_active_limb].interaction, "autoswitch_keyframe", text="Keyframe")
 					row_.enabled = False
-
-				except:
-					row_ = box.row()
-					row_.label("Wrong Autoswitch Data", icon="ERROR")
 
 			if armature.juas_limbs[armature.juas_active_limb].interaction.autodisplay == True:
 				if armature.juas_limbs[armature.juas_active_limb].interaction.autodisplay_data.type == "HIDE":
@@ -757,8 +812,13 @@ class POSE_PT_JuAS_LimbDetailLayout(bpy.types.Panel):
 			if limb.layout.switch_type == "PROPERTY":
 				row_.prop(limb.layout, "switch_property", text="Switch Property")
 				row_.prop(limb.layout, "switch_invert", text="way")
-			else:
-				pass #TODO
+			elif limb.layout.switch_type == "BONE_TRANSFORMATION":
+				row_.prop(limb.layout, "switch_transformation")
+				row_ = box.row()
+				row_.prop(limb.layout, "switch_transform_space")
+				row_ = box.row()
+				row_.prop(limb.layout, "switch_transform_fk", text="FK")
+				row_.prop(limb.layout, "switch_transform_ik", text="IK")
 
 		row = layout.row()
 		box = row.row()
@@ -851,8 +911,13 @@ class POSE_PT_JuAS_LimbDetailInteraction(bpy.types.Panel):
 				row_.prop(limb.interaction.autoswitch_data, "property", text="Property")
 				row_ = box.row()
 				row_.prop(limb.interaction, "autoswitch_keyframe", text="Keyframe")
-			else:
-				pass #TODO
+			elif limb.interaction.autoswitch_data.switch_type == "BONE_TRANSFORMATION":
+				row_.prop(limb.interaction.autoswitch_data, "transformation")
+				row_ = box.row()
+				row_.prop(limb.interaction.autoswitch_data, "transform_space")
+				row_ = box.row()
+				row_.prop(limb.interaction.autoswitch_data, "transform_fk", text="FK")
+				row_.prop(limb.interaction.autoswitch_data, "transform_ik", text="IK")
 
 		row = layout.row()
 		row.prop(limb.interaction, "autodisplay", text="Auto Display")

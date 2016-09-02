@@ -71,6 +71,11 @@ class POSE_OT_juas_limb_copy(bpy.types.Operator):
 
 		dst_limb.interaction.autoswitch = armature.juas_limbs[src_limb_index].interaction.autoswitch
 		dst_limb.interaction.autoswitch_data.switch_type = fct(armature.juas_limbs[src_limb_index].interaction.autoswitch_data.switch_type)
+		dst_limb.interaction.autoswitch_data.transformation = fct(armature.juas_limbs[src_limb_index].interaction.autoswitch_data.transformation)
+		dst_limb.interaction.autoswitch_data.transform_space = fct(armature.juas_limbs[src_limb_index].interaction.autoswitch_data.transform_space)
+		dst_limb.interaction.autoswitch_data.transform_fk = fct(armature.juas_limbs[src_limb_index].interaction.autoswitch_data.transform_fk)
+		dst_limb.interaction.autoswitch_data.transform_ik = fct(armature.juas_limbs[src_limb_index].interaction.autoswitch_data.transform_ik)
+
 		dst_limb.interaction.autoswitch_data.bone = fct(armature.juas_limbs[src_limb_index].interaction.autoswitch_data.bone)
 		dst_limb.interaction.autoswitch_data.property = armature.juas_limbs[src_limb_index].interaction.autoswitch_data.property
 		dst_limb.interaction.autoswitch_keyframe = armature.juas_limbs[src_limb_index].interaction.autoswitch_keyframe
@@ -95,6 +100,10 @@ class POSE_OT_juas_limb_copy(bpy.types.Operator):
 		dst_limb.layout.switch_type = fct(armature.juas_limbs[src_limb_index].layout.switch_type)
 		dst_limb.layout.switch_property = armature.juas_limbs[src_limb_index].layout.switch_property
 		dst_limb.layout.switch_invert = armature.juas_limbs[src_limb_index].layout.switch_invert
+		dst_limb.layout.switch_transformation = fct(armature.juas_limbs[src_limb_index].layout.switch_transformation)
+		dst_limb.layout.switch_transform_space = fct(armature.juas_limbs[src_limb_index].layout.switch_transform_space)
+		dst_limb.layout.switch_transform_fk = fct(armature.juas_limbs[src_limb_index].layout.switch_transform_fk)
+		dst_limb.layout.switch_transform_ik = fct(armature.juas_limbs[src_limb_index].layout.switch_transform_ik)
 		dst_limb.layout.display_name = armature.juas_limbs[src_limb_index].layout.display_name
 		dst_limb.layout.on_select = armature.juas_limbs[src_limb_index].layout.on_select
 
@@ -167,9 +176,19 @@ class POSE_OT_juas_limb_switch_ikfk(bpy.types.Operator):
 	switch_bone = bpy.props.StringProperty()
 	switch_property = bpy.props.StringProperty()
 	switch_invert   = bpy.props.EnumProperty(items=switch_invert_items)
+	switch_type = bpy.props.EnumProperty(items=switch_type_items)
+	switch_transformation = bpy.props.EnumProperty(items=transform_type_items)
+	switch_transform_space = bpy.props.EnumProperty(items=transform_space_items)
+	switch_transform_fk = bpy.props.FloatProperty()
+	switch_transform_ik = bpy.props.FloatProperty()
+
 
 	autoswitch = bpy.props.BoolProperty()
 	autoswitch_data_switch_type = bpy.props.StringProperty()
+	autoswitch_data_switch_transformation = bpy.props.EnumProperty(items=transform_type_items)
+	autoswitch_data_switch_transform_space = bpy.props.EnumProperty(items=transform_space_items)
+	autoswitch_data_switch_transform_fk = bpy.props.FloatProperty()
+	autoswitch_data_switch_transform_ik = bpy.props.FloatProperty()
 	autoswitch_data_bone = bpy.props.StringProperty()
 	autoswitch_data_property = bpy.props.StringProperty()
 	autoswitch_keyframe = bpy.props.BoolProperty()
@@ -230,15 +249,15 @@ class POSE_OT_juas_limb_switch_ikfk(bpy.types.Operator):
 		if self.switch_bone == "":
 			self.report({'ERROR'}, "Switch Bone must be filled")
 			return False, {'CANCELLED'}
-		if self.switch_property == "":
-			self.report({'ERROR'}, "Switch Bone property must be filled")
-			return False, {'CANCELLED'}
-		try:
-			int(context.active_object.pose.bones[self.switch_bone].get(self.switch_property))
-		except:
-			self.report({'ERROR'}, "Wrong Bone property")
-			return False, {'CANCELLED'}
-
+		if self.switch_type == "PROPERTY":
+			if self.switch_property == "":
+				self.report({'ERROR'}, "Switch Bone property must be filled")
+				return False, {'CANCELLED'}
+			try:
+				int(context.active_object.pose.bones[self.switch_bone].get(self.switch_property))
+			except:
+				self.report({'ERROR'}, "Wrong Bone property")
+				return False, {'CANCELLED'}
 
 		return True, True
 
@@ -472,14 +491,47 @@ class POSE_OT_juas_limb_switch_ikfk(bpy.types.Operator):
 			way = "FK2IK"
 		elif self.layout_basic == True and self.switch_way == "IK2FK":
 			way = "IK2FK"
-		elif self.layout_basic == False and int(context.active_object.pose.bones[self.switch_bone].get(self.switch_property)) == 1.0 and self.switch_invert == "IKIS0":
-			way = "IK2FK"
-		elif self.layout_basic == False and int(context.active_object.pose.bones[self.switch_bone].get(self.switch_property)) == 1.0 and self.switch_invert == "FKIS0":
-			way = "FK2IK"
-		elif self.layout_basic == False and int(context.active_object.pose.bones[self.switch_bone].get(self.switch_property)) == 0.0 and self.switch_invert == "IKIS0":
-			way = "FK2IK"
-		elif self.layout_basic == False and int(context.active_object.pose.bones[self.switch_bone].get(self.switch_property)) == 0.0 and self.switch_invert == "FKIS0":
-			way = "IK2FK"
+		if self.switch_type == "PROPERTY":
+			if self.layout_basic == False and int(context.active_object.pose.bones[self.switch_bone].get(self.switch_property)) == 1.0 and self.switch_invert == "IKIS0":
+				way = "IK2FK"
+			elif self.layout_basic == False and int(context.active_object.pose.bones[self.switch_bone].get(self.switch_property)) == 1.0 and self.switch_invert == "FKIS0":
+				way = "FK2IK"
+			elif self.layout_basic == False and int(context.active_object.pose.bones[self.switch_bone].get(self.switch_property)) == 0.0 and self.switch_invert == "IKIS0":
+				way = "FK2IK"
+			elif self.layout_basic == False and int(context.active_object.pose.bones[self.switch_bone].get(self.switch_property)) == 0.0 and self.switch_invert == "FKIS0":
+				way = "IK2FK"
+		elif self.switch_type == "BONE_TRANSFORMATION":
+			mat = mathutils.Matrix()
+			if self.switch_transform_space == "WORLD_SPACE":
+				mat = context.active_object.convert_space(context.active_object.pose.bones[self.switch_bone], context.active_object.pose.bones[self.switch_bone].matrix, 'POSE', 'WORLD')
+			elif self.switch_transform_space == "LOCAL_SPACE":
+				mat = context.active_object.convert_space(context.active_object.pose.bones[self.switch_bone], context.active_object.pose.bones[self.switch_bone].matrix, 'POSE', 'LOCAL')
+
+			current_value = 0.0
+			if self.switch_transformation == "X_LOCATION":
+				current_value = mat.to_translation()[0]
+			elif self.switch_transformation == "Y_LOCATION":
+				current_value = mat.to_translation()[1]
+			elif self.switch_transformation == "Z_LOCATION":
+				current_value = mat.to_translation()[2]
+			elif self.switch_transformation == "X_ROTATION":
+				current_value = mat.to_euler()[0]
+			elif self.switch_transformation == "Y_ROTATION":
+				current_value = mat.to_euler()[1]
+			elif self.switch_transformation == "Z_ROTATION":
+				current_value = mat.to_euler()[2]
+			elif self.switch_transformation == "X_SCALE":
+				current_value = mat.to_scale()[0]
+			elif self.switch_transformation == "Y_SCALE":
+				current_value = mat.to_scale()[1]
+			elif self.switch_transformation == "Y_SCALE":
+				current_value = mat.to_scale()[2]
+
+			if abs(self.switch_transform_fk - current_value) < abs(self.switch_transform_ik - current_value):
+				way = "IK2FK"
+			else:
+				way = "FK2IK"
+
 
 		status, error = self.common_check(context)
 		if status == False:
@@ -1090,6 +1142,7 @@ class POSE_OT_juas_generate_snapping(bpy.types.Operator):
 				ui_layout_non_basic_ = ui_layout_non_basic_.replace("###SWITCH_BONE###",limb.layout.switch_bone)
 				ui_layout_non_basic_ = ui_layout_non_basic_.replace("###SWITCH_PROPERTY###",limb.layout.switch_property)
 				ui_layout_non_basic_ = ui_layout_non_basic_.replace("###SWITCH_INVERT###",limb.layout.switch_invert)
+				#TODO
 
 				if limb.interaction.autoswitch == True:
 					#create properties and set to False by default
@@ -1111,6 +1164,10 @@ class POSE_OT_juas_generate_snapping(bpy.types.Operator):
 					ui_autoswitch_param_ = ui_autoswitch_param.replace("###AUTOSWITCH_BONE###", limb.interaction.autoswitch_data.bone)
 					ui_autoswitch_param_ = ui_autoswitch_param_.replace("###AUTOSWITCH_BONE_STORE###", limb.interaction.bone_store)
 					ui_autoswitch_param_ = ui_autoswitch_param_.replace("###AUTOSWITCH_PROPERTY###", limb.interaction.autoswitch_data.property)
+					ui_autoswitch_param_ = ui_autoswitch_param.replace("###AUTOSWITCH_TRANSFORMATION###", limb.interaction.autoswitch_data.transformation)
+					ui_autoswitch_param_ = ui_autoswitch_param.replace("###AUTOSWITCH_TRANSFORM_SPACE###", limb.interaction.autoswitch_data.transform_space)
+					ui_autoswitch_param_ = ui_autoswitch_param.replace("###AUTOSWITCH_TRANSFORM_FK###", limb.interaction.autoswitch_data.transform_fk)
+					ui_autoswitch_param_ = ui_autoswitch_param.replace("###AUTOSWITCH_TRANSFORM_IK###", limb.interaction.autoswitch_data.transform_ik)
 					ui_autoswitch_param_ = ui_autoswitch_param_.replace("###tab###", tabs)
 				else:
 					ui_autoswitch_param_ = ui_autoswitch_param_ko

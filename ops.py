@@ -1142,7 +1142,12 @@ class POSE_OT_juas_generate_snapping(bpy.types.Operator):
 				ui_layout_non_basic_ = ui_layout_non_basic_.replace("###SWITCH_BONE###",limb.layout.switch_bone)
 				ui_layout_non_basic_ = ui_layout_non_basic_.replace("###SWITCH_PROPERTY###",limb.layout.switch_property)
 				ui_layout_non_basic_ = ui_layout_non_basic_.replace("###SWITCH_INVERT###",limb.layout.switch_invert)
-				#TODO
+				ui_layout_non_basic_ = ui_layout_non_basic_.replace("###SWITCH_TYPE###",limb.layout.switch_type)
+				ui_layout_non_basic_ = ui_layout_non_basic_.replace("###SWITCH_TRANSFORMATION###",limb.layout.switch_transformation)
+				ui_layout_non_basic_ = ui_layout_non_basic_.replace("###SWITCH_TRANSFORM_SPACE###",limb.layout.switch_transform_space)
+				ui_layout_non_basic_ = ui_layout_non_basic_.replace("###SWITCH_TRANSFORM_FK###",str(limb.layout.switch_transform_fk))
+				ui_layout_non_basic_ = ui_layout_non_basic_.replace("###SWITCH_TRANSFORM_IK###",str(limb.layout.switch_transform_ik))
+
 
 				if limb.interaction.autoswitch == True:
 					#create properties and set to False by default
@@ -1166,8 +1171,8 @@ class POSE_OT_juas_generate_snapping(bpy.types.Operator):
 					ui_autoswitch_param_ = ui_autoswitch_param_.replace("###AUTOSWITCH_PROPERTY###", limb.interaction.autoswitch_data.property)
 					ui_autoswitch_param_ = ui_autoswitch_param.replace("###AUTOSWITCH_TRANSFORMATION###", limb.interaction.autoswitch_data.transformation)
 					ui_autoswitch_param_ = ui_autoswitch_param.replace("###AUTOSWITCH_TRANSFORM_SPACE###", limb.interaction.autoswitch_data.transform_space)
-					ui_autoswitch_param_ = ui_autoswitch_param.replace("###AUTOSWITCH_TRANSFORM_FK###", limb.interaction.autoswitch_data.transform_fk)
-					ui_autoswitch_param_ = ui_autoswitch_param.replace("###AUTOSWITCH_TRANSFORM_IK###", limb.interaction.autoswitch_data.transform_ik)
+					ui_autoswitch_param_ = ui_autoswitch_param.replace("###AUTOSWITCH_TRANSFORM_FK###", str(limb.interaction.autoswitch_data.transform_fk))
+					ui_autoswitch_param_ = ui_autoswitch_param.replace("###AUTOSWITCH_TRANSFORM_IK###", str(limb.interaction.autoswitch_data.transform_ik))
 					ui_autoswitch_param_ = ui_autoswitch_param_.replace("###tab###", tabs)
 				else:
 					ui_autoswitch_param_ = ui_autoswitch_param_ko

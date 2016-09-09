@@ -578,8 +578,69 @@ class POSE_OT_juas_limb_switch_ikfk(bpy.types.Operator):
 								else:
 									break
 							cpt = cpt + 1
-				else:
-					pass #TODO
+				if self.autoswitch_data_switch_type == "BONE_TRANSFORMATION":
+					mat = mathutils.Matrix()
+					if self.autoswitch_data_switch_transform_space == "WORLD_SPACE":
+						pass #
+					elif self.autoswitch_data_switch_transform_space == "LOCAL_SPACE":
+						mat = context.active_object.pose.bones[self.autoswitch_data_bone].matrix_basis
+
+					current_value = 0.0
+					if self.autoswitch_data_switch_transformation == "X_LOCATION":
+						current_value = mat.to_translation()[0]
+					elif self.autoswitch_data_switch_transformation == "Y_LOCATION":
+						current_value = mat.to_translation()[1]
+					elif self.autoswitch_data_switch_transformation == "Z_LOCATION":
+						current_value = mat.to_translation()[2]
+					elif self.autoswitch_data_switch_transformation == "X_ROTATION":
+						current_value = mat.to_euler()[0]
+					elif self.autoswitch_data_switch_transformation == "Y_ROTATION":
+						current_value = mat.to_euler()[1]
+					elif self.autoswitch_data_switch_transformation == "Z_ROTATION":
+						current_value = mat.to_euler()[2]
+					elif self.autoswitch_data_switch_transformation == "X_SCALE":
+						current_value = mat.to_scale()[0]
+					elif self.autoswitch_data_switch_transformation == "Y_SCALE":
+						current_value = mat.to_scale()[1]
+					elif self.autoswitch_data_switch_transformation == "Y_SCALE":
+						current_value = mat.to_scale()[2]
+
+					print("current value : " + str(current_value))
+
+					new_value = 0.0
+					if abs(self.switch_transform_fk - current_value) < abs(self.switch_transform_ik - current_value):
+						new_value = self.autoswitch_data_switch_transform_ik
+					else:
+						new_value = self.autoswitch_data_switch_transform_fk
+
+					print("new value : " + str(new_value))
+
+
+					transform_space = ""
+					if self.autoswitch_data_switch_transform_space == "WORLD_SPACE":
+						pass #TODO
+					elif self.autoswitch_data_switch_transform_space == "LOCAL_SPACE":
+						transform_space = "LOCAL"
+						mat = context.active_object.pose.bones[self.autoswitch_data_bone].matrix_basis
+
+
+					if self.autoswitch_data_switch_transformation == "X_LOCATION":
+						loc = mathutils.Vector((new_value, mat.to_translation()[1], mat.to_translation()[2]))
+					elif self.autoswitch_data_switch_transformation == "Y_LOCATION":
+						loc = mathutils.Vector((mat.to_translation()[0], new_value, mat.to_translation()[2]))
+					elif self.autoswitch_data_switch_transformation == "Z_LOCATION":
+						loc = mathutils.Vector((mat.to_translation()[0], mat.to_translation()[1], new_value))
+					else:
+						pass #TODO
+
+					if self.autoswitch_data_switch_transformation == "X_LOCATION" or self.autoswitch_data_switch_transformation == "Y_LOCATION" or self.autoswitch_data_switch_transformation == "Z_LOCATION":
+						context.active_object.pose.bones[self.autoswitch_data_bone].location = loc
+					else:
+						pass #TODO
+
+					if self.autoswitch_keyframe == True:
+						pass #TODO
+
 
 			#AutoDisplay
 			if self.autodisplay == True:

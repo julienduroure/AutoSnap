@@ -92,7 +92,7 @@ transform_type_items = [
 
 ### Warning : any modification on this enum must be reported on generated source code
 transform_space_items = [
-	("WORLD_SPACE", "World Space", "", 1),
+#	("WORLD_SPACE#", "World Space", "", 1), #TODO
 	("LOCAL_SPACE", "Local Space", "", 2),
 ]
 

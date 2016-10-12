@@ -324,6 +324,7 @@ ui_layout_non_basic ='''###ON_SELECT###
 ###tab###row_ = box.row()
 ###tab###op = row_.operator("pose.juas_limb_switch_ikfk_###rig_id###", text=label)
 ###tab###op.layout_basic = False
+###tab###op.switch_type = "###SWITCH_TYPE###"
 ###tab###op.switch_bone = "###SWITCH_BONE###"
 ###tab###op.switch_property = "###SWITCH_PROPERTY###"
 ###tab###op.switch_invert   = "###SWITCH_INVERT###"

@@ -605,7 +605,6 @@ class POSE_OT_juas_limb_switch_ikfk(bpy.types.Operator):
 					elif self.autoswitch_data_switch_transformation == "Y_SCALE":
 						current_value = mat.to_scale()[2]
 
-					print("current value : " + str(current_value))
 
 					new_value = 0.0
 					if abs(self.switch_transform_fk - current_value) < abs(self.switch_transform_ik - current_value):
@@ -613,7 +612,6 @@ class POSE_OT_juas_limb_switch_ikfk(bpy.types.Operator):
 					else:
 						new_value = self.autoswitch_data_switch_transform_fk
 
-					print("new value : " + str(new_value))
 
 
 					transform_space = ""

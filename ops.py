@@ -630,11 +630,19 @@ class POSE_OT_juas_limb_switch_ikfk(bpy.types.Operator):
 						loc = mathutils.Vector((mat.to_translation()[0], new_value, mat.to_translation()[2]))
 					elif self.autoswitch_data_switch_transformation == "Z_LOCATION":
 						loc = mathutils.Vector((mat.to_translation()[0], mat.to_translation()[1], new_value))
+					elif self.autoswitch_data_switch_transformation == "X_SCALE":
+						scale = mathutils.Vector((new_value, mat.to_scale()[1], mat.to_scale()[2]))
+					elif self.autoswitch_data_switch_transformation == "Y_SCALE":
+						scale = mathutils.Vector((mat.to_scale()[0], new_value, mat.to_scale()[2]))
+					elif self.autoswitch_data_switch_transformation == "Z_SCALE":
+						scale = mathutils.Vector((mat.to_scale()[0], mat.to_scale()[1], new_value))
 					else:
 						pass #TODO
 
 					if self.autoswitch_data_switch_transformation == "X_LOCATION" or self.autoswitch_data_switch_transformation == "Y_LOCATION" or self.autoswitch_data_switch_transformation == "Z_LOCATION":
 						context.active_object.pose.bones[self.autoswitch_data_bone].location = loc
+					elif self.autoswitch_data_switch_transformation == "X_SCALE" or self.autoswitch_data_switch_transformation == "Y_SCALE" or self.autoswitch_data_switch_transformation == "Z_SCALE":
+						context.active_object.pose.bones[self.autoswitch_data_bone].scale = scale
 					else:
 						pass #TODO
 

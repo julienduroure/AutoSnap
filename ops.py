@@ -655,8 +655,42 @@ class POSE_OT_juas_limb_switch_ikfk(bpy.types.Operator):
 						pass
 
 					if self.autoswitch_keyframe == True:
-						pass #TODO
+						if self.autoswitch_data_switch_transformation == "X_LOCATION" or self.autoswitch_data_switch_transformation == "Y_LOCATION" or self.autoswitch_data_switch_transformation == "Z_LOCATION":
+							context.active_object.pose.bones[self.autoswitch_data_bone].keyframe_insert("location")
+							#change interpolation : retrieve corresponding curve
+							curves = context.active_object.animation_data.action.fcurves
+							for c in curves:
+								if c.data_path == 'pose.bones["' + self.autoswitch_data_bone + '"].location':
+									curve = c
+									break
+						elif self.autoswitch_data_switch_transformation == "X_SCALE" or self.autoswitch_data_switch_transformation == "Y_SCALE" or self.autoswitch_data_switch_transformation == "Z_SCALE":
+							context.active_object.pose.bones[self.autoswitch_data_bone].keyframe_insert("scale")
+							#change interpolation : retrieve corresponding curve
+							curves = context.active_object.animation_data.action.fcurves
+							for c in curves:
+								if c.data_path == 'pose.bones["' + self.autoswitch_data_bone + '"].scale':
+									curve = c
+									break
+						elif self.autoswitch_data_switch_transformation == "X_ROTATION" or self.autoswitch_data_switch_transformation == "Y_ROTATION" or self.autoswitch_data_switch_transformation == "Z_ROTATION":
+							context.active_object.pose.bones[self.autoswitch_data_bone].keyframe_insert("rotation_euler")
+							#change interpolation : retrieve corresponding curve
+							curves = context.active_object.animation_data.action.fcurves
+							for c in curves:
+								if c.data_path == 'pose.bones["' + self.autoswitch_data_bone + '"].rotation_euler':
+									curve = c
+									break
 
+						#change interpolation
+						current_frame = bpy.context.scene.frame_current
+						cpt = 0
+						for point in curve.keyframe_points:
+							if point.co[0] == current_frame:
+								if cpt != 0:
+									curve.keyframe_points[cpt-1].interpolation = 'CONSTANT'
+									break
+								else:
+									break
+							cpt = cpt + 1
 
 			#AutoDisplay
 			if self.autodisplay == True:

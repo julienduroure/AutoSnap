@@ -387,6 +387,12 @@ def populate_add_bones(op, list_):
 		item_dst.name_FK = bone[0]
 		item_dst.name_IK = bone[1]
 
+
+bpy.types.PoseBone.autosnap_autodisplay = bpy.props.BoolProperty(name = "AutoDisplay")
+bpy.types.PoseBone.autosnap_autokeyframe = bpy.props.BoolProperty(name = "AutoKeyframe")
+bpy.types.PoseBone.autosnap_autoswitch = bpy.props.BoolProperty(name = "AutoSwitch")
+bpy.types.PoseBone.autosnap_autoswitch_keyframe = bpy.props.BoolProperty(name = "AutoSwitchKeyframe")
+
 class POSE_PT_JuAS_BeSpanned_Snap_###rig_id###(bpy.types.Panel):
 	bl_label = "###LABEL###"
 	bl_space_type = 'VIEW_3D'

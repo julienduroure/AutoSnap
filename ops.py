@@ -1275,13 +1275,13 @@ class POSE_OT_juas_generate_snapping(bpy.types.Operator):
 				#AutoSwitch : Param
 				if limb.interaction.autoswitch_data.bone != "" and limb.interaction.bone_store != "":
 					ui_autoswitch_param_ = ui_autoswitch_param.replace("###AUTOSWITCH_SWITCH_TYPE###", limb.interaction.autoswitch_data.switch_type)
-					ui_autoswitch_param_ = ui_autoswitch_param.replace("###AUTOSWITCH_BONE###", limb.interaction.autoswitch_data.bone)
+					ui_autoswitch_param_ = ui_autoswitch_param_.replace("###AUTOSWITCH_BONE###", limb.interaction.autoswitch_data.bone)
 					ui_autoswitch_param_ = ui_autoswitch_param_.replace("###AUTOSWITCH_BONE_STORE###", limb.interaction.bone_store)
 					ui_autoswitch_param_ = ui_autoswitch_param_.replace("###AUTOSWITCH_PROPERTY###", limb.interaction.autoswitch_data.property)
-					ui_autoswitch_param_ = ui_autoswitch_param.replace("###AUTOSWITCH_TRANSFORMATION###", limb.interaction.autoswitch_data.transformation)
-					ui_autoswitch_param_ = ui_autoswitch_param.replace("###AUTOSWITCH_TRANSFORM_SPACE###", limb.interaction.autoswitch_data.transform_space)
-					ui_autoswitch_param_ = ui_autoswitch_param.replace("###AUTOSWITCH_TRANSFORM_FK###", str(limb.interaction.autoswitch_data.transform_fk))
-					ui_autoswitch_param_ = ui_autoswitch_param.replace("###AUTOSWITCH_TRANSFORM_IK###", str(limb.interaction.autoswitch_data.transform_ik))
+					ui_autoswitch_param_ = ui_autoswitch_param_.replace("###AUTOSWITCH_TRANSFORMATION###", limb.interaction.autoswitch_data.transformation)
+					ui_autoswitch_param_ = ui_autoswitch_param_.replace("###AUTOSWITCH_TRANSFORM_SPACE###", limb.interaction.autoswitch_data.transform_space)
+					ui_autoswitch_param_ = ui_autoswitch_param_.replace("###AUTOSWITCH_TRANSFORM_FK###", str(limb.interaction.autoswitch_data.transform_fk))
+					ui_autoswitch_param_ = ui_autoswitch_param_.replace("###AUTOSWITCH_TRANSFORM_IK###", str(limb.interaction.autoswitch_data.transform_ik))
 					ui_autoswitch_param_ = ui_autoswitch_param_.replace("###tab###", tabs)
 				else:
 					ui_autoswitch_param_ = ui_autoswitch_param_ko

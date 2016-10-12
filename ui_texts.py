@@ -213,8 +213,8 @@ ui_autoswitch_param='''###tab###op.autoswitch = bpy.context.active_object.pose.b
 ###tab###op.autoswitch_data_property = "###AUTOSWITCH_PROPERTY###"
 ###tab###op.autoswitch_data_switch_transformation = "###AUTOSWITCH_TRANSFORMATION###"
 ###tab###op.autoswitch_data_switch_transform_space = "###AUTOSWITCH_TRANSFORM_SPACE###"
-###tab###op.autoswitch_data_switch_transform_fk = "###AUTOSWITCH_TRANSFORM_FK###"
-###tab###op.autoswitch_data_switch_transform_ik = "###AUTOSWITCH_TRANSFORM_IK###"
+###tab###op.autoswitch_data_switch_transform_fk = ###AUTOSWITCH_TRANSFORM_FK###
+###tab###op.autoswitch_data_switch_transform_ik = ###AUTOSWITCH_TRANSFORM_IK###
 ###tab###op.autoswitch_keyframe = bpy.context.active_object.pose.bones["###AUTOSWITCH_BONE_STORE###"].autosnap_autoswitch_keyframe
 '''
 
@@ -326,10 +326,11 @@ ui_layout_non_basic ='''###ON_SELECT###
 ###tab###op.layout_basic = False
 ###tab###op.switch_bone = "###SWITCH_BONE###"
 ###tab###op.switch_property = "###SWITCH_PROPERTY###"
-###tab###op.switch_invert   = "###SWITCH_TRANSFORMATION###"
-###tab###op.switch_invert   = "###SWITCH_TRANSFORM_SPACE###"
-###tab###op.switch_invert   = "###SWITCH_TRANSFORM_FK###"
-###tab###op.switch_invert   = "###SWITCH_TRANSFORM_IK###"
+###tab###op.switch_invert   = "###SWITCH_INVERT###"
+###tab###op.switch_transformation   = "###SWITCH_TRANSFORMATION###"
+###tab###op.switch_transform_space   = "###SWITCH_TRANSFORM_SPACE###"
+###tab###op.switch_transform_fk   = ###SWITCH_TRANSFORM_FK###
+###tab###op.switch_transform_ik   = ###SWITCH_TRANSFORM_IK###
 ###GENERATED_autoswitch_PARAM###
 ###GENERATED_autodisplay_PARAM###
 ###GENERATED_autokeyframe_PARAM###

@@ -70,11 +70,11 @@ class POSE_OT_juas_limb_copy(bpy.types.Operator):
 		dst_limb.interaction.bone_store = fct(armature.juas_limbs[src_limb_index].interaction.bone_store)
 
 		dst_limb.interaction.autoswitch = armature.juas_limbs[src_limb_index].interaction.autoswitch
-		dst_limb.interaction.autoswitch_data.switch_type = fct(armature.juas_limbs[src_limb_index].interaction.autoswitch_data.switch_type)
-		dst_limb.interaction.autoswitch_data.transformation = fct(armature.juas_limbs[src_limb_index].interaction.autoswitch_data.transformation)
-		dst_limb.interaction.autoswitch_data.transform_space = fct(armature.juas_limbs[src_limb_index].interaction.autoswitch_data.transform_space)
-		dst_limb.interaction.autoswitch_data.transform_fk = fct(armature.juas_limbs[src_limb_index].interaction.autoswitch_data.transform_fk)
-		dst_limb.interaction.autoswitch_data.transform_ik = fct(armature.juas_limbs[src_limb_index].interaction.autoswitch_data.transform_ik)
+		dst_limb.interaction.autoswitch_data.switch_type = armature.juas_limbs[src_limb_index].interaction.autoswitch_data.switch_type
+		dst_limb.interaction.autoswitch_data.transformation = armature.juas_limbs[src_limb_index].interaction.autoswitch_data.transformation
+		dst_limb.interaction.autoswitch_data.transform_space = armature.juas_limbs[src_limb_index].interaction.autoswitch_data.transform_space
+		dst_limb.interaction.autoswitch_data.transform_fk = armature.juas_limbs[src_limb_index].interaction.autoswitch_data.transform_fk
+		dst_limb.interaction.autoswitch_data.transform_ik = armature.juas_limbs[src_limb_index].interaction.autoswitch_data.transform_ik
 
 		dst_limb.interaction.autoswitch_data.bone = fct(armature.juas_limbs[src_limb_index].interaction.autoswitch_data.bone)
 		dst_limb.interaction.autoswitch_data.property = armature.juas_limbs[src_limb_index].interaction.autoswitch_data.property
@@ -100,10 +100,10 @@ class POSE_OT_juas_limb_copy(bpy.types.Operator):
 		dst_limb.layout.switch_type = fct(armature.juas_limbs[src_limb_index].layout.switch_type)
 		dst_limb.layout.switch_property = armature.juas_limbs[src_limb_index].layout.switch_property
 		dst_limb.layout.switch_invert = armature.juas_limbs[src_limb_index].layout.switch_invert
-		dst_limb.layout.switch_transformation = fct(armature.juas_limbs[src_limb_index].layout.switch_transformation)
-		dst_limb.layout.switch_transform_space = fct(armature.juas_limbs[src_limb_index].layout.switch_transform_space)
-		dst_limb.layout.switch_transform_fk = fct(armature.juas_limbs[src_limb_index].layout.switch_transform_fk)
-		dst_limb.layout.switch_transform_ik = fct(armature.juas_limbs[src_limb_index].layout.switch_transform_ik)
+		dst_limb.layout.switch_transformation = armature.juas_limbs[src_limb_index].layout.switch_transformation
+		dst_limb.layout.switch_transform_space = armature.juas_limbs[src_limb_index].layout.switch_transform_space
+		dst_limb.layout.switch_transform_fk = armature.juas_limbs[src_limb_index].layout.switch_transform_fk
+		dst_limb.layout.switch_transform_ik = armature.juas_limbs[src_limb_index].layout.switch_transform_ik
 		dst_limb.layout.display_name = armature.juas_limbs[src_limb_index].layout.display_name
 		dst_limb.layout.on_select = armature.juas_limbs[src_limb_index].layout.on_select
 

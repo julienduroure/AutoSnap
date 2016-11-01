@@ -34,14 +34,16 @@ bl_info = {
 }
 
 if "bpy" in locals():
-	import imp
-	imp.reload(addon_prefs)
-	imp.reload(ui_texts)
-	imp.reload()
-	imp.reload(utils)
-	imp.reload(ui)
-	imp.reload(ui_ops)
-	imp.reload(ops)
+	import importlib
+	importlib.reload(addon_prefs)
+	importlib.reload(ui_texts)
+	importlib.reload(globs)
+	importlib.reload(utils)
+	importlib.reload(ui)
+	importlib.reload(ui_ops)
+	importlib.reload(ops)
+
+
 else:
 	from .addon_prefs import *
 	from .ui_texts import *
@@ -60,8 +62,8 @@ def register():
 	ui_ops.register()
 	ui.register()
 
-	bpy.types.Object.juas_generation = bpy.props.PointerProperty(type=JuAS_Generation)
-	bpy.types.Object.juas_limbs = bpy.props.CollectionProperty(type=JuAS_LimbItem)
+	bpy.types.Object.juas_generation = bpy.props.PointerProperty(type=globs.JuAS_Generation)
+	bpy.types.Object.juas_limbs = bpy.props.CollectionProperty(type=globs.JuAS_LimbItem)
 	bpy.types.Object.juas_active_limb = bpy.props.IntProperty()
 
 

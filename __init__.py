@@ -29,7 +29,7 @@ bl_info = {
 	"description": "Add snapping FK/IK automatically",
 	"location": "View 3D tools, tab 'AutoSnap'",
 	"wiki_url": "http://blerifa.com/AutoSnap",
-	"tracker_url": "https://github.com/julienduroure/AutoSnap/issues/",
+	"tracker_url": "https://github.com/julienduroure/BleRiFa/issues/",
 	"category": "Rigging",
 }
 
